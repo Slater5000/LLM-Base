@@ -1,0 +1,9 @@
+[gd_resource type="TileSet" format=3 uid="uid://w6ern13m8rv4"]
+
+[ext_resource type="Texture2D" uid="uid://1jwtnnyccx3h" path="res://assets/tilesets/biomes/Biome 01/01 - Tileset - Transparent.png" id="1_atlas"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_biome01"]
+texture = ExtResource("1_atlas")
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_biome01")
