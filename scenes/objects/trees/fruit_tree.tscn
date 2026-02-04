@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c7xuxm25e5pmk"]
+
+[ext_resource type="Texture2D" uid="uid://dk0hqpa1gju3f" path="res://assets/trees/Assets_separately/Trees_texture_shadow/Fruit_tree1.png" id="1_texture"]
+
+[node name="FruitTree" type="StaticBody2D" unique_id=609464006]
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=425306859]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -28)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=122724504]
+polygon = PackedVector2Array(9, -67.2, 9, -65.5, 0.19999695, -62.5, -6.799999, -64, -8.5, -64, -14.5, -61, -18, -61, -25, -51, -26.400002, -51, -32.4, -35, -34, -35, -34, -27, -35.8, -27, -33, -18.699997, -33, -15.900002, -21.400002, -8.199997, -28, -0.80000305, -28, 1.800003, -19, 11.699997, -19, 13.900002, 10, 15, 12.400002, 15, 14, 10.300003, 18.5, 8, 21.400002, 8, 23.400002, 2, 24.300003, 2, 25.400002, -0.5, 22, -3.9000015, 30.900002, -14, 32.800003, -14, 34, -24.900002, 34, -26.5, 26.599998, -39.2, 31, -50.6, 31, -52.7, 22, -63.7, 22, -65.8)

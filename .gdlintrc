@@ -1,0 +1,24 @@
+# GDScript linting configuration
+# See: https://github.com/Scony/godot-gdscript-toolkit/wiki/3.-Linter
+
+[general]
+# Line length limit (Godot style guide suggests 100)
+max-line-length = 100
+
+# Tab size for indentation checks
+tab-size = 4
+
+[rules]
+# Naming conventions (enforces GDScript style guide)
+class-name-pascal-case = true
+function-name-snake-case = true
+variable-name-snake-case = true
+constant-name-all-caps = true
+
+# Private member prefix
+private-method-prefix = "_"
+private-variable-prefix = "_"
+
+# Code quality
+max-function-arguments = 6
+max-returns = 4

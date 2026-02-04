@@ -1,0 +1,132 @@
+[gd_scene load_steps=3 format=3 uid="uid://professor_npc"]
+
+[ext_resource type="Script" path="res://scenes/npcs/professor.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interact"]
+size = Vector2(40, 40)
+
+[node name="Professor" type="Area2D"]
+y_sort_enabled = true
+script = ExtResource("1_script")
+npc_name = "Professor Oak"
+
+[node name="Shadow" type="ColorRect" parent="."]
+z_index = -1
+offset_left = -10.0
+offset_top = 18.0
+offset_right = 12.0
+offset_bottom = 26.0
+color = Color(0.15, 0.25, 0.12, 0.4)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CoatBack" type="ColorRect" parent="Sprite2D"]
+offset_left = -11.0
+offset_top = -6.0
+offset_right = 11.0
+offset_bottom = 20.0
+color = Color(0.85, 0.85, 0.82, 1)
+
+[node name="CoatFront" type="ColorRect" parent="Sprite2D"]
+offset_left = -10.0
+offset_top = -5.0
+offset_right = 10.0
+offset_bottom = 18.0
+color = Color(0.95, 0.95, 0.92, 1)
+
+[node name="CoatHighlight" type="ColorRect" parent="Sprite2D"]
+offset_left = -10.0
+offset_top = -5.0
+offset_right = -6.0
+offset_bottom = 18.0
+color = Color(1, 1, 0.98, 1)
+
+[node name="Shirt" type="ColorRect" parent="Sprite2D"]
+offset_left = -5.0
+offset_top = -2.0
+offset_right = 5.0
+offset_bottom = 8.0
+color = Color(0.35, 0.55, 0.75, 1)
+
+[node name="ShirtHighlight" type="ColorRect" parent="Sprite2D"]
+offset_left = -5.0
+offset_top = -2.0
+offset_right = -2.0
+offset_bottom = 8.0
+color = Color(0.42, 0.62, 0.82, 1)
+
+[node name="Pants" type="ColorRect" parent="Sprite2D"]
+offset_left = -6.0
+offset_top = 8.0
+offset_right = 6.0
+offset_bottom = 20.0
+color = Color(0.3, 0.28, 0.35, 1)
+
+[node name="HeadBack" type="ColorRect" parent="Sprite2D"]
+offset_left = -8.0
+offset_top = -22.0
+offset_right = 8.0
+offset_bottom = -4.0
+color = Color(0.82, 0.68, 0.58, 1)
+
+[node name="HeadFront" type="ColorRect" parent="Sprite2D"]
+offset_left = -7.0
+offset_top = -21.0
+offset_right = 7.0
+offset_bottom = -5.0
+color = Color(0.92, 0.78, 0.68, 1)
+
+[node name="HeadHighlight" type="ColorRect" parent="Sprite2D"]
+offset_left = -7.0
+offset_top = -21.0
+offset_right = -3.0
+offset_bottom = -12.0
+color = Color(0.96, 0.84, 0.74, 1)
+
+[node name="HairBack" type="ColorRect" parent="Sprite2D"]
+offset_left = -8.0
+offset_top = -26.0
+offset_right = 8.0
+offset_bottom = -18.0
+color = Color(0.5, 0.5, 0.52, 1)
+
+[node name="HairFront" type="ColorRect" parent="Sprite2D"]
+offset_left = -7.0
+offset_top = -25.0
+offset_right = 7.0
+offset_bottom = -19.0
+color = Color(0.65, 0.65, 0.68, 1)
+
+[node name="HairHighlight" type="ColorRect" parent="Sprite2D"]
+offset_left = -7.0
+offset_top = -25.0
+offset_right = 0.0
+offset_bottom = -22.0
+color = Color(0.75, 0.75, 0.78, 1)
+
+[node name="EyeLeft" type="ColorRect" parent="Sprite2D"]
+offset_left = -5.0
+offset_top = -16.0
+offset_right = -2.0
+offset_bottom = -12.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="EyeRight" type="ColorRect" parent="Sprite2D"]
+offset_left = 2.0
+offset_top = -16.0
+offset_right = 5.0
+offset_bottom = -12.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_interact")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 14)
+shape = SubResource("RectangleShape2D_interact")
+scale = Vector2(0.55, 0.4)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7qvx3n8pfhkt"]
+
+[ext_resource type="Script" path="res://scenes/ui/radial_menu/hex_button.gd" id="1_hex_button"]
+
+[node name="HexButton" type="Control"]
+custom_minimum_size = Vector2(44, 50)
+offset_right = 44.0
+offset_bottom = 50.0
+script = ExtResource("1_hex_button")

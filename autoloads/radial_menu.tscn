@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dkv7n4m8xqprt"]
+
+[ext_resource type="Script" path="res://autoloads/radial_menu.gd" id="1_radial_menu"]
+
+[node name="RadialMenu" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_radial_menu")

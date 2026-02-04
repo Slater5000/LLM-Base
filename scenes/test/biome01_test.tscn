@@ -1,0 +1,202 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/tilesets/biomes/Biome 01/01 - Tileset_transparent.png" id="1_biome01"]
+
+; ============================================================
+; BIOME 01 - CORRECTED COORDINATES (with transparency)
+; Based on visual analysis of transparent tileset
+; ============================================================
+
+; BARN - Full width at bottom (y=640-720)
+[sub_resource type="AtlasTexture" id="barn"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 640, 128, 80)
+
+; TREE - Green conifer, roughly y=48-144, centered
+[sub_resource type="AtlasTexture" id="tree"]
+atlas = ExtResource("1_biome01")
+region = Rect2(32, 48, 64, 96)
+
+; BOULDER - Gray rock, left-center, y=16-80
+[sub_resource type="AtlasTexture" id="boulder"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 32, 64, 64)
+
+; FENCE - White picket, y=144-160
+[sub_resource type="AtlasTexture" id="fence"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 144, 96, 16)
+
+; BROWN THATCH/MOUND - y=160-208
+[sub_resource type="AtlasTexture" id="thatch"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 160, 64, 48)
+
+; ROUND HEDGE - Green circles, y=208-256
+[sub_resource type="AtlasTexture" id="hedge_round"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 208, 64, 48)
+
+; SQUARE HEDGE - y=208 but further right
+[sub_resource type="AtlasTexture" id="hedge_square"]
+atlas = ExtResource("1_biome01")
+region = Rect2(64, 208, 48, 48)
+
+; STONE PATH - y=256-320 area
+[sub_resource type="AtlasTexture" id="path_stone"]
+atlas = ExtResource("1_biome01")
+region = Rect2(64, 256, 64, 64)
+
+; WATER TILE - y=320-400
+[sub_resource type="AtlasTexture" id="water"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 336, 64, 64)
+
+; SMALL DECORATIONS - y=0-16
+[sub_resource type="AtlasTexture" id="deco_rock"]
+atlas = ExtResource("1_biome01")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="deco_mushroom"]
+atlas = ExtResource("1_biome01")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="deco_flowers"]
+atlas = ExtResource("1_biome01")
+region = Rect2(96, 0, 16, 16)
+
+; ============================================================
+; TEST LAYOUT
+; ============================================================
+
+[node name="Biome01Test" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -10
+offset_right = 900.0
+offset_bottom = 700.0
+color = Color(0.25, 0.25, 0.25, 1)
+
+; Row 1 - Main structures
+[node name="L_Barn" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 20.0
+offset_right = 200.0
+text = "BARN (0,640)"
+
+[node name="Barn" type="Sprite2D" parent="."]
+position = Vector2(120, 100)
+texture = SubResource("barn")
+
+[node name="L_Tree" type="Label" parent="."]
+offset_left = 280.0
+offset_top = 20.0
+offset_right = 430.0
+text = "TREE (32,48)"
+
+[node name="Tree" type="Sprite2D" parent="."]
+position = Vector2(350, 100)
+texture = SubResource("tree")
+
+[node name="L_Boulder" type="Label" parent="."]
+offset_left = 480.0
+offset_top = 20.0
+offset_right = 630.0
+text = "BOULDER (0,32)"
+
+[node name="Boulder" type="Sprite2D" parent="."]
+position = Vector2(550, 100)
+texture = SubResource("boulder")
+
+; Row 2 - Hedges and fence
+[node name="L_Fence" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 200.0
+offset_right = 200.0
+text = "FENCE (0,144)"
+
+[node name="Fence" type="Sprite2D" parent="."]
+position = Vector2(120, 260)
+texture = SubResource("fence")
+
+[node name="L_Thatch" type="Label" parent="."]
+offset_left = 250.0
+offset_top = 200.0
+offset_right = 400.0
+text = "THATCH (0,160)"
+
+[node name="Thatch" type="Sprite2D" parent="."]
+position = Vector2(320, 270)
+texture = SubResource("thatch")
+
+[node name="L_HedgeR" type="Label" parent="."]
+offset_left = 450.0
+offset_top = 200.0
+offset_right = 600.0
+text = "HEDGE ROUND (0,208)"
+
+[node name="HedgeRound" type="Sprite2D" parent="."]
+position = Vector2(520, 270)
+texture = SubResource("hedge_round")
+
+[node name="L_HedgeS" type="Label" parent="."]
+offset_left = 650.0
+offset_top = 200.0
+offset_right = 800.0
+text = "HEDGE SQ (64,208)"
+
+[node name="HedgeSquare" type="Sprite2D" parent="."]
+position = Vector2(720, 270)
+texture = SubResource("hedge_square")
+
+; Row 3 - Path and water
+[node name="L_Path" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 350.0
+offset_right = 200.0
+text = "PATH (64,256)"
+
+[node name="Path" type="Sprite2D" parent="."]
+position = Vector2(120, 430)
+texture = SubResource("path_stone")
+
+[node name="L_Water" type="Label" parent="."]
+offset_left = 250.0
+offset_top = 350.0
+offset_right = 400.0
+text = "WATER (0,336)"
+
+[node name="Water" type="Sprite2D" parent="."]
+position = Vector2(320, 430)
+texture = SubResource("water")
+
+; Row 4 - Small decorations
+[node name="L_Rock" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 520.0
+offset_right = 200.0
+text = "ROCK (0,0)"
+
+[node name="Rock" type="Sprite2D" parent="."]
+position = Vector2(100, 580)
+texture = SubResource("deco_rock")
+
+[node name="L_Mushroom" type="Label" parent="."]
+offset_left = 180.0
+offset_top = 520.0
+offset_right = 330.0
+text = "MUSHROOM (64,0)"
+
+[node name="Mushroom" type="Sprite2D" parent="."]
+position = Vector2(230, 580)
+texture = SubResource("deco_mushroom")
+
+[node name="L_Flowers" type="Label" parent="."]
+offset_left = 310.0
+offset_top = 520.0
+offset_right = 460.0
+text = "FLOWERS (96,0)"
+
+[node name="Flowers" type="Sprite2D" parent="."]
+position = Vector2(360, 580)
+texture = SubResource("deco_flowers")

@@ -4,6 +4,22 @@
 
 ---
 
+## Godot 4.6 Documentation Reference
+
+**Always consult these docs when implementing features:**
+- Main docs: https://docs.godotengine.org/en/stable/
+- GDScript reference: https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/
+- TileMap guide: https://docs.godotengine.org/en/stable/tutorials/2d/using_tilemaps.html
+- Signals: https://docs.godotengine.org/en/stable/getting_started/step_by_step/signals.html
+- Resources: https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html
+- Autoloads: https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html
+- Input handling: https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html
+- Scene tree: https://docs.godotengine.org/en/stable/getting_started/step_by_step/scene_tree.html
+
+**Version: Godot 4.6** — Use `/stable/` URLs (points to current stable release)
+
+---
+
 ## Operating Mode
 
 You operate as a **coordinator** that automatically routes to specialized expertise based on context. Before responding to any substantive request, assess which domain(s) are implicated and adopt the relevant persona(s).
@@ -25,6 +41,22 @@ Check `.llm/DISCOVERY.md` first:
   - `.llm/DECISIONS.md` — Tech stack and architecture
   - `.llm/PRINCIPLES.md` — Development guidelines
   - `.llm/PATTERNS.md` — Reference implementations (FSM, events, save/load, pooling, etc.)
+
+---
+
+## Quality Standard
+
+**This is a release-quality product, not a prototype.**
+
+Every feature, every system, every visual element should be implemented as if it's shipping tomorrow. Cut no corners. The bar is:
+
+- **Player experience is paramount.** Before implementing anything, ask: "How does this feel to play?" Smooth transitions, satisfying feedback, zero jank.
+- **Go the extra mile.** Don't just make it work—make it delightful. Add the screen shake. Polish the animation timing. Consider the edge cases players will actually hit.
+- **Sweat the details.** The difference between "good" and "great" lives in the small things: consistent spacing, proper easing curves, sounds that feel right, UI that responds instantly.
+- **No placeholder mindset.** If something goes in, it should be done properly. "We'll fix it later" is not acceptable.
+- **Test as a player.** Regularly play the game without dev tools. Feel what players feel. If something is annoying or confusing, fix it now.
+
+When in doubt, ask: *"Would I be proud to show this to someone?"*
 
 ---
 
