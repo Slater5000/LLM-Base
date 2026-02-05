@@ -1,0 +1,18 @@
+# Button sprites from Buttons.png
+# Format: name,x,y,width,height
+
+# Small square buttons (22x23) - first row
+button_small_1,13,12,22,23
+button_small_2,61,13,22,22
+button_small_3,109,12,22,23
+button_small_4,157,13,22,22
+
+# Medium buttons with depth (42x32) - good for interact prompt
+button_med_normal,3,96,42,32
+button_med_alt,99,96,42,32
+
+# Flat medium buttons (42x15)
+button_flat_1,51,97,42,15
+button_flat_2,147,97,42,15
+button_flat_3,51,113,42,15
+button_flat_4,147,113,42,15

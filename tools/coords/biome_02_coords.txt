@@ -1,0 +1,43 @@
+# Biome 02 - Dark Industrial City
+# Format: name,x,y,width,height
+#
+# HOW TO FIND COORDINATES:
+# 1. Open tileset in GIMP/Photoshop/paint.net
+# 2. Use rectangle select tool
+# 3. Hover or select to see X,Y coordinates
+# 4. Measure width/height of sprite
+# 5. Add line: spritename,x,y,w,h
+#
+# Example workflow in GIMP:
+# - Windows > Dockable Dialogs > Pointer (shows X,Y as you hover)
+# - Select tool shows selection dimensions
+#
+# Fill in below as you identify sprites:
+
+# === GROUND/FLOOR TILES ===
+# cobblestone,x,y,32,32
+# dark_brick,x,y,32,32
+
+# === STREET LAMPS ===
+# street_lamp_1,x,y,16,48
+# street_lamp_2,x,y,16,48
+
+# === BUILDINGS ===
+# building_dark_1,x,y,64,96
+# building_dark_2,x,y,48,80
+
+# === DECORATIONS ===
+# crate_wooden,x,y,32,32
+# crate_stack,x,y,32,48
+# barrel,x,y,24,32
+
+# === FENCES/RAILS ===
+# metal_fence,x,y,32,16
+# railing,x,y,48,16
+
+# === ICE/SNOW ===
+# ice_tile,x,y,32,32
+# snow_pile,x,y,24,24
+
+# === MYSTERY BOX ===
+# mystery_box,x,y,32,32

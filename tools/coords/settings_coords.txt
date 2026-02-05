@@ -1,0 +1,51 @@
+# Settings UI sprites from Settings.png
+# Format: name,x,y,width,height
+
+# Full settings panels (98x149)
+settings_panel_1,7,0,98,149
+settings_panel_2,119,0,98,149
+settings_panel_3,231,0,98,149
+
+# Bottom panel frame
+settings_panel_small,295,160,34,37
+
+# Buttons (39x13) - likely SAVE/DECLINE variants
+button_save_1,4,162,39,13
+button_save_2,52,162,39,13
+button_save_3,100,162,39,13
+button_decline_1,148,162,39,13
+button_decline_2,196,162,39,13
+button_decline_3,244,162,39,13
+
+# Second row of buttons
+button_row2_1,4,178,39,13
+button_row2_2,52,178,39,13
+button_row2_3,100,178,39,13
+button_row2_4,148,178,39,13
+button_row2_5,196,178,39,13
+button_row2_6,244,178,39,13
+
+# Small checkbox/indicator circles (11x12)
+checkbox_1,128,195,11,12
+checkbox_2,144,195,11,12
+checkbox_3,160,195,11,12
+checkbox_4,176,195,11,12
+checkbox_5,192,195,11,12
+checkbox_6,208,195,11,12
+checkbox_7,224,195,11,12
+checkbox_8,240,195,11,12
+
+# Slider/arrow components (13x14)
+slider_part_1,3,204,13,14
+slider_part_2,19,204,13,14
+slider_part_3,35,204,13,14
+slider_part_4,51,204,13,14
+slider_part_5,67,204,13,14
+slider_part_6,83,204,13,14
+slider_part_7,99,204,13,14
+
+# Arrow group (24x19)
+arrows_group,115,204,24,19
+
+# Panel or button group (63x41)
+button_group,273,208,63,41

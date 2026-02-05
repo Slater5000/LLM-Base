@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://mushrooms_yellow"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/2_yellow_mushrooms.png" id="1_texture"]
+
+[node name="MushroomsYellow" type="Sprite2D"]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -16)

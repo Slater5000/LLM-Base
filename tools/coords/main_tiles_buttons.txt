@@ -1,0 +1,7 @@
+# Small bordered buttons from Main_tiles.png
+# For interact prompt and small UI buttons
+button_bordered_small,208,80,16,16
+button_bordered_med,176,64,32,32
+button_bordered_wide,128,80,48,16
+panel_small_brown,0,0,48,48
+panel_small_tan,48,0,48,48

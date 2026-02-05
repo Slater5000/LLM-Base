@@ -1,0 +1,13 @@
+# Smaller bordered buttons from Main_tiles.png
+# Row 4 has some nice small bordered rectangles
+button_small_1,256,96,16,16
+button_small_2,272,96,16,16
+button_small_3,288,96,16,16
+button_rect_1,304,96,32,16
+button_rect_2,336,96,32,16
+# Small bordered pieces from row 5
+button_tiny_1,256,112,16,16
+button_tiny_2,288,112,16,16
+# Row 3 small panels
+small_panel_1,256,64,32,32
+small_panel_2,288,64,32,32

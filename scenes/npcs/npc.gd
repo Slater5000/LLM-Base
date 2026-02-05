@@ -15,8 +15,6 @@ class_name NPC
 
 func _ready() -> void:
 	super._ready()
-	interact_prompt = "[E] Talk"
-	_prompt_label.text = interact_prompt
 
 
 func _on_interact() -> void:
@@ -30,7 +28,7 @@ func _on_interact() -> void:
 		for line in dialogue_lines:
 			lines.append(line)
 		dialogue_manager.show_dialogue(lines)
-		_prompt_label.hide()
+		_prompt_control.hide()
 
 		# Re-show prompt when dialogue ends
 		dialogue_manager.dialogue_finished.connect(_on_dialogue_finished, CONNECT_ONE_SHOT)
@@ -40,4 +38,4 @@ func _on_dialogue_finished() -> void:
 	# Set cooldown to prevent immediate re-trigger
 	_interact_cooldown = INTERACT_COOLDOWN
 	if _player_in_range:
-		_prompt_label.show()
+		_prompt_control.show()

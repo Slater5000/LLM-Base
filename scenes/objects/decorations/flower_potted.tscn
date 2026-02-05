@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://flower_potted"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/flower_potted.png" id="1_texture"]
+
+[node name="FlowerPotted" type="Sprite2D"]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -20)

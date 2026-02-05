@@ -1,0 +1,80 @@
+# Circle Menu UI Sprites
+# Format: name,x,y,width,height
+
+# Small circles (25x26) - left side of sheet
+# These form the left radial wheel
+circle_small_01,19,17,25,26
+circle_small_02,51,1,25,26
+circle_small_03,83,17,25,26
+circle_small_04,3,49,25,26
+circle_small_05,99,49,25,26
+circle_small_06,19,81,25,26
+circle_small_07,51,97,25,26
+circle_small_08,83,81,25,26
+
+# Large circles (27x28) - right side of sheet
+# These form the right radial wheel
+circle_large_01,146,16,27,28
+circle_large_02,178,0,27,28
+circle_large_03,210,16,27,28
+circle_large_04,130,48,27,28
+circle_large_05,226,48,27,28
+circle_large_06,146,80,27,28
+circle_large_07,178,96,27,28
+circle_large_08,210,80,27,28
+
+# Center square
+center_square,128,96,16,16
+
+# State variants row (y=145) - small
+circle_state_tan_s,3,145,25,26
+circle_state_cream_s,35,145,25,26
+circle_state_gray_s,67,145,25,26
+circle_state_highlight_s,99,145,25,26
+
+# State variants row (y=144) - large
+circle_state_tan_l,130,144,27,28
+circle_state_cream_l,162,144,27,28
+circle_state_gray_l,194,144,27,28
+circle_state_highlight_l,226,144,27,28
+
+# Flat circles row (y=193-194)
+circle_flat_tan_s,3,194,25,25
+circle_flat_cream_s,35,194,25,25
+circle_flat_gray_s,67,194,25,25
+circle_flat_dark_s,99,194,25,25
+
+circle_flat_tan_l,130,193,27,27
+circle_flat_cream_l,162,193,27,27
+circle_flat_gray_l,194,193,27,27
+circle_flat_dark_l,226,193,27,27
+
+# Small icons row 1 (y=229-230)
+icon_shield,7,230,17,17
+icon_sword,40,229,15,18
+icon_plant,71,230,17,16
+icon_crystal,103,229,17,17
+icon_feather_blue,136,229,14,18
+icon_feather_red,168,229,14,18
+icon_potion,200,230,15,17
+icon_gem,232,229,14,18
+
+# Small icons row 2 (y=262-263)
+icon_shield_2,7,263,17,17
+icon_sword_2,40,262,15,18
+icon_plant_2,71,263,17,16
+icon_crystal_2,103,262,17,17
+icon_feather_blue_2,136,262,14,18
+icon_feather_red_2,168,262,14,18
+icon_potion_2,200,263,15,17
+icon_gem_2,232,262,14,18
+
+# Small icons row 3 (y=293-294)
+icon_shield_3,7,294,17,17
+icon_sword_3,40,293,15,18
+icon_plant_3,71,294,17,16
+icon_crystal_3,103,293,17,17
+icon_feather_blue_3,136,293,14,18
+icon_feather_red_3,168,293,14,18
+icon_potion_3,200,294,15,17
+icon_gem_3,232,293,14,18

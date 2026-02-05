@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://tree3_scene"]
+
+[ext_resource type="Texture2D" path="res://assets/trees/Assets_separately/Trees_texture_shadow/Tree3.png" id="1_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(24, 16)
+
+[node name="Tree3" type="StaticBody2D"]
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_1")

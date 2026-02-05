@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://rock_medium"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/medium_rock.png" id="1_texture"]
+
+[node name="RockMedium" type="Sprite2D"]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -10)

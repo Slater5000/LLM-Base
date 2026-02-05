@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bush2_scene"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/shrub_yellow_flowers.png" id="1_texture"]
+
+[node name="Bush2" type="Sprite2D"]
+texture = ExtResource("1_texture")

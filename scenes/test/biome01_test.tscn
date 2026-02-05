@@ -1,6 +1,6 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://assets/tilesets/biomes/Biome 01/01 - Tileset_transparent.png" id="1_biome01"]
+[ext_resource type="Texture2D" uid="uid://1jwtnnyccx3h" path="res://assets/tilesets/biomes/Biome 01/01 - Tileset - Transparent.png" id="1_biome01"]
 
 ; ============================================================
 ; BIOME 01 - CORRECTED COORDINATES (with transparency)

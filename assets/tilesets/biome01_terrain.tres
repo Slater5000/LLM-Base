@@ -1,0 +1,79 @@
+[gd_resource type="TileSet" format=3 uid="uid://terrain_biome01"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/grass_tile.png" id="1_grass"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_tile.png" id="2_dirt_path"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/grass_around_dirt.png" id="3_grass_dirt"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_around_grass.png" id="4_dirt_grass"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/grass_around_sand.png" id="5_grass_sand"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/sand_around_grass.png" id="6_sand_grass"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_grass"]
+texture = ExtResource("1_grass")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dirt"]
+texture = ExtResource("2_dirt_path")
+texture_region_size = Vector2i(16, 16)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_grass_dirt"]
+texture = ExtResource("3_grass_dirt")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dirt_grass"]
+texture = ExtResource("4_dirt_grass")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_grass_sand"]
+texture = ExtResource("5_grass_sand")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sand_grass"]
+texture = ExtResource("6_sand_grass")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[resource]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_grass")
+sources/1 = SubResource("TileSetAtlasSource_dirt")
+sources/2 = SubResource("TileSetAtlasSource_grass_dirt")
+sources/3 = SubResource("TileSetAtlasSource_dirt_grass")
+sources/4 = SubResource("TileSetAtlasSource_grass_sand")
+sources/5 = SubResource("TileSetAtlasSource_sand_grass")

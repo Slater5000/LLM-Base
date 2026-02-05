@@ -1,0 +1,20 @@
+# Character panel UI sprites from character_panel.png
+# Format: name,x,y,width,height
+
+# Character panels with HP bars (84x30)
+char_panel_1,2,2,84,30
+char_panel_2,98,2,84,30
+char_panel_3,2,34,84,30
+char_panel_4,98,34,84,30
+
+# Character panels larger variant (86x31)
+char_panel_5,1,65,86,31
+char_panel_6,97,65,86,31
+char_panel_7,1,97,86,31
+char_panel_8,97,97,86,31
+
+# Portrait frame (19x25)
+portrait_frame,87,133,19,25
+
+# Character icon (22x22)
+char_icon,118,134,22,22

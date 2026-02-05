@@ -1,0 +1,11 @@
+# Panel frames from Main_tiles.png
+# Format: name,x,y,width,height
+
+# Large panel frames
+panel_brown_large,0,219,128,58
+panel_frame_48x40,208,196,48,40
+
+# Small brown panel pieces for reference (first column)
+panel_brown_tl,11,0,26,37
+panel_brown_top,48,0,8,37
+panel_brown_tr,64,0,24,32

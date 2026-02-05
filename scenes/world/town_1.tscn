@@ -5,66 +5,6 @@
 [ext_resource type="Script" uid="uid://box81h2psjai" path="res://scenes/components/spawn_point.gd" id="3_spawn"]
 [ext_resource type="Script" uid="uid://dj7ygm4t8iwvv" path="res://scenes/components/area_transition.gd" id="4_transition"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/professor.tscn" id="5_professor"]
-[ext_resource type="Texture2D" uid="uid://doclvtmeaeb1b" path="res://assets/tilesets/core/tileset.png" id="6_tileset"]
-[ext_resource type="Texture2D" uid="uid://nt6mqm87j6l7" path="res://assets/tilesets/terrain/3_plants.png" id="8_plants"]
-[ext_resource type="Texture2D" uid="uid://d1g6bissx5rb6" path="res://assets/tilesets/biomes/Biome 01/01 - Tileset.png" id="9_biome01"]
-[ext_resource type="PackedScene" uid="uid://c7xuxm25e5pmk" path="res://scenes/objects/trees/fruit_tree.tscn" id="10_fruit_tree"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pokecenter"]
-atlas = ExtResource("6_tileset")
-region = Rect2(416, 80, 96, 80)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_house"]
-size = Vector2(76, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
-size = Vector2(24, 14)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_house_purple"]
-atlas = ExtResource("6_tileset")
-region = Rect2(592, 80, 80, 80)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_house_green"]
-atlas = ExtResource("6_tileset")
-region = Rect2(576, 160, 96, 64)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lab"]
-size = Vector2(90, 24)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pokemart"]
-atlas = ExtResource("6_tileset")
-region = Rect2(416, 160, 80, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_tree_big"]
-atlas = ExtResource("8_plants")
-region = Rect2(0, 0, 48, 64)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tree"]
-size = Vector2(24, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_tree_alt"]
-atlas = ExtResource("8_plants")
-region = Rect2(48, 0, 48, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hedge"]
-atlas = ExtResource("9_biome01")
-region = Rect2(0, 192, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_flowers"]
-atlas = ExtResource("9_biome01")
-region = Rect2(0, 464, 48, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rocks"]
-atlas = ExtResource("9_biome01")
-region = Rect2(0, 0, 48, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_boulder"]
-atlas = ExtResource("9_biome01")
-region = Rect2(0, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fence"]
-atlas = ExtResource("9_biome01")
-region = Rect2(0, 176, 80, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary"]
 size = Vector2(700, 32)
@@ -75,581 +15,92 @@ size = Vector2(32, 600)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(32, 80)
 
-[node name="Town1" type="Node2D" unique_id=1796625528]
+[node name="Town1" type="Node2D" unique_id=920479138]
 y_sort_enabled = true
 script = ExtResource("1_town1")
 
-[node name="Ground" type="Node2D" parent="." unique_id=467571199]
-z_index = -10
+[node name="Boundaries" type="Node2D" parent="." unique_id=413682173]
 
-[node name="GrassBase" type="ColorRect" parent="Ground" unique_id=172806235]
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 800.0
-offset_bottom = 600.0
-color = Color(0.4, 0.58, 0.32, 1)
-
-[node name="PathMain" type="ColorRect" parent="Ground" unique_id=1979760110]
-z_index = 1
-offset_left = 80.0
-offset_top = 270.0
-offset_right = 650.0
-offset_bottom = 330.0
-color = Color(0.72, 0.58, 0.42, 1)
-
-[node name="PathToHouse1" type="ColorRect" parent="Ground" unique_id=1587589027]
-z_index = 1
-offset_left = 180.0
-offset_top = 180.0
-offset_right = 240.0
-offset_bottom = 275.0
-color = Color(0.72, 0.58, 0.42, 1)
-
-[node name="PathToHouse2" type="ColorRect" parent="Ground" unique_id=1051833540]
-z_index = 1
-offset_left = 420.0
-offset_top = 180.0
-offset_right = 480.0
-offset_bottom = 275.0
-color = Color(0.72, 0.58, 0.42, 1)
-
-[node name="PathToLab" type="ColorRect" parent="Ground" unique_id=452597349]
-z_index = 1
-offset_left = 300.0
-offset_top = 325.0
-offset_right = 380.0
-offset_bottom = 450.0
-color = Color(0.72, 0.58, 0.42, 1)
-
-[node name="Plaza" type="ColorRect" parent="Ground" unique_id=295490261]
-z_index = 1
-offset_left = 260.0
-offset_top = 250.0
-offset_right = 420.0
-offset_bottom = 350.0
-color = Color(0.68, 0.6, 0.48, 1)
-
-[node name="Buildings" type="Node2D" parent="." unique_id=2029515574]
-y_sort_enabled = true
-
-[node name="PlayerHouse" type="StaticBody2D" parent="Buildings" unique_id=631390948]
-position = Vector2(210, 140)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Buildings/PlayerHouse" unique_id=1151356838]
-texture = SubResource("AtlasTexture_pokecenter")
-offset = Vector2(0, -36)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Buildings/PlayerHouse" unique_id=739440104]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_house")
-
-[node name="DoorArea" type="Area2D" parent="Buildings/PlayerHouse" unique_id=385351602]
-position = Vector2(0, 20)
-collision_layer = 0
-script = ExtResource("4_transition")
-target_scene = "res://scenes/world/house_interior.tscn"
-target_spawn_id = "from_outside"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Buildings/PlayerHouse/DoorArea" unique_id=524325011]
-shape = SubResource("RectangleShape2D_door")
-
-[node name="HouseLabel" type="Label" parent="Buildings/PlayerHouse" unique_id=582055415]
-offset_left = -40.0
-offset_top = -72.0
-offset_right = 40.0
-offset_bottom = -56.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 10
-text = "YOUR HOUSE"
-horizontal_alignment = 1
-
-[node name="RivalHouse" type="StaticBody2D" parent="Buildings" unique_id=1304791435]
-position = Vector2(450, 140)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Buildings/RivalHouse" unique_id=1320698206]
-texture = SubResource("AtlasTexture_house_purple")
-offset = Vector2(0, -36)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Buildings/RivalHouse" unique_id=1374799535]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_house")
-
-[node name="HouseLabel" type="Label" parent="Buildings/RivalHouse" unique_id=1590300257]
-offset_left = -40.0
-offset_top = -72.0
-offset_right = 40.0
-offset_bottom = -56.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 10
-text = "RIVAL'S HOUSE"
-horizontal_alignment = 1
-
-[node name="ProfessorLab" type="StaticBody2D" parent="Buildings" unique_id=206035229]
-position = Vector2(340, 480)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Buildings/ProfessorLab" unique_id=660056247]
-texture = SubResource("AtlasTexture_house_green")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Buildings/ProfessorLab" unique_id=629271231]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_lab")
-
-[node name="LabSign" type="Label" parent="Buildings/ProfessorLab" unique_id=1827651192]
-offset_left = -50.0
-offset_top = -64.0
-offset_right = 50.0
-offset_bottom = -48.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.2, 0.15, 0.1, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 12
-text = "CREATURE LAB"
-horizontal_alignment = 1
-
-[node name="Pokemart" type="StaticBody2D" parent="Buildings" unique_id=439799878]
-position = Vector2(580, 200)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Buildings/Pokemart" unique_id=642780392]
-texture = SubResource("AtlasTexture_pokemart")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Buildings/Pokemart" unique_id=1087786871]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_house")
-
-[node name="ShopLabel" type="Label" parent="Buildings/Pokemart" unique_id=1986467057]
-offset_left = -30.0
-offset_top = -58.0
-offset_right = 30.0
-offset_bottom = -44.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 10
-text = "SHOP"
-horizontal_alignment = 1
-
-[node name="Trees" type="Node2D" parent="." unique_id=137490739]
-y_sort_enabled = true
-
-[node name="TreeL1" type="StaticBody2D" parent="Trees" unique_id=2012736071]
-position = Vector2(50, 100)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeL1" unique_id=392726354]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeL1" unique_id=1528338061]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeL2" type="StaticBody2D" parent="Trees" unique_id=403308338]
-position = Vector2(50, 180)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeL2" unique_id=730872161]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeL2" unique_id=1534240385]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeL3" type="StaticBody2D" parent="Trees" unique_id=684790208]
-position = Vector2(50, 260)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeL3" unique_id=1755460726]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeL3" unique_id=2077287476]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeL4" type="StaticBody2D" parent="Trees" unique_id=105106094]
-position = Vector2(50, 340)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeL4" unique_id=1153065081]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeL4" unique_id=407641011]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeL5" type="StaticBody2D" parent="Trees" unique_id=2093586551]
-position = Vector2(50, 420)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeL5" unique_id=1468446145]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeL5" unique_id=955654451]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeT1" type="StaticBody2D" parent="Trees" unique_id=1017292781]
-position = Vector2(120, 50)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeT1" unique_id=865110118]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeT1" unique_id=1724599343]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeT2" type="StaticBody2D" parent="Trees" unique_id=1974777369]
-position = Vector2(330, 50)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeT2" unique_id=1880208844]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeT2" unique_id=697481062]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeT3" type="StaticBody2D" parent="Trees" unique_id=710191777]
-position = Vector2(550, 50)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeT3" unique_id=523543199]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeT3" unique_id=579933772]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeR1" type="StaticBody2D" parent="Trees" unique_id=815418475]
-position = Vector2(650, 100)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeR1" unique_id=1582117065]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeR1" unique_id=346494289]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeR2" type="StaticBody2D" parent="Trees" unique_id=1545436450]
-position = Vector2(650, 400)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeR2" unique_id=1422120708]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeR2" unique_id=1403494854]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeR3" type="StaticBody2D" parent="Trees" unique_id=1981303513]
-position = Vector2(650, 480)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeR3" unique_id=7434861]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeR3" unique_id=831512289]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeB1" type="StaticBody2D" parent="Trees" unique_id=230645449]
-position = Vector2(120, 520)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeB1" unique_id=738665962]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeB1" unique_id=1737839599]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeB2" type="StaticBody2D" parent="Trees" unique_id=750318746]
-position = Vector2(200, 520)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeB2" unique_id=1763544610]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeB2" unique_id=1623402884]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeB3" type="StaticBody2D" parent="Trees" unique_id=673104659]
-position = Vector2(480, 520)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeB3" unique_id=1820111364]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeB3" unique_id=1912968590]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeB4" type="StaticBody2D" parent="Trees" unique_id=1669542085]
-position = Vector2(560, 520)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeB4" unique_id=1892324971]
-texture = SubResource("AtlasTexture_tree_alt")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeB4" unique_id=1706313209]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="TreeMid1" type="StaticBody2D" parent="Trees" unique_id=686068705]
-position = Vector2(330, 120)
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="Trees/TreeMid1" unique_id=1733411845]
-texture = SubResource("AtlasTexture_tree_big")
-offset = Vector2(0, -28)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trees/TreeMid1" unique_id=687039168]
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_tree")
-
-[node name="CenterTree" parent="Trees" unique_id=710683882 instance=ExtResource("10_fruit_tree")]
-position = Vector2(340, 300)
-
-[node name="Decorations" type="Node2D" parent="." unique_id=699549658]
-
-[node name="TownSign" type="Node2D" parent="Decorations" unique_id=59321730]
-position = Vector2(100, 300)
-
-[node name="Post" type="ColorRect" parent="Decorations/TownSign" unique_id=594810880]
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 20.0
-color = Color(0.45, 0.35, 0.25, 1)
-
-[node name="Board" type="ColorRect" parent="Decorations/TownSign" unique_id=97339589]
-offset_left = -44.0
-offset_top = -28.0
-offset_right = 44.0
-offset_bottom = -4.0
-color = Color(0.6, 0.5, 0.38, 1)
-
-[node name="Face" type="ColorRect" parent="Decorations/TownSign" unique_id=982561238]
-offset_left = -42.0
-offset_top = -26.0
-offset_right = 42.0
-offset_bottom = -6.0
-color = Color(0.78, 0.7, 0.56, 1)
-
-[node name="Text" type="Label" parent="Decorations/TownSign" unique_id=96101141]
-offset_left = -41.0
-offset_top = -25.0
-offset_right = 41.0
-offset_bottom = -7.0
-theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
-theme_override_font_sizes/font_size = 11
-text = "PALLET TOWN"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RouteSign" type="Node2D" parent="Decorations" unique_id=50289136]
-position = Vector2(620, 300)
-
-[node name="Post" type="ColorRect" parent="Decorations/RouteSign" unique_id=1304720954]
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 20.0
-color = Color(0.45, 0.35, 0.25, 1)
-
-[node name="Board" type="ColorRect" parent="Decorations/RouteSign" unique_id=1393900268]
-offset_left = -36.0
-offset_top = -26.0
-offset_right = 36.0
-offset_bottom = -4.0
-color = Color(0.6, 0.5, 0.38, 1)
-
-[node name="Face" type="ColorRect" parent="Decorations/RouteSign" unique_id=697381680]
-offset_left = -34.0
-offset_top = -24.0
-offset_right = 34.0
-offset_bottom = -6.0
-color = Color(0.78, 0.7, 0.56, 1)
-
-[node name="Text" type="Label" parent="Decorations/RouteSign" unique_id=1965614756]
-offset_left = -33.0
-offset_top = -23.0
-offset_right = 33.0
-offset_bottom = -7.0
-theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
-theme_override_font_sizes/font_size = 11
-text = "ROUTE 1 →"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Hedge1" type="Sprite2D" parent="Decorations" unique_id=581551064]
-position = Vector2(270, 220)
-texture = SubResource("AtlasTexture_hedge")
-
-[node name="Hedge2" type="Sprite2D" parent="Decorations" unique_id=978393083]
-position = Vector2(410, 220)
-texture = SubResource("AtlasTexture_hedge")
-
-[node name="Hedge3" type="Sprite2D" parent="Decorations" unique_id=346069004]
-position = Vector2(270, 370)
-texture = SubResource("AtlasTexture_hedge")
-
-[node name="Hedge4" type="Sprite2D" parent="Decorations" unique_id=393609577]
-position = Vector2(410, 370)
-texture = SubResource("AtlasTexture_hedge")
-
-[node name="Flowers1" type="Sprite2D" parent="Decorations" unique_id=1783246293]
-position = Vector2(160, 220)
-texture = SubResource("AtlasTexture_flowers")
-
-[node name="Flowers2" type="Sprite2D" parent="Decorations" unique_id=1898535917]
-position = Vector2(500, 220)
-texture = SubResource("AtlasTexture_flowers")
-
-[node name="Flowers3" type="Sprite2D" parent="Decorations" unique_id=33146991]
-position = Vector2(160, 400)
-texture = SubResource("AtlasTexture_flowers")
-
-[node name="Flowers4" type="Sprite2D" parent="Decorations" unique_id=1920007642]
-position = Vector2(500, 400)
-texture = SubResource("AtlasTexture_flowers")
-
-[node name="Rocks1" type="Sprite2D" parent="Decorations" unique_id=1055850540]
-position = Vector2(550, 450)
-texture = SubResource("AtlasTexture_rocks")
-
-[node name="Boulder1" type="Sprite2D" parent="Decorations" unique_id=1394182394]
-position = Vector2(600, 120)
-texture = SubResource("AtlasTexture_boulder")
-
-[node name="Fence1" type="Sprite2D" parent="Decorations" unique_id=373831501]
-position = Vector2(145, 180)
-texture = SubResource("AtlasTexture_fence")
-
-[node name="Fence2" type="Sprite2D" parent="Decorations" unique_id=1565926367]
-position = Vector2(275, 180)
-texture = SubResource("AtlasTexture_fence")
-
-[node name="Fence3" type="Sprite2D" parent="Decorations" unique_id=1991978287]
-position = Vector2(385, 180)
-texture = SubResource("AtlasTexture_fence")
-
-[node name="Fence4" type="Sprite2D" parent="Decorations" unique_id=1346093588]
-position = Vector2(515, 180)
-texture = SubResource("AtlasTexture_fence")
-
-[node name="Boundaries" type="Node2D" parent="." unique_id=1270647120]
-
-[node name="TopWall" type="StaticBody2D" parent="Boundaries" unique_id=976521948]
+[node name="TopWall" type="StaticBody2D" parent="Boundaries" unique_id=329903043]
 position = Vector2(350, 10)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/TopWall" unique_id=182500898]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/TopWall" unique_id=2035943098]
 shape = SubResource("RectangleShape2D_boundary")
 
-[node name="BottomWall" type="StaticBody2D" parent="Boundaries" unique_id=2048444009]
-position = Vector2(350, 560)
+[node name="BottomWall" type="StaticBody2D" parent="Boundaries" unique_id=1116430687]
+position = Vector2(350, 580)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/BottomWall" unique_id=248600492]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/BottomWall" unique_id=506518561]
 shape = SubResource("RectangleShape2D_boundary")
 
-[node name="LeftWall" type="StaticBody2D" parent="Boundaries" unique_id=997610625]
-position = Vector2(10, 280)
+[node name="LeftWall" type="StaticBody2D" parent="Boundaries" unique_id=856474307]
+position = Vector2(10, 300)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/LeftWall" unique_id=1337902969]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/LeftWall" unique_id=498078897]
 shape = SubResource("RectangleShape2D_side")
 
-[node name="RightWallTop" type="StaticBody2D" parent="Boundaries" unique_id=1467139017]
+[node name="RightWallTop" type="StaticBody2D" parent="Boundaries" unique_id=1419249115]
 position = Vector2(685, 160)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/RightWallTop" unique_id=172297337]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/RightWallTop" unique_id=2128327410]
 scale = Vector2(1, 2)
 shape = SubResource("RectangleShape2D_exit")
 
-[node name="RightWallBottom" type="StaticBody2D" parent="Boundaries" unique_id=909969579]
-position = Vector2(685, 420)
+[node name="RightWallBottom" type="StaticBody2D" parent="Boundaries" unique_id=809020250]
+position = Vector2(685, 440)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/RightWallBottom" unique_id=1569785633]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/RightWallBottom" unique_id=1789953841]
 scale = Vector2(1, 2)
 shape = SubResource("RectangleShape2D_exit")
 
-[node name="SpawnPoints" type="Node2D" parent="." unique_id=1881921965]
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1434790386]
 
-[node name="Default" type="Marker2D" parent="SpawnPoints" unique_id=1972885272]
-position = Vector2(210, 200)
+[node name="Default" type="Marker2D" parent="SpawnPoints" unique_id=1122780695]
+position = Vector2(340, 316)
 script = ExtResource("3_spawn")
 
-[node name="FromHouse" type="Marker2D" parent="SpawnPoints" unique_id=1822765892]
-position = Vector2(210, 195)
-script = ExtResource("3_spawn")
-spawn_id = "from_house"
-
-[node name="FromRight" type="Marker2D" parent="SpawnPoints" unique_id=349868483]
-position = Vector2(660, 300)
+[node name="FromRight" type="Marker2D" parent="SpawnPoints" unique_id=1268162493]
+position = Vector2(640, 316)
 script = ExtResource("3_spawn")
 spawn_id = "from_right"
 facing_direction = "left"
 
-[node name="Transitions" type="Node2D" parent="." unique_id=501872338]
+[node name="Transitions" type="Node2D" parent="." unique_id=1243530349]
 
-[node name="EastExit" type="Area2D" parent="Transitions" unique_id=1939476074]
-position = Vector2(695, 300)
+[node name="EastExit" type="Area2D" parent="Transitions" unique_id=1873763593]
+position = Vector2(695, 316)
 collision_layer = 0
 script = ExtResource("4_transition")
 target_scene = "res://scenes/world/route_1.tscn"
 trigger_mode = 0
 edge_direction = "right"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/EastExit" unique_id=2143866716]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/EastExit" unique_id=485671100]
 shape = SubResource("RectangleShape2D_exit")
 
-[node name="NPCs" type="Node2D" parent="." unique_id=1133450085]
+[node name="NPCs" type="Node2D" parent="." unique_id=1732760773]
 y_sort_enabled = true
 
-[node name="Professor" parent="NPCs" unique_id=1403043423 instance=ExtResource("5_professor")]
-position = Vector2(340, 420)
+[node name="Professor" parent="NPCs" unique_id=1885674516 instance=ExtResource("5_professor")]
+position = Vector2(340, 380)
 
-[node name="Player" parent="." unique_id=262431694 instance=ExtResource("2_player")]
-position = Vector2(210, 200)
+[node name="Player" parent="." unique_id=813389767 instance=ExtResource("2_player")]
+position = Vector2(340, 316)
 
-[node name="AreaLabel" type="Label" parent="." unique_id=6370778]
-z_index = 100
+[node name="UI" type="CanvasLayer" parent="." unique_id=705287957]
+
+[node name="AreaLabel" type="Label" parent="UI" unique_id=2012336761]
 offset_left = 10.0
 offset_top = 10.0
-offset_right = 180.0
+offset_right = 200.0
 offset_bottom = 38.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 18
-text = "PALLET TOWN"
+text = "STARTER TOWN"
