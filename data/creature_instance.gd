@@ -20,7 +20,7 @@ var attack: int = 0
 var defense: int = 0
 var speed: int = 0
 
-## Moves this creature knows (up to 15)
+## Moves this creature knows (up to 9)
 var learned_moves: Array[String] = []
 ## Moves equipped for battle (exactly 3)
 var active_moves: Array[String] = []
@@ -111,7 +111,7 @@ func calculate_stats(species: CreatureSpecies) -> void:
 func learn_move(move_id: String) -> bool:
 	if move_id in learned_moves:
 		return false
-	if learned_moves.size() >= 15:
+	if learned_moves.size() >= 9:
 		return false
 	learned_moves.append(move_id)
 	return true

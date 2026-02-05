@@ -1,7 +1,8 @@
 extends CanvasLayer
 class_name RadialMenuClass
-## RadialMenu - Hexagonal menu overlay centered on player.
+## RadialMenu - Circular menu overlay centered on player.
 ## Opens with F key, doesn't pause the game.
+## Uses Craftpix UI sprites for visual buttons.
 ##
 ## Usage:
 ##   RadialMenu.open_menu()
@@ -15,6 +16,10 @@ signal option_selected(option_id: String)
 ## Menu state
 var _is_open: bool = false
 var _selected_index: int = 0
+var _open_time: float = 0.0  # Time when menu was opened (for input delay)
+
+## Delay before accepting confirm input (prevents instant-select when same key opens menu)
+const CONFIRM_DELAY := 0.15  # 150ms
 
 ## Menu options (clockwise from top)
 const MENU_OPTIONS := [
@@ -37,30 +42,31 @@ const NAV_MAP := {
 	5: {"up": 0, "right": 0, "down": 4, "left": 4},  # Top-left
 }
 
-## Button positions relative to center (radius ~55px)
+## Button positions relative to center (radius ~80px for 80x32 buttons)
 const BUTTON_POSITIONS := [
-	Vector2(0, -55),    # Top
-	Vector2(48, -28),   # Top-right
-	Vector2(48, 28),    # Bottom-right
-	Vector2(0, 55),     # Bottom
-	Vector2(-48, 28),   # Bottom-left
-	Vector2(-48, -28),  # Top-left
+	Vector2(0, -65),    # Top
+	Vector2(80, -32),   # Top-right
+	Vector2(80, 32),    # Bottom-right
+	Vector2(0, 65),     # Bottom
+	Vector2(-80, 32),   # Bottom-left
+	Vector2(-80, -32),  # Top-left
 ]
 
 ## UI references
 var _overlay: ColorRect
 var _menu_container: Control
-var _buttons: Array[HexButton] = []
+var _buttons: Array[CircleButton] = []
 var _tooltip: Label
 var _save_feedback: Label
 
 ## Scene references
-var _hex_button_scene: PackedScene
+var _circle_button_scene: PackedScene
 
 
 func _ready() -> void:
 	layer = 100
-	_hex_button_scene = preload("res://scenes/ui/radial_menu/hex_button.tscn")
+	process_mode = Node.PROCESS_MODE_WHEN_PAUSED  # Menu works when game is paused
+	_circle_button_scene = preload("res://scenes/ui/radial_menu/circle_button.tscn")
 	_create_ui()
 	_hide_menu()
 
@@ -79,10 +85,10 @@ func _create_ui() -> void:
 	_menu_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_menu_container)
 
-	# Create hex buttons
+	# Create circle buttons
 	for i in MENU_OPTIONS.size():
 		var option: Dictionary = MENU_OPTIONS[i]
-		var button: HexButton = _hex_button_scene.instantiate()
+		var button: CircleButton = _circle_button_scene.instantiate()
 		button.option_id = option.id
 		button.label_text = option.label
 		button.disabled = option.disabled
@@ -96,9 +102,9 @@ func _create_ui() -> void:
 	_tooltip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tooltip.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_tooltip.add_theme_font_size_override("font_size", 12)
-	_tooltip.add_theme_color_override("font_color", Color.WHITE)
-	_tooltip.add_theme_color_override("font_outline_color", Color.BLACK)
-	_tooltip.add_theme_constant_override("outline_size", 2)
+	_tooltip.add_theme_color_override("font_color", Color.BLACK)
+	_tooltip.add_theme_color_override("font_outline_color", Color.WHITE)
+	_tooltip.add_theme_constant_override("outline_size", 4)
 	_menu_container.add_child(_tooltip)
 
 	# Save feedback label
@@ -106,9 +112,9 @@ func _create_ui() -> void:
 	_save_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_save_feedback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_save_feedback.add_theme_font_size_override("font_size", 14)
-	_save_feedback.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
-	_save_feedback.add_theme_color_override("font_outline_color", Color.BLACK)
-	_save_feedback.add_theme_constant_override("outline_size", 2)
+	_save_feedback.add_theme_color_override("font_color", Color.BLACK)
+	_save_feedback.add_theme_color_override("font_outline_color", Color.WHITE)
+	_save_feedback.add_theme_constant_override("outline_size", 4)
 	_save_feedback.text = "SAVED!"
 	_save_feedback.hide()
 	_menu_container.add_child(_save_feedback)
@@ -139,9 +145,11 @@ func _input(event: InputEvent) -> void:
 		_navigate("right")
 		get_viewport().set_input_as_handled()
 
-	# Handle confirm
+	# Handle confirm (with delay to prevent instant-select when same key opens menu)
 	elif event.is_action_pressed("interact") or event.is_action_pressed("menu_confirm"):
-		_confirm_selection()
+		var current_time := Time.get_ticks_msec() / 1000.0
+		if current_time - _open_time >= CONFIRM_DELAY:
+			_confirm_selection()
 		get_viewport().set_input_as_handled()
 
 	# Handle cancel/close
@@ -175,12 +183,12 @@ func _update_menu_position() -> void:
 		button.position = screen_pos + offset - button.size / 2.0
 
 	# Position tooltip below the ring
-	_tooltip.position = screen_pos + Vector2(-50, 85)
-	_tooltip.size = Vector2(100, 20)
+	_tooltip.position = screen_pos + Vector2(-60, 85)
+	_tooltip.size = Vector2(120, 20)
 
 	# Position save feedback above the ring
-	_save_feedback.position = screen_pos + Vector2(-40, -90)
-	_save_feedback.size = Vector2(80, 20)
+	_save_feedback.position = screen_pos + Vector2(-50, -90)
+	_save_feedback.size = Vector2(100, 20)
 
 
 func _get_player() -> CharacterBody2D:
@@ -195,8 +203,17 @@ func open_menu() -> void:
 	if _is_open:
 		return
 
+	# Check if another menu is already open
+	if GameState.is_menu_open():
+		return
+
+	# Register with GameState
+	if not GameState.open_menu("radial_menu"):
+		return  # Failed to open (another menu blocked it)
+
 	_is_open = true
 	_selected_index = 0
+	_open_time = Time.get_ticks_msec() / 1000.0  # Record open time for input delay
 
 	# Find first non-disabled option
 	for i in MENU_OPTIONS.size():
@@ -216,6 +233,7 @@ func close_menu() -> void:
 
 	_is_open = false
 	_hide_menu()
+	GameState.close_menu("radial_menu")
 	menu_closed.emit()
 
 
@@ -328,22 +346,10 @@ func _handle_option(option_id: String) -> void:
 
 
 func _open_party_screen() -> void:
-	# TODO: Open party management screen
-	# For now, just show party info in console
-	var game_state := get_node_or_null("/root/GameState")
-	if game_state:
-		var party: Array = game_state.get_party()
-		if party.is_empty():
-			print("Party is empty!")
-		else:
-			print("Party (%d/6):" % party.size())
-			for creature in party:
-				print("  - %s (Lv.%d) HP: %d/%d" % [
-					creature.get_display_name(),
-					creature.level,
-					creature.current_hp,
-					creature.max_hp
-				])
+	close_menu()
+	var party_scene: PackedScene = preload("res://scenes/ui/party_screen.tscn")
+	var party_screen := party_scene.instantiate()
+	get_tree().root.add_child(party_screen)
 
 
 func _save_game() -> void:
@@ -366,16 +372,10 @@ func _show_save_feedback() -> void:
 
 
 func _open_options_screen() -> void:
-	# TODO: Open options/settings screen
-	# For now, just show current settings in console
-	var game_state := get_node_or_null("/root/GameState")
-	if game_state:
-		var settings: Dictionary = game_state.get_settings()
-		print("Settings:")
-		print("  Master Volume: %.0f%%" % (settings.master_volume * 100))
-		print("  Music Volume: %.0f%%" % (settings.music_volume * 100))
-		print("  SFX Volume: %.0f%%" % (settings.sfx_volume * 100))
-		print("  Fullscreen: %s" % ("Yes" if settings.fullscreen else "No"))
+	close_menu()
+	var settings_scene: PackedScene = preload("res://scenes/ui/settings/settings_screen.tscn")
+	var settings_screen := settings_scene.instantiate()
+	get_tree().root.add_child(settings_screen)
 
 
 func _save_and_quit() -> void:

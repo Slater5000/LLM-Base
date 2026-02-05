@@ -8,18 +8,21 @@ class_name Interactable
 signal interacted
 
 ## Text shown when player can interact
-@export var interact_prompt: String = "[E] Talk"
+@export var interact_prompt: String = "(E)"
 
 ## Whether this interactable is currently enabled
 @export var enabled: bool = true
 
 ## Internal state
 var _player_in_range: bool = false
-var _prompt_label: Label = null
+var _prompt_control: Control = null
 var _interact_cooldown: float = 0.0
 
 ## Cooldown duration after dialogue ends (prevents re-trigger)
 const INTERACT_COOLDOWN: float = 0.2
+
+## Prompt scene
+var _prompt_scene: PackedScene = preload("res://scenes/ui/interact_prompt.tscn")
 
 
 func _ready() -> void:
@@ -34,16 +37,11 @@ func _ready() -> void:
 
 
 func _create_prompt() -> void:
-	_prompt_label = Label.new()
-	_prompt_label.text = interact_prompt
-	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_prompt_label.position = Vector2(-40, -50)
-	_prompt_label.add_theme_font_size_override("font_size", 12)
-	_prompt_label.add_theme_color_override("font_color", Color.WHITE)
-	_prompt_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	_prompt_label.add_theme_constant_override("outline_size", 2)
-	_prompt_label.hide()
-	add_child(_prompt_label)
+	_prompt_control = _prompt_scene.instantiate()
+	_prompt_control.prompt_text = interact_prompt
+	_prompt_control.position = Vector2(-40, -40)
+	_prompt_control.hide()
+	add_child(_prompt_control)
 
 
 func _process(delta: float) -> void:
@@ -68,13 +66,13 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		_player_in_range = true
 		if not _is_dialogue_active():
-			_prompt_label.show()
+			_prompt_control.show()
 
 
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		_player_in_range = false
-		_prompt_label.hide()
+		_prompt_control.hide()
 
 
 ## Override this in subclasses to define interaction behavior
@@ -93,6 +91,6 @@ func _is_dialogue_active() -> bool:
 ## Update prompt visibility based on dialogue state
 func _update_prompt_visibility() -> void:
 	if _player_in_range and not _is_dialogue_active():
-		_prompt_label.show()
+		_prompt_control.show()
 	else:
-		_prompt_label.hide()
+		_prompt_control.hide()

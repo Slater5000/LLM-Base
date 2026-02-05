@@ -28,7 +28,7 @@ var _typewriter_timer: float = 0.0
 @export var typewriter_speed: float = 40.0
 
 ## UI References
-@onready var _dialogue_box: PanelContainer = $DialogueBox
+@onready var _dialogue_box: Control = $DialogueBox
 @onready var _text_label: RichTextLabel = $DialogueBox/MarginContainer/VBoxContainer/TextLabel
 @onready var _continue_indicator: Label = $DialogueBox/MarginContainer/VBoxContainer/ContinueIndicator
 

@@ -22,6 +22,7 @@ SceneManager="*res://autoloads/scene_manager.tscn"
 DialogueManager="*res://autoloads/dialogue_manager.tscn"
 GameState="*res://autoloads/game_state.tscn"
 RadialMenu="*res://autoloads/radial_menu.tscn"
+ColorblindManager="*res://autoloads/colorblind_manager.tscn"
 
 [display]
 
@@ -32,6 +33,10 @@ window/size/borderless=true
 window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="viewport"
+
+[gui]
+
+theme/custom="res://assets/fonts/default_theme.tres"
 
 [input]
 

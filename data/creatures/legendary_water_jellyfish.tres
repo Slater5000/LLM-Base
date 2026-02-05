@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+species_id = "legendary_water_jellyfish"
+display_name = "Luminara"
+description = "The Second Construct. An angelic jellyfish of pure flowing water, glyphs rippling through its translucent form. It broke free to spread life across the seas."
+element = "water"
+base_hp = 70
+base_attack = 70
+base_defense = 55
+base_speed = 55
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["water_hydro_pulse", "water_healing_wave", "water_refreshing_mist", "water_bubble_shield"]
+move_learn_levels = [1, 10, 25, 40]
+color_primary = Color(0.3, 0.6, 0.9, 1)
+color_secondary = Color(0.8, 0.9, 1.0, 1)

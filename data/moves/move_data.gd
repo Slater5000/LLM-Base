@@ -14,7 +14,7 @@ var element: String = "fire"
 var target_type: String = "single_enemy"
 
 @export_group("Effect")
-@export_enum("damage", "heal", "buff", "debuff", "status")
+@export_enum("damage", "heal", "shield", "buff", "debuff")
 var effect_type: String = "damage"
 
 @export var power: int = 50
@@ -54,3 +54,18 @@ func is_damaging() -> bool:
 ## Check if this is a healing move
 func is_healing() -> bool:
 	return effect_type == "heal"
+
+
+## Check if this is a shield move
+func is_shield() -> bool:
+	return effect_type == "shield"
+
+
+## Check if this is a buff
+func is_buff() -> bool:
+	return effect_type == "buff"
+
+
+## Check if this is a debuff
+func is_debuff() -> bool:
+	return effect_type == "debuff"

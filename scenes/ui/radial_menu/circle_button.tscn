@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://circle_button_scene"]
+
+[ext_resource type="Script" path="res://scenes/ui/radial_menu/circle_button.gd" id="1_circle_button"]
+
+[node name="CircleButton" type="Control"]
+custom_minimum_size = Vector2(25, 26)
+offset_right = 25.0
+offset_bottom = 26.0
+script = ExtResource("1_circle_button")

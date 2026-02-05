@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "earth_dust_recovery"
+display_name = "Dust Recovery"
+description = "Absorbs minerals from the earth to heal yourself. Earth creatures aren't great at healing."
+element = "earth"
+target_type = "self"
+effect_type = "heal"
+power = 60
+stat_modifier = 0.0
+stat_affected = "none"
+duration_turns = 0
+speed_modifier = 1.0

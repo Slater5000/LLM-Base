@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://interact_prompt_scene"]
+
+[ext_resource type="Script" path="res://scenes/ui/interact_prompt.gd" id="1_interact_prompt"]
+
+[node name="InteractPrompt" type="Control"]
+custom_minimum_size = Vector2(50, 24)
+offset_right = 50.0
+offset_bottom = 24.0
+script = ExtResource("1_interact_prompt")

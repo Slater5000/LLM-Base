@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "fire_ignite"
+display_name = "Ignite"
+description = "Channels inner fire to empower your next attack, dealing 30% more damage."
+element = "fire"
+target_type = "self"
+effect_type = "buff"
+power = 0
+stat_modifier = 0.3
+stat_affected = "attack"
+duration_turns = 1
+speed_modifier = 1.0

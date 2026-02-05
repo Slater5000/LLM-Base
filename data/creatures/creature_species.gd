@@ -21,7 +21,7 @@ var element: String = "fire"
 @export var evolves_to: String = ""
 
 @export_group("Moves")
-## Move IDs this species can learn (up to 15 from its element's 30-move pool)
+## Move IDs this species can learn (up to 9 from its element's 30-move pool)
 @export var learnable_moves: Array[String] = []
 ## Level at which each move is learned (parallel array with learnable_moves)
 @export var move_learn_levels: Array[int] = []

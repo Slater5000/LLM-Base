@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "water_healing_wave"
+display_name = "Healing Wave"
+description = "A soothing wave of restorative water that heals a single ally significantly."
+element = "water"
+target_type = "single_ally"
+effect_type = "heal"
+power = 150
+stat_modifier = 0.0
+stat_affected = "none"
+duration_turns = 0
+speed_modifier = 1.0

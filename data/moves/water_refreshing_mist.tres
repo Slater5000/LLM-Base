@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "water_refreshing_mist"
+display_name = "Refreshing Mist"
+description = "A gentle mist that heals all allies for a small amount."
+element = "water"
+target_type = "all_allies"
+effect_type = "heal"
+power = 80
+stat_modifier = 0.0
+stat_affected = "none"
+duration_turns = 0
+speed_modifier = 1.0

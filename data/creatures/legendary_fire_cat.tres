@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+species_id = "legendary_fire_cat"
+display_name = "Voltaris"
+description = "The Fourth Construct. A two-headed cat made of crackling lightning, twin tails arcing with energy. It broke free last, the most volatile and powerful."
+element = "fire"
+base_hp = 50
+base_attack = 85
+base_defense = 45
+base_speed = 70
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["fire_ember", "fire_flame_strike", "fire_ignite", "fire_warm_glow"]
+move_learn_levels = [1, 10, 25, 40]
+color_primary = Color(1.0, 0.8, 0.2, 1)
+color_secondary = Color(0.3, 0.5, 1.0, 1)

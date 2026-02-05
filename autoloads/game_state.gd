@@ -13,15 +13,30 @@ signal game_loaded
 signal settings_changed
 signal story_flag_set(flag_name: String, value: bool)
 signal party_changed
+signal menu_state_changed(is_menu_open: bool)
 
 const SAVE_PATH := "user://save.json"
 const CURRENT_VERSION := 1
 
-## Settings
+## Settings - Audio
 var master_volume: float = 1.0
 var music_volume: float = 0.8
 var sfx_volume: float = 1.0
+var dialog_volume: float = 1.0
+
+## Settings - Display
 var fullscreen: bool = false
+var window_scale: int = 3  # 2, 3, or 4 (multiplier for 640x360 base)
+
+## Settings - Gameplay
+var screen_shake_enabled: bool = true
+var show_damage_numbers: bool = true
+
+## Settings - Accessibility
+var colorblind_mode: int = 0  # 0 = Off, 1 = Colorblind-friendly
+
+## Settings - Controls (custom key bindings)
+var key_bindings: Dictionary = {}  # action_name -> {"type": "key", "keycode": int}
 
 ## Story progress
 var story_flags: Dictionary = {}
@@ -35,6 +50,9 @@ var storage: Array[CreatureInstance] = []
 var play_time_seconds: int = 0
 var _session_start_time: int = 0
 
+## Menu state tracking - prevents menu stacking and handles pausing
+var _open_menus: Array[String] = []  # Stack of open menu names
+
 ## Creature/move data cache
 var _species_cache: Dictionary = {}
 var _move_cache: Dictionary = {}
@@ -42,7 +60,7 @@ var _move_cache: Dictionary = {}
 
 func _ready() -> void:
 	_session_start_time = int(Time.get_unix_time_from_system())
-	_apply_settings()
+	_load_settings_only()  # Load settings immediately on startup
 	_load_resources()
 
 
@@ -152,7 +170,13 @@ func save_game() -> bool:
 			"master_volume": master_volume,
 			"music_volume": music_volume,
 			"sfx_volume": sfx_volume,
-			"fullscreen": fullscreen
+			"dialog_volume": dialog_volume,
+			"fullscreen": fullscreen,
+			"window_scale": window_scale,
+			"screen_shake_enabled": screen_shake_enabled,
+			"show_damage_numbers": show_damage_numbers,
+			"colorblind_mode": colorblind_mode,
+			"key_bindings": key_bindings
 		}
 	}
 
@@ -194,8 +218,15 @@ func load_game() -> bool:
 	master_volume = settings.get("master_volume", 1.0)
 	music_volume = settings.get("music_volume", 0.8)
 	sfx_volume = settings.get("sfx_volume", 1.0)
+	dialog_volume = settings.get("dialog_volume", 1.0)
 	fullscreen = settings.get("fullscreen", false)
+	window_scale = settings.get("window_scale", 3)
+	screen_shake_enabled = settings.get("screen_shake_enabled", true)
+	show_damage_numbers = settings.get("show_damage_numbers", true)
+	colorblind_mode = settings.get("colorblind_mode", 0)
+	key_bindings = settings.get("key_bindings", {})
 	_apply_settings()
+	_apply_key_bindings()
 
 	# Load story progress
 	story_flags = data.get("story_flags", {})
@@ -260,26 +291,72 @@ func delete_save() -> void:
 # SETTINGS
 # =============================================================================
 
+## Load only settings from save file (called on startup before full game load)
+func _load_settings_only() -> void:
+	if not has_save():
+		_apply_settings()
+		return
+
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if not file:
+		_apply_settings()
+		return
+
+	var content := file.get_as_text()
+	file.close()
+
+	var data = JSON.parse_string(content)
+	if not data is Dictionary:
+		_apply_settings()
+		return
+
+	var settings: Dictionary = data.get("settings", {})
+	master_volume = settings.get("master_volume", 1.0)
+	music_volume = settings.get("music_volume", 0.8)
+	sfx_volume = settings.get("sfx_volume", 1.0)
+	dialog_volume = settings.get("dialog_volume", 1.0)
+	fullscreen = settings.get("fullscreen", false)
+	window_scale = settings.get("window_scale", 3)
+	screen_shake_enabled = settings.get("screen_shake_enabled", true)
+	show_damage_numbers = settings.get("show_damage_numbers", true)
+	colorblind_mode = settings.get("colorblind_mode", 0)
+	key_bindings = settings.get("key_bindings", {})
+
+	_apply_settings()
+	_apply_key_bindings()
+
+
 func _apply_settings() -> void:
 	# Apply audio settings to AudioServer
+	# Bus indices: 0=Master, 1=Music, 2=SFX, 3=Dialog
 	var master_db := linear_to_db(master_volume)
 	var music_db := linear_to_db(music_volume * master_volume)
 	var sfx_db := linear_to_db(sfx_volume * master_volume)
+	var dialog_db := linear_to_db(dialog_volume * master_volume)
 
-	# Assuming bus indices: 0=Master, 1=Music, 2=SFX
-	# These would need to be set up in Godot's Audio tab
 	if AudioServer.bus_count > 0:
 		AudioServer.set_bus_volume_db(0, master_db)
 	if AudioServer.bus_count > 1:
 		AudioServer.set_bus_volume_db(1, music_db)
 	if AudioServer.bus_count > 2:
 		AudioServer.set_bus_volume_db(2, sfx_db)
+	if AudioServer.bus_count > 3:
+		AudioServer.set_bus_volume_db(3, dialog_db)
 
-	# Apply fullscreen
+	# Apply display settings
 	if fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		# Apply window scale (2x, 3x, or 4x of base 640x360)
+		var base_size := Vector2i(640, 360)
+		var target_size := base_size * window_scale
+		DisplayServer.window_set_size(target_size)
+		# Center window on screen
+		var screen_size := DisplayServer.screen_get_size()
+		var window_size := DisplayServer.window_get_size()
+		var centered_pos := (screen_size - window_size) / 2
+		DisplayServer.window_set_position(centered_pos)
 
 
 func set_master_volume(value: float) -> void:
@@ -306,13 +383,210 @@ func set_fullscreen(enabled: bool) -> void:
 	settings_changed.emit()
 
 
+func set_dialog_volume(value: float) -> void:
+	dialog_volume = clampf(value, 0.0, 1.0)
+	_apply_settings()
+	settings_changed.emit()
+
+
+func set_window_scale(scale: int) -> void:
+	window_scale = clampi(scale, 2, 4)
+	_apply_settings()
+	settings_changed.emit()
+
+
+func set_screen_shake_enabled(enabled: bool) -> void:
+	screen_shake_enabled = enabled
+	settings_changed.emit()
+
+
+func set_show_damage_numbers(enabled: bool) -> void:
+	show_damage_numbers = enabled
+	settings_changed.emit()
+
+
+func set_colorblind_mode(mode: int) -> void:
+	colorblind_mode = clampi(mode, 0, 1)
+	settings_changed.emit()
+
+
+func set_key_binding(action: String, event: InputEvent) -> void:
+	key_bindings[action] = _serialize_input_event(event)
+	_apply_key_bindings()
+	settings_changed.emit()
+
+
+func reset_key_bindings() -> void:
+	key_bindings.clear()
+	_apply_key_bindings()
+	settings_changed.emit()
+
+
+## Reset ALL settings to defaults
+func reset_all_settings() -> void:
+	# Audio
+	master_volume = 1.0
+	music_volume = 0.8
+	sfx_volume = 1.0
+	dialog_volume = 1.0
+	# Display
+	fullscreen = false
+	window_scale = 3
+	# Gameplay
+	screen_shake_enabled = true
+	show_damage_numbers = true
+	# Accessibility
+	colorblind_mode = 0
+	# Controls
+	key_bindings.clear()
+
+	_apply_settings()
+	_apply_key_bindings()
+	settings_changed.emit()
+
+
 func get_settings() -> Dictionary:
 	return {
 		"master_volume": master_volume,
 		"music_volume": music_volume,
 		"sfx_volume": sfx_volume,
-		"fullscreen": fullscreen
+		"dialog_volume": dialog_volume,
+		"fullscreen": fullscreen,
+		"window_scale": window_scale,
+		"screen_shake_enabled": screen_shake_enabled,
+		"show_damage_numbers": show_damage_numbers,
+		"colorblind_mode": colorblind_mode,
+		"key_bindings": key_bindings
 	}
+
+
+## Apply custom key bindings to InputMap
+func _apply_key_bindings() -> void:
+	# Reset to defaults first, then apply custom bindings
+	var rebindable_actions := ["move_up", "move_down", "move_left", "move_right",
+		"interact", "open_menu", "pause_combat"]
+
+	for action in rebindable_actions:
+		if not InputMap.has_action(action):
+			continue
+
+		# If we have a custom binding, replace the default
+		if action in key_bindings:
+			var event := _deserialize_input_event(key_bindings[action])
+			if event:
+				# Remove existing keyboard/mouse events
+				var events := InputMap.action_get_events(action)
+				for e in events:
+					if e is InputEventKey or e is InputEventMouseButton:
+						InputMap.action_erase_event(action, e)
+				InputMap.action_add_event(action, event)
+
+
+func _serialize_input_event(event: InputEvent) -> Dictionary:
+	if event is InputEventKey:
+		return {"type": "key", "keycode": event.physical_keycode}
+	elif event is InputEventMouseButton:
+		return {"type": "mouse", "button": event.button_index}
+	return {}
+
+
+func _deserialize_input_event(data: Dictionary) -> InputEvent:
+	var event_type: String = data.get("type", "")
+	if event_type == "key":
+		var event := InputEventKey.new()
+		event.physical_keycode = data.get("keycode", 0)
+		return event
+	elif event_type == "mouse":
+		var event := InputEventMouseButton.new()
+		event.button_index = data.get("button", 0)
+		return event
+	return null
+
+
+## Get the default physical keycode for an action
+func get_default_key_for_action(action: String) -> int:
+	match action:
+		"move_up": return KEY_W
+		"move_down": return KEY_S
+		"move_left": return KEY_A
+		"move_right": return KEY_D
+		"interact": return KEY_E
+		"open_menu": return KEY_F
+		"pause_combat": return KEY_SPACE
+		_: return 0
+
+
+## Get the current key assigned to an action (for backwards compatibility, keys only)
+func get_key_for_action(action: String) -> int:
+	if action in key_bindings:
+		var binding: Dictionary = key_bindings[action]
+		if binding.get("type") == "key":
+			return binding.get("keycode", get_default_key_for_action(action))
+		# Mouse binding - return 0 (no key)
+		return 0
+	return get_default_key_for_action(action)
+
+
+## Get the full binding info for an action
+func get_binding_for_action(action: String) -> Dictionary:
+	if action in key_bindings:
+		return key_bindings[action]
+	# Return default as a key binding
+	return {"type": "key", "keycode": get_default_key_for_action(action)}
+
+
+# =============================================================================
+# MENU STATE MANAGEMENT
+# =============================================================================
+
+## Check if any menu is currently open
+func is_menu_open() -> bool:
+	return _open_menus.size() > 0
+
+
+## Check if a specific menu is open
+func is_specific_menu_open(menu_name: String) -> bool:
+	return menu_name in _open_menus
+
+
+## Register a menu as open (call when opening a menu)
+## Returns false if a menu is already open (prevents stacking)
+func open_menu(menu_name: String, allow_stacking: bool = false) -> bool:
+	if not allow_stacking and _open_menus.size() > 0:
+		return false  # Another menu is already open
+
+	_open_menus.append(menu_name)
+
+	# Pause the game tree (but menus will still work if they have PROCESS_MODE_WHEN_PAUSED)
+	get_tree().paused = true
+	menu_state_changed.emit(true)
+	return true
+
+
+## Unregister a menu as closed (call when closing a menu)
+func close_menu(menu_name: String) -> void:
+	var idx := _open_menus.find(menu_name)
+	if idx >= 0:
+		_open_menus.remove_at(idx)
+
+	# Only unpause if no menus are left
+	if _open_menus.size() == 0:
+		get_tree().paused = false
+		menu_state_changed.emit(false)
+
+
+## Get the topmost open menu (for sub-menu returns)
+func get_current_menu() -> String:
+	if _open_menus.size() > 0:
+		return _open_menus[_open_menus.size() - 1]
+	return ""
+
+
+## Force close all menus (emergency reset)
+func close_all_menus() -> void:
+	_open_menus.clear()
+	get_tree().paused = false
+	menu_state_changed.emit(false)
 
 
 # =============================================================================

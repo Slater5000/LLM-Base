@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://party_screen_scene"]
+
+[ext_resource type="Script" path="res://scenes/ui/party_screen.gd" id="1_party"]
+
+[node name="PartyScreen" type="CanvasLayer"]
+layer = 110
+script = ExtResource("1_party")

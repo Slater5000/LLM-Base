@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "air_weaken"
+display_name = "Weaken"
+description = "Thin air saps the target's strength. Their next attack deals 30% less damage."
+element = "air"
+target_type = "single_enemy"
+effect_type = "debuff"
+power = 0
+stat_modifier = -0.3
+stat_affected = "attack"
+duration_turns = 1
+speed_modifier = 1.0
