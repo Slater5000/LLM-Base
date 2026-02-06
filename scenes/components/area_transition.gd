@@ -61,7 +61,7 @@ func _create_interact_prompt() -> void:
 	_prompt_label.add_theme_font_size_override("font_size", 14)
 	_prompt_label.add_theme_color_override("font_color", Color.BLACK)
 	_prompt_label.add_theme_color_override("font_outline_color", Color.WHITE)
-	_prompt_label.add_theme_constant_override("outline_size", 2)
+	_prompt_label.add_theme_constant_override("outline_size", 3)
 	_prompt_label.hide()
 	add_child(_prompt_label)
 

@@ -1,0 +1,18 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/world/blob_terrain_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://scenes/world/blob_terrain.gd" id="2_blob_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_around_grass.png" id="3_blob_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_tile.png" id="4_dirt_tex"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="5_player"]
+
+[node name="BlobTerrainTest" type="Node2D"]
+script = ExtResource("1_test")
+
+[node name="BlobTerrain" type="Node2D" parent="."]
+script = ExtResource("2_blob_script")
+blob_texture = ExtResource("3_blob_tex")
+base_texture = ExtResource("4_dirt_tex")
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+position = Vector2(320, 240)

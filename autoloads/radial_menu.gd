@@ -17,6 +17,7 @@ signal option_selected(option_id: String)
 var _is_open: bool = false
 var _selected_index: int = 0
 var _open_time: float = 0.0  # Time when menu was opened (for input delay)
+var _scanner_was_active: bool = false  # Track if scanner was active when menu opened
 
 ## Delay before accepting confirm input (prevents instant-select when same key opens menu)
 const CONFIRM_DELAY := 0.15  # 150ms
@@ -25,7 +26,7 @@ const CONFIRM_DELAY := 0.15  # 150ms
 const MENU_OPTIONS := [
 	{"id": "party", "label": "PARTY", "disabled": false},
 	{"id": "bag", "label": "BAG", "disabled": true},
-	{"id": "dex", "label": "DEX", "disabled": true},
+	{"id": "dex", "label": "DEX", "disabled": false},
 	{"id": "save", "label": "SAVE", "disabled": false},
 	{"id": "options", "label": "OPT", "disabled": false},
 	{"id": "exit", "label": "EXIT", "disabled": false},
@@ -65,7 +66,7 @@ var _circle_button_scene: PackedScene
 
 func _ready() -> void:
 	layer = 100
-	process_mode = Node.PROCESS_MODE_WHEN_PAUSED  # Menu works when game is paused
+	process_mode = Node.PROCESS_MODE_ALWAYS  # Always receive input (for F key toggle)
 	_circle_button_scene = preload("res://scenes/ui/radial_menu/circle_button.tscn")
 	_create_ui()
 	_hide_menu()
@@ -104,7 +105,7 @@ func _create_ui() -> void:
 	_tooltip.add_theme_font_size_override("font_size", 12)
 	_tooltip.add_theme_color_override("font_color", Color.BLACK)
 	_tooltip.add_theme_color_override("font_outline_color", Color.WHITE)
-	_tooltip.add_theme_constant_override("outline_size", 4)
+	_tooltip.add_theme_constant_override("outline_size", 5)
 	_menu_container.add_child(_tooltip)
 
 	# Save feedback label
@@ -114,7 +115,7 @@ func _create_ui() -> void:
 	_save_feedback.add_theme_font_size_override("font_size", 14)
 	_save_feedback.add_theme_color_override("font_color", Color.BLACK)
 	_save_feedback.add_theme_color_override("font_outline_color", Color.WHITE)
-	_save_feedback.add_theme_constant_override("outline_size", 4)
+	_save_feedback.add_theme_constant_override("outline_size", 5)
 	_save_feedback.text = "SAVED!"
 	_save_feedback.hide()
 	_menu_container.add_child(_save_feedback)
@@ -128,6 +129,23 @@ func _process(_delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# Handle F key toggle (works both paused and unpaused)
+	if event.is_action_pressed("open_menu"):
+		if _is_open:
+			close_menu()
+		else:
+			# Don't open if scene isn't ready (no player yet)
+			if not _get_player():
+				return
+			# Only open if no dialogue active
+			var dialogue_manager := get_node_or_null("/root/DialogueManager")
+			if dialogue_manager and dialogue_manager.has_method("is_dialogue_active"):
+				if dialogue_manager.is_dialogue_active():
+					return
+			open_menu()
+		get_viewport().set_input_as_handled()
+		return
+
 	if not _is_open:
 		return
 
@@ -186,8 +204,9 @@ func _update_menu_position() -> void:
 	_tooltip.position = screen_pos + Vector2(-60, 85)
 	_tooltip.size = Vector2(120, 20)
 
-	# Position save feedback above the ring
-	_save_feedback.position = screen_pos + Vector2(-50, -90)
+	# Position save feedback at screen center
+	var viewport_size := viewport.get_visible_rect().size
+	_save_feedback.position = viewport_size / 2.0 - Vector2(50, 10)
 	_save_feedback.size = Vector2(100, 20)
 
 
@@ -203,12 +222,25 @@ func open_menu() -> void:
 	if _is_open:
 		return
 
-	# Check if another menu is already open
+	# Check if another menu is already open (except scanner_prompt which we can stack with)
 	if GameState.is_menu_open():
-		return
+		var current := GameState.get_current_menu()
+		# Only allow if scanner_prompt is the only open menu
+		if current != "scanner_prompt":
+			return
 
-	# Register with GameState
-	if not GameState.open_menu("radial_menu"):
+	# Track if scanner was active (so we can restore it when menu closes)
+	var scanner := get_node_or_null("/root/Scanner")
+	_scanner_was_active = scanner and scanner.is_scanner_active() and not scanner._is_prompting
+
+	# Close scanner temporarily while menu is open
+	if _scanner_was_active:
+		scanner.close_scanner()
+
+	# Register with GameState (allow stacking if scanner_prompt is open)
+	var allow_stacking := GameState.is_specific_menu_open("scanner_prompt")
+	if not GameState.open_menu("radial_menu", allow_stacking):
+		_scanner_was_active = false  # Don't restore if we couldn't open
 		return  # Failed to open (another menu blocked it)
 
 	_is_open = true
@@ -227,13 +259,22 @@ func open_menu() -> void:
 
 
 ## Close the menu
-func close_menu() -> void:
+## If going_to_subscreen is true, don't restore scanner (it will be restored when subscreen closes)
+func close_menu(going_to_subscreen: bool = false) -> void:
 	if not _is_open:
 		return
 
 	_is_open = false
 	_hide_menu()
 	GameState.close_menu("radial_menu")
+
+	# Restore scanner if it was active before menu opened (unless going to subscreen)
+	if _scanner_was_active and not going_to_subscreen:
+		_scanner_was_active = false
+		var scanner := get_node_or_null("/root/Scanner")
+		if scanner:
+			scanner.open_scanner()
+
 	menu_closed.emit()
 
 
@@ -292,7 +333,7 @@ func _get_tooltip_text(option_id: String) -> String:
 		"bag":
 			return "Items (Coming Soon)"
 		"dex":
-			return "Collection (Coming Soon)"
+			return "View Deck"
 		"save":
 			return "Save Game"
 		"options":
@@ -337,6 +378,8 @@ func _handle_option(option_id: String) -> void:
 	match option_id:
 		"party":
 			_open_party_screen()
+		"dex":
+			_open_deck_screen()
 		"save":
 			_save_game()
 		"options":
@@ -346,10 +389,30 @@ func _handle_option(option_id: String) -> void:
 
 
 func _open_party_screen() -> void:
-	close_menu()
+	close_menu(true)  # Going to subscreen, don't restore scanner yet
 	var party_scene: PackedScene = preload("res://scenes/ui/party_screen.tscn")
 	var party_screen := party_scene.instantiate()
+	party_screen.closed.connect(_on_subscreen_closed)
 	get_tree().root.add_child(party_screen)
+
+
+func _open_deck_screen() -> void:
+	close_menu(true)  # Going to subscreen, don't restore scanner yet
+	var deck_scene: PackedScene = preload("res://scenes/ui/deck/deck_screen.tscn")
+	var deck_screen := deck_scene.instantiate()
+	deck_screen.closed.connect(_on_subscreen_closed)
+	get_tree().root.add_child(deck_screen)
+
+
+func _on_subscreen_closed() -> void:
+	# Restore scanner if it was active before, otherwise re-open radial menu
+	if _scanner_was_active:
+		_scanner_was_active = false
+		var scanner := get_node_or_null("/root/Scanner")
+		if scanner:
+			scanner.open_scanner()
+	else:
+		call_deferred("open_menu")
 
 
 func _save_game() -> void:
@@ -372,9 +435,10 @@ func _show_save_feedback() -> void:
 
 
 func _open_options_screen() -> void:
-	close_menu()
+	close_menu(true)  # Going to subscreen, don't restore scanner yet
 	var settings_scene: PackedScene = preload("res://scenes/ui/settings/settings_screen.tscn")
 	var settings_screen := settings_scene.instantiate()
+	settings_screen.closed.connect(_on_subscreen_closed)
 	get_tree().root.add_child(settings_screen)
 
 

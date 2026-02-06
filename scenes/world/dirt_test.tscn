@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_tile.png" id="1_dirt"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+
+[node name="DirtTest" type="Node2D"]
+
+[node name="Floor" type="TextureRect" parent="."]
+texture = ExtResource("1_dirt")
+stretch_mode = 1
+custom_minimum_size = Vector2(640, 480)
+size = Vector2(640, 480)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(320, 240)

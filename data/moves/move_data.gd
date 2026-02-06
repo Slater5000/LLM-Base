@@ -21,7 +21,7 @@ var effect_type: String = "damage"
 ## For buffs/debuffs: percentage change (0.2 = +20%, -0.2 = -20%)
 @export var stat_modifier: float = 0.0
 ## Which stat is affected for buffs/debuffs (none for damage/heal moves)
-@export_enum("none", "attack", "defense", "speed")
+@export_enum("none", "attack", "defense", "speed", "bar_fill_rate")
 var stat_affected: String = "none"
 ## 0 = instant effect, >0 = lasts N turns
 @export var duration_turns: int = 0

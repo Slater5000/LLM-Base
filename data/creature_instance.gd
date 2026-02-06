@@ -29,6 +29,12 @@ var active_moves: Array[String] = []
 var caught_timestamp: int = 0
 var caught_location: String = ""
 
+## Cosmetic form (0 = base, 1+ = evolution appearances if unlocked)
+var cosmetic_form: int = 0
+
+## Battle statistics
+var battles_won: int = 0
+
 
 ## Create a new creature instance with a unique ID
 static func create(p_species_id: String, p_level: int = 1) -> CreatureInstance:
@@ -51,12 +57,19 @@ static func _generate_uuid() -> String:
 	return uuid
 
 
-## Get display name (nickname if set, otherwise species name from GameState)
+## Get display name (nickname if set, otherwise species display_name from GameState)
 func get_display_name() -> String:
 	if nickname != "":
 		return nickname
-	# Fallback to species_id if no nickname
-	# In practice, UI should look up species display_name via GameState
+	# Look up actual species display_name from autoload
+	var main_loop = Engine.get_main_loop()
+	if main_loop and main_loop.root:
+		var game_state = main_loop.root.get_node_or_null("/root/GameState")
+		if game_state and game_state.has_method("get_species"):
+			var species = game_state.get_species(species_id)
+			if species:
+				return species.display_name
+	# Fallback to species_id if lookup fails
 	return species_id
 
 
@@ -80,6 +93,26 @@ func heal(amount: int) -> int:
 ## Fully heal creature
 func full_heal() -> void:
 	current_hp = max_hp
+
+
+## Set creature level and recalculate stats + learn new moves
+func set_level(new_level: int, species: CreatureSpecies) -> void:
+	level = new_level
+	# Recalculate stats
+	var level_multiplier := 1.0 + (level * 0.1)
+	max_hp = int(species.base_hp * level_multiplier)
+	attack = int(species.base_attack * level_multiplier)
+	defense = int(species.base_defense * level_multiplier)
+	speed = int(species.base_speed * level_multiplier)
+	# Heal to full when leveling
+	current_hp = max_hp
+	# Learn any new moves available at this level
+	for i in species.learnable_moves.size():
+		if i < species.move_learn_levels.size():
+			if species.move_learn_levels[i] <= level:
+				var move_id: String = species.learnable_moves[i]
+				if move_id not in learned_moves:
+					learned_moves.append(move_id)
 
 
 ## Take damage (capped at 0)
@@ -144,7 +177,9 @@ func to_dict() -> Dictionary:
 		"learned_moves": learned_moves,
 		"active_moves": active_moves,
 		"caught_timestamp": caught_timestamp,
-		"caught_location": caught_location
+		"caught_location": caught_location,
+		"cosmetic_form": cosmetic_form,
+		"battles_won": battles_won
 	}
 
 
@@ -175,5 +210,7 @@ static func from_dict(data: Dictionary) -> CreatureInstance:
 
 	instance.caught_timestamp = data.get("caught_timestamp", 0)
 	instance.caught_location = data.get("caught_location", "")
+	instance.cosmetic_form = data.get("cosmetic_form", 0)
+	instance.battles_won = data.get("battles_won", 0)
 
 	return instance

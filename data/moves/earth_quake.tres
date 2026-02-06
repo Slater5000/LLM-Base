@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "earth_quake"
+display_name = "Quake"
+description = "Shakes the ground violently, damaging all enemies."
+element = "earth"
+target_type = "all_enemies"
+effect_type = "damage"
+power = 70
+stat_modifier = 0.0
+stat_affected = "none"
+duration_turns = 0
+speed_modifier = 0.8

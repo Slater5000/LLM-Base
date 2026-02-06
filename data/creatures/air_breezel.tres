@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/Generation0/aaron_gp0_020.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "air_breezel"
+display_name = "Breezel"
+description = "A playful wind sprite that loves to ruffle hair and scatter leaves. Harmless but mischievous."
+element = "air"
+base_hp = 35
+base_attack = 40
+base_defense = 30
+base_speed = 70
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = "air_gustix"
+learnable_moves = ["air_breeze", "air_gust", "air_weaken", "air_gale_force"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.8, 0.9, 1.0, 1)
+color_secondary = Color(0.95, 0.98, 1.0, 1)
+height_m = 0.3
+weight_kg = 0.2

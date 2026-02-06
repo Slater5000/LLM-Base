@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://scanner_autoload"]
+
+[ext_resource type="Script" path="res://autoloads/scanner.gd" id="1_scanner"]
+
+[node name="Scanner" type="CanvasLayer"]
+layer = 99
+script = ExtResource("1_scanner")

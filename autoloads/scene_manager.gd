@@ -19,6 +19,9 @@ var _state: State = State.IDLE
 ## Reference to the current world scene
 var _current_world: Node = null
 
+## Path of the current scene (for returning after battles, etc.)
+var _current_scene_path: String = ""
+
 ## Reference to the player (persists across transitions)
 var _player: CharacterBody2D = null
 
@@ -98,6 +101,7 @@ func _start_transition(scene_path: String) -> void:
 
 func _load_scene(scene_path: String) -> void:
 	_state = State.LOADING
+	_current_scene_path = scene_path
 
 	# IMPORTANT: Save reference to existing player BEFORE loading new scene
 	# (because embedded player's _ready() will call register_player and overwrite _player)
@@ -238,6 +242,11 @@ func _finish_transition() -> void:
 ## Check if currently in a transition
 func is_transitioning() -> bool:
 	return _state != State.IDLE
+
+
+## Get the path of the currently loaded scene
+func get_current_scene_path() -> String:
+	return _current_scene_path
 
 
 ## Load game from save file and restore player to saved position.

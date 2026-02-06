@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "earth_sand_blast"
+display_name = "Sand Blast"
+description = "Blasts sand at an enemy, reducing their bar fill rate by 20% for 5 turns."
+element = "earth"
+target_type = "single_enemy"
+effect_type = "debuff"
+power = 40
+stat_modifier = -0.2
+stat_affected = "bar_fill_rate"
+duration_turns = 5
+speed_modifier = 1.2

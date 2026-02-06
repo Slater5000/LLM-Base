@@ -14,7 +14,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = -100.0
+offset_top = -130.0
 offset_right = -20.0
 offset_bottom = -10.0
 grow_horizontal = 2
@@ -41,9 +41,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
+theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DialogueBox/MarginContainer"]
 layout_mode = 2

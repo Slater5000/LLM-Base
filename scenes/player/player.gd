@@ -61,18 +61,7 @@ func _physics_process(delta: float) -> void:
 	_update_animation(delta)
 
 
-func _input(event: InputEvent) -> void:
-	# Toggle radial menu with F key
-	if event.is_action_pressed("open_menu"):
-		if _is_dialogue_active():
-			return  # Can't open menu during dialogue
-
-		var radial_menu := get_node_or_null("/root/RadialMenu")
-		if radial_menu:
-			if radial_menu.is_menu_open():
-				radial_menu.close_menu()
-			else:
-				radial_menu.open_menu()
+## Note: F key (open_menu) is handled by RadialMenu autoload directly
 
 
 func _get_input_direction() -> Vector2:

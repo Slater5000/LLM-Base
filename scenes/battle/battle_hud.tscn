@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://battle_hud_main"]
+
+[ext_resource type="Script" path="res://scenes/battle/battle_hud.gd" id="1_script"]
+
+[node name="BattleHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PauseLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "PAUSED"
+
+[node name="BottomPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -140.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="BottomPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MovePanels" type="HBoxContainer" parent="BottomPanel/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ActionButtons" type="VBoxContainer" parent="BottomPanel/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SwapButton" type="Button" parent="BottomPanel/HBox/ActionButtons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "SWAP"
+
+[node name="FleeButton" type="Button" parent="BottomPanel/HBox/ActionButtons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "FLEE"

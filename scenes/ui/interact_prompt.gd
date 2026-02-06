@@ -29,6 +29,6 @@ func _create_ui() -> void:
 	_label.add_theme_font_size_override("font_size", 18)
 	_label.add_theme_color_override("font_color", Color.BLACK)
 	_label.add_theme_color_override("font_outline_color", Color.WHITE)
-	_label.add_theme_constant_override("outline_size", 4)
+	_label.add_theme_constant_override("outline_size", 7)
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_label)

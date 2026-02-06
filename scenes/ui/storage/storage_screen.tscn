@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://storage_screen_main"]
+
+[ext_resource type="Script" path="res://scenes/ui/storage/storage_screen.gd" id="1_script"]
+
+[node name="StorageScreen" type="CanvasLayer"]
+layer = 110
+script = ExtResource("1_script")

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr01_free_sample/fr01_free_sample_pack/FR_002_eyeball.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "air_wispix"
+display_name = "Wispix"
+description = "A wispy air spirit that flickers in and out of visibility. Said to guide lost souls home."
+element = "air"
+base_hp = 30
+base_attack = 50
+base_defense = 25
+base_speed = 85
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["air_gust", "air_weaken", "air_breeze", "air_gale_force"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.9, 0.95, 1.0, 1)
+color_secondary = Color(0.7, 0.8, 0.9, 1)
+height_m = 0.2
+weight_kg = 0.05

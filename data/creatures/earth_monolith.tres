@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/Generation0/aaron_gp0_027.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "earth_monolith"
+display_name = "Monolith"
+description = "An ancient standing stone that gained sentience. It guards sacred places."
+element = "earth"
+base_hp = 80
+base_attack = 60
+base_defense = 85
+base_speed = 10
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["earth_stone_wall", "earth_rock_slam", "earth_fortify", "earth_dust_recovery"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.3, 0.3, 0.35, 1)
+color_secondary = Color(0.2, 0.5, 0.3, 1)
+height_m = 2.5
+weight_kg = 500.0

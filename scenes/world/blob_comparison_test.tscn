@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/world/blob_comparison_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://scenes/world/blob_terrain_v2.gd" id="2_v2"]
+[ext_resource type="Script" path="res://scenes/world/blob_terrain_v3.gd" id="3_v3"]
+[ext_resource type="Script" path="res://scenes/world/blob_terrain_v4.gd" id="4_v4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_around_grass.png" id="5_blob"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/dirt_tile.png" id="6_dirt"]
+
+[node name="BlobComparisonTest" type="Node2D"]
+script = ExtResource("1_test")
+
+[node name="TerrainV2" type="Node2D" parent="."]
+script = ExtResource("2_v2")
+blob_texture = ExtResource("5_blob")
+base_texture = ExtResource("6_dirt")
+
+[node name="TerrainV3" type="Node2D" parent="."]
+script = ExtResource("3_v3")
+blob_texture = ExtResource("5_blob")
+base_texture = ExtResource("6_dirt")
+
+[node name="TerrainV4" type="Node2D" parent="."]
+script = ExtResource("4_v4")
+blob_texture = ExtResource("5_blob")
+base_texture = ExtResource("6_dirt")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(600, 160)
+zoom = Vector2(0.8, 0.8)

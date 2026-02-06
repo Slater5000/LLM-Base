@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://cprocedural_map_scene"]
+
+[ext_resource type="Script" uid="uid://cproceduralmap_gd" path="res://scenes/world/procedural_map.gd" id="1_procedural"]
+
+[node name="ProceduralMap" type="Node2D"]
+script = ExtResource("1_procedural")
+map_width = 24
+map_height = 18
+tile_size = 32
+map_seed = 0
+generate_river = true
+generate_path = true
+generate_dirt_patches = true
+generate_hills = true
+generate_decorations = true
+tree_density = 0.025
+flower_density = 0.015
+rock_density = 0.008
+mushroom_density = 0.006
+bush_density = 0.012
+tree_cluster_chance = 0.4
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(384, 288)
+zoom = Vector2(1.5, 1.5)

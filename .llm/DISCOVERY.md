@@ -303,6 +303,34 @@ The four legendaries were **constructed** by an unknown force. The Earth legenda
 
 ---
 
+## Shiny Creatures
+
+### Concept
+Every creature species has a **Shiny variant** — an ultra-rare color palette swap, similar to Shiny Pokémon. Shinies are purely cosmetic status symbols with no stat advantages.
+
+### Shiny Rules
+| Rule | Value |
+|------|-------|
+| Encounter rate | **1/4096** (same as modern Pokémon) |
+| Stat difference | **None** — identical to normal |
+| Move difference | **None** — same move pool |
+| Visual indicator | Alternate color palette + sparkle effect on encounter |
+| Dex tracking | Separate shiny sprite in creature dex |
+
+### Visual Design
+- Each species needs a **shiny palette** (alternate colors)
+- Shiny creatures sparkle/glitter when first appearing
+- Small star icon in party/battle UI to indicate shiny status
+- Shiny sprite shown in dex only after catching shiny version
+
+### Implementation Notes
+- `CreatureInstance` needs `is_shiny: bool` flag
+- Species resource needs `shiny_texture` or palette swap shader
+- Shiny roll happens at encounter spawn (not capture)
+- Breeding/eggs can have shiny odds modifiers (future)
+
+---
+
 ## Starter Moves (16 Created)
 
 | Element | Moves |

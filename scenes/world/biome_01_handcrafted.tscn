@@ -1,0 +1,2033 @@
+[gd_scene format=3 uid="uid://uhrgpd45scx6"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/grass_tile.png" id="1_grass"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/larger_tile.png" id="2_stone_path"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/barn.png" id="3_barn"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/tree_conifer.png" id="4_tree"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bridge1.png" id="5_bridge_top"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bridge_2.png" id="6_bridge_left"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bridge_3.png" id="7_bridge_arch"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bridge_4.png" id="8_bridge_right"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/shrub.png" id="9_shrub"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/fence.png" id="10_fence"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/sand_around_water.png" id="11_water"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/grass_around_sand.png" id="12_sand_edge"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/large mushroom.png" id="13_large_mushroom"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/rock_gray.png" id="14_rock"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/tulip_pink.png" id="15_tulip"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/mushroom_blue.png" id="16_mushroom_blue"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bush_round_spotted.png" id="17_bush_spotted"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/bush_round_green.png" id="18_bush_green"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/stone_hill.png" id="19_stone_hill"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/hill.png" id="20_hill"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/rock_gray_small.png" id="21_small_rock"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/shrub_white.png" id="22_shrub_white"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/2_leaves.png" id="23_leaves"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/mushroom_yellow.png" id="24_mushroom_yellow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/mushroom_green.png" id="25_mushroom_green"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/large blue mushroom.png" id="26_large_blue_mushroom"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/shrub_yellow_flowers.png" id="27_shrub_yellow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/2_small_rocks.png" id="28_small_rocks"]
+[ext_resource type="Texture2D" path="res://assets/sprites/biome_01/smaller_tile.png" id="29_stone_small"]
+
+[node name="Biome01Handcrafted" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 320)
+zoom = Vector2(2, 2)
+
+; ============================================================================
+; FLOOR LAYER - Grass tiles covering the entire 640x640 area
+; ============================================================================
+[node name="FloorLayer" type="Node2D" parent="."]
+z_index = -10
+
+; Row 0 (y=16)
+[node name="G0_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 16)
+texture = ExtResource("1_grass")
+
+[node name="G1_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 16)
+texture = ExtResource("1_grass")
+
+[node name="G2_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 16)
+texture = ExtResource("1_grass")
+
+[node name="G3_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 16)
+texture = ExtResource("1_grass")
+
+[node name="G4_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 16)
+texture = ExtResource("1_grass")
+
+[node name="G5_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 16)
+texture = ExtResource("1_grass")
+
+[node name="G6_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 16)
+texture = ExtResource("1_grass")
+
+[node name="G7_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 16)
+texture = ExtResource("1_grass")
+
+[node name="G8_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 16)
+texture = ExtResource("1_grass")
+
+[node name="G9_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 16)
+texture = ExtResource("1_grass")
+
+[node name="G10_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 16)
+texture = ExtResource("1_grass")
+
+[node name="G11_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 16)
+texture = ExtResource("1_grass")
+
+[node name="G12_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 16)
+texture = ExtResource("1_grass")
+
+[node name="G13_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 16)
+texture = ExtResource("1_grass")
+
+[node name="G14_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 16)
+texture = ExtResource("1_grass")
+
+[node name="G15_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 16)
+texture = ExtResource("1_grass")
+
+[node name="G16_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 16)
+texture = ExtResource("1_grass")
+
+[node name="G17_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 16)
+texture = ExtResource("1_grass")
+
+[node name="G18_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 16)
+texture = ExtResource("1_grass")
+
+[node name="G19_0" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 16)
+texture = ExtResource("1_grass")
+
+; Row 1 (y=48)
+[node name="G0_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 48)
+texture = ExtResource("1_grass")
+
+[node name="G1_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 48)
+texture = ExtResource("1_grass")
+
+[node name="G2_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 48)
+texture = ExtResource("1_grass")
+
+[node name="G3_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 48)
+texture = ExtResource("1_grass")
+
+[node name="G4_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 48)
+texture = ExtResource("1_grass")
+
+[node name="G5_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 48)
+texture = ExtResource("1_grass")
+
+[node name="G6_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 48)
+texture = ExtResource("1_grass")
+
+[node name="G7_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 48)
+texture = ExtResource("1_grass")
+
+[node name="G8_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 48)
+texture = ExtResource("1_grass")
+
+[node name="G9_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 48)
+texture = ExtResource("1_grass")
+
+[node name="G10_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 48)
+texture = ExtResource("1_grass")
+
+[node name="G11_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 48)
+texture = ExtResource("1_grass")
+
+[node name="G12_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 48)
+texture = ExtResource("1_grass")
+
+[node name="G13_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 48)
+texture = ExtResource("1_grass")
+
+[node name="G14_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 48)
+texture = ExtResource("1_grass")
+
+[node name="G15_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 48)
+texture = ExtResource("1_grass")
+
+[node name="G16_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 48)
+texture = ExtResource("1_grass")
+
+[node name="G17_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 48)
+texture = ExtResource("1_grass")
+
+[node name="G18_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 48)
+texture = ExtResource("1_grass")
+
+[node name="G19_1" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 48)
+texture = ExtResource("1_grass")
+
+; Row 2 (y=80)
+[node name="G0_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 80)
+texture = ExtResource("1_grass")
+
+[node name="G1_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 80)
+texture = ExtResource("1_grass")
+
+[node name="G2_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 80)
+texture = ExtResource("1_grass")
+
+[node name="G3_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 80)
+texture = ExtResource("1_grass")
+
+[node name="G4_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 80)
+texture = ExtResource("1_grass")
+
+[node name="G5_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 80)
+texture = ExtResource("1_grass")
+
+[node name="G6_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 80)
+texture = ExtResource("1_grass")
+
+[node name="G7_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 80)
+texture = ExtResource("1_grass")
+
+[node name="G8_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 80)
+texture = ExtResource("1_grass")
+
+[node name="G9_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 80)
+texture = ExtResource("1_grass")
+
+[node name="G10_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 80)
+texture = ExtResource("1_grass")
+
+[node name="G11_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 80)
+texture = ExtResource("1_grass")
+
+[node name="G12_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 80)
+texture = ExtResource("1_grass")
+
+[node name="G13_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 80)
+texture = ExtResource("1_grass")
+
+[node name="G14_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 80)
+texture = ExtResource("1_grass")
+
+[node name="G15_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 80)
+texture = ExtResource("1_grass")
+
+[node name="G16_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 80)
+texture = ExtResource("1_grass")
+
+[node name="G17_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 80)
+texture = ExtResource("1_grass")
+
+[node name="G18_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 80)
+texture = ExtResource("1_grass")
+
+[node name="G19_2" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 80)
+texture = ExtResource("1_grass")
+
+; Row 3 (y=112)
+[node name="G0_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 112)
+texture = ExtResource("1_grass")
+
+[node name="G1_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 112)
+texture = ExtResource("1_grass")
+
+[node name="G2_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 112)
+texture = ExtResource("1_grass")
+
+[node name="G3_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 112)
+texture = ExtResource("1_grass")
+
+[node name="G4_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 112)
+texture = ExtResource("1_grass")
+
+[node name="G5_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 112)
+texture = ExtResource("1_grass")
+
+[node name="G6_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 112)
+texture = ExtResource("1_grass")
+
+[node name="G7_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 112)
+texture = ExtResource("1_grass")
+
+[node name="G8_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 112)
+texture = ExtResource("1_grass")
+
+[node name="G9_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 112)
+texture = ExtResource("1_grass")
+
+[node name="G10_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 112)
+texture = ExtResource("1_grass")
+
+[node name="G11_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 112)
+texture = ExtResource("1_grass")
+
+[node name="G12_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 112)
+texture = ExtResource("1_grass")
+
+[node name="G13_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 112)
+texture = ExtResource("1_grass")
+
+[node name="G14_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 112)
+texture = ExtResource("1_grass")
+
+[node name="G15_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 112)
+texture = ExtResource("1_grass")
+
+[node name="G16_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 112)
+texture = ExtResource("1_grass")
+
+[node name="G17_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 112)
+texture = ExtResource("1_grass")
+
+[node name="G18_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 112)
+texture = ExtResource("1_grass")
+
+[node name="G19_3" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 112)
+texture = ExtResource("1_grass")
+
+; Row 4 (y=144)
+[node name="G0_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 144)
+texture = ExtResource("1_grass")
+
+[node name="G1_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 144)
+texture = ExtResource("1_grass")
+
+[node name="G2_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 144)
+texture = ExtResource("1_grass")
+
+[node name="G3_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 144)
+texture = ExtResource("1_grass")
+
+[node name="G4_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 144)
+texture = ExtResource("1_grass")
+
+[node name="G5_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 144)
+texture = ExtResource("1_grass")
+
+[node name="G6_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 144)
+texture = ExtResource("1_grass")
+
+[node name="G7_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 144)
+texture = ExtResource("1_grass")
+
+[node name="G8_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 144)
+texture = ExtResource("1_grass")
+
+[node name="G9_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 144)
+texture = ExtResource("1_grass")
+
+[node name="G10_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 144)
+texture = ExtResource("1_grass")
+
+[node name="G11_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 144)
+texture = ExtResource("1_grass")
+
+[node name="G12_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 144)
+texture = ExtResource("1_grass")
+
+[node name="G13_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 144)
+texture = ExtResource("1_grass")
+
+[node name="G14_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 144)
+texture = ExtResource("1_grass")
+
+[node name="G15_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 144)
+texture = ExtResource("1_grass")
+
+[node name="G16_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 144)
+texture = ExtResource("1_grass")
+
+[node name="G17_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 144)
+texture = ExtResource("1_grass")
+
+[node name="G18_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 144)
+texture = ExtResource("1_grass")
+
+[node name="G19_4" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 144)
+texture = ExtResource("1_grass")
+
+; Row 5 (y=176)
+[node name="G0_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 176)
+texture = ExtResource("1_grass")
+
+[node name="G1_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 176)
+texture = ExtResource("1_grass")
+
+[node name="G2_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 176)
+texture = ExtResource("1_grass")
+
+[node name="G3_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 176)
+texture = ExtResource("1_grass")
+
+[node name="G4_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 176)
+texture = ExtResource("1_grass")
+
+[node name="G5_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 176)
+texture = ExtResource("1_grass")
+
+[node name="G6_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 176)
+texture = ExtResource("1_grass")
+
+[node name="G7_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 176)
+texture = ExtResource("1_grass")
+
+[node name="G8_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 176)
+texture = ExtResource("1_grass")
+
+[node name="G9_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 176)
+texture = ExtResource("1_grass")
+
+[node name="G10_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 176)
+texture = ExtResource("1_grass")
+
+[node name="G11_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 176)
+texture = ExtResource("1_grass")
+
+[node name="G12_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 176)
+texture = ExtResource("1_grass")
+
+[node name="G13_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 176)
+texture = ExtResource("1_grass")
+
+[node name="G14_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 176)
+texture = ExtResource("1_grass")
+
+[node name="G15_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 176)
+texture = ExtResource("1_grass")
+
+[node name="G16_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 176)
+texture = ExtResource("1_grass")
+
+[node name="G17_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 176)
+texture = ExtResource("1_grass")
+
+[node name="G18_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 176)
+texture = ExtResource("1_grass")
+
+[node name="G19_5" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 176)
+texture = ExtResource("1_grass")
+
+; Row 6 (y=208)
+[node name="G0_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 208)
+texture = ExtResource("1_grass")
+
+[node name="G1_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 208)
+texture = ExtResource("1_grass")
+
+[node name="G2_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 208)
+texture = ExtResource("1_grass")
+
+[node name="G3_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 208)
+texture = ExtResource("1_grass")
+
+[node name="G4_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 208)
+texture = ExtResource("1_grass")
+
+[node name="G5_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 208)
+texture = ExtResource("1_grass")
+
+[node name="G6_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 208)
+texture = ExtResource("1_grass")
+
+[node name="G7_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 208)
+texture = ExtResource("1_grass")
+
+[node name="G8_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 208)
+texture = ExtResource("1_grass")
+
+[node name="G9_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 208)
+texture = ExtResource("1_grass")
+
+[node name="G10_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 208)
+texture = ExtResource("1_grass")
+
+[node name="G11_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 208)
+texture = ExtResource("1_grass")
+
+[node name="G12_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 208)
+texture = ExtResource("1_grass")
+
+[node name="G13_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 208)
+texture = ExtResource("1_grass")
+
+[node name="G14_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 208)
+texture = ExtResource("1_grass")
+
+[node name="G15_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 208)
+texture = ExtResource("1_grass")
+
+[node name="G16_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 208)
+texture = ExtResource("1_grass")
+
+[node name="G17_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 208)
+texture = ExtResource("1_grass")
+
+[node name="G18_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 208)
+texture = ExtResource("1_grass")
+
+[node name="G19_6" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 208)
+texture = ExtResource("1_grass")
+
+; Row 7 (y=240)
+[node name="G0_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 240)
+texture = ExtResource("1_grass")
+
+[node name="G1_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 240)
+texture = ExtResource("1_grass")
+
+[node name="G2_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 240)
+texture = ExtResource("1_grass")
+
+[node name="G3_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 240)
+texture = ExtResource("1_grass")
+
+[node name="G4_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 240)
+texture = ExtResource("1_grass")
+
+[node name="G5_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 240)
+texture = ExtResource("1_grass")
+
+[node name="G6_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 240)
+texture = ExtResource("1_grass")
+
+[node name="G7_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 240)
+texture = ExtResource("1_grass")
+
+[node name="G8_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 240)
+texture = ExtResource("1_grass")
+
+[node name="G9_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 240)
+texture = ExtResource("1_grass")
+
+[node name="G10_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 240)
+texture = ExtResource("1_grass")
+
+[node name="G11_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 240)
+texture = ExtResource("1_grass")
+
+[node name="G12_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 240)
+texture = ExtResource("1_grass")
+
+[node name="G13_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 240)
+texture = ExtResource("1_grass")
+
+[node name="G14_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 240)
+texture = ExtResource("1_grass")
+
+[node name="G15_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 240)
+texture = ExtResource("1_grass")
+
+[node name="G16_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 240)
+texture = ExtResource("1_grass")
+
+[node name="G17_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 240)
+texture = ExtResource("1_grass")
+
+[node name="G18_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 240)
+texture = ExtResource("1_grass")
+
+[node name="G19_7" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 240)
+texture = ExtResource("1_grass")
+
+; Row 8 (y=272)
+[node name="G0_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 272)
+texture = ExtResource("1_grass")
+
+[node name="G1_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 272)
+texture = ExtResource("1_grass")
+
+[node name="G2_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 272)
+texture = ExtResource("1_grass")
+
+[node name="G3_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 272)
+texture = ExtResource("1_grass")
+
+[node name="G4_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 272)
+texture = ExtResource("1_grass")
+
+[node name="G5_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 272)
+texture = ExtResource("1_grass")
+
+[node name="G6_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 272)
+texture = ExtResource("1_grass")
+
+[node name="G7_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 272)
+texture = ExtResource("1_grass")
+
+[node name="G8_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 272)
+texture = ExtResource("1_grass")
+
+[node name="G9_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 272)
+texture = ExtResource("1_grass")
+
+[node name="G10_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 272)
+texture = ExtResource("1_grass")
+
+[node name="G11_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 272)
+texture = ExtResource("1_grass")
+
+[node name="G12_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 272)
+texture = ExtResource("1_grass")
+
+[node name="G13_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 272)
+texture = ExtResource("1_grass")
+
+[node name="G14_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 272)
+texture = ExtResource("1_grass")
+
+[node name="G15_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 272)
+texture = ExtResource("1_grass")
+
+[node name="G16_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 272)
+texture = ExtResource("1_grass")
+
+[node name="G17_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 272)
+texture = ExtResource("1_grass")
+
+[node name="G18_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 272)
+texture = ExtResource("1_grass")
+
+[node name="G19_8" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 272)
+texture = ExtResource("1_grass")
+
+; Row 9 (y=304)
+[node name="G0_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 304)
+texture = ExtResource("1_grass")
+
+[node name="G1_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 304)
+texture = ExtResource("1_grass")
+
+[node name="G2_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 304)
+texture = ExtResource("1_grass")
+
+[node name="G3_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 304)
+texture = ExtResource("1_grass")
+
+[node name="G4_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 304)
+texture = ExtResource("1_grass")
+
+[node name="G5_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 304)
+texture = ExtResource("1_grass")
+
+[node name="G6_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 304)
+texture = ExtResource("1_grass")
+
+[node name="G7_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 304)
+texture = ExtResource("1_grass")
+
+[node name="G8_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 304)
+texture = ExtResource("1_grass")
+
+[node name="G9_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 304)
+texture = ExtResource("1_grass")
+
+[node name="G10_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 304)
+texture = ExtResource("1_grass")
+
+[node name="G11_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 304)
+texture = ExtResource("1_grass")
+
+[node name="G12_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 304)
+texture = ExtResource("1_grass")
+
+[node name="G13_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 304)
+texture = ExtResource("1_grass")
+
+[node name="G14_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 304)
+texture = ExtResource("1_grass")
+
+[node name="G15_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 304)
+texture = ExtResource("1_grass")
+
+[node name="G16_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 304)
+texture = ExtResource("1_grass")
+
+[node name="G17_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 304)
+texture = ExtResource("1_grass")
+
+[node name="G18_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 304)
+texture = ExtResource("1_grass")
+
+[node name="G19_9" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 304)
+texture = ExtResource("1_grass")
+
+; Row 10 (y=336)
+[node name="G0_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 336)
+texture = ExtResource("1_grass")
+
+[node name="G1_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 336)
+texture = ExtResource("1_grass")
+
+[node name="G2_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 336)
+texture = ExtResource("1_grass")
+
+[node name="G3_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 336)
+texture = ExtResource("1_grass")
+
+[node name="G4_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 336)
+texture = ExtResource("1_grass")
+
+[node name="G5_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 336)
+texture = ExtResource("1_grass")
+
+[node name="G6_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 336)
+texture = ExtResource("1_grass")
+
+[node name="G7_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 336)
+texture = ExtResource("1_grass")
+
+[node name="G8_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 336)
+texture = ExtResource("1_grass")
+
+[node name="G9_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 336)
+texture = ExtResource("1_grass")
+
+[node name="G10_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 336)
+texture = ExtResource("1_grass")
+
+[node name="G11_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 336)
+texture = ExtResource("1_grass")
+
+[node name="G12_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 336)
+texture = ExtResource("1_grass")
+
+[node name="G13_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 336)
+texture = ExtResource("1_grass")
+
+[node name="G14_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 336)
+texture = ExtResource("1_grass")
+
+[node name="G15_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 336)
+texture = ExtResource("1_grass")
+
+[node name="G16_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 336)
+texture = ExtResource("1_grass")
+
+[node name="G17_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 336)
+texture = ExtResource("1_grass")
+
+[node name="G18_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 336)
+texture = ExtResource("1_grass")
+
+[node name="G19_10" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 336)
+texture = ExtResource("1_grass")
+
+; Row 11 (y=368)
+[node name="G0_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 368)
+texture = ExtResource("1_grass")
+
+[node name="G1_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 368)
+texture = ExtResource("1_grass")
+
+[node name="G2_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 368)
+texture = ExtResource("1_grass")
+
+[node name="G3_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 368)
+texture = ExtResource("1_grass")
+
+[node name="G4_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 368)
+texture = ExtResource("1_grass")
+
+[node name="G5_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 368)
+texture = ExtResource("1_grass")
+
+[node name="G6_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 368)
+texture = ExtResource("1_grass")
+
+[node name="G7_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 368)
+texture = ExtResource("1_grass")
+
+[node name="G8_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 368)
+texture = ExtResource("1_grass")
+
+[node name="G9_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 368)
+texture = ExtResource("1_grass")
+
+[node name="G10_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 368)
+texture = ExtResource("1_grass")
+
+[node name="G11_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 368)
+texture = ExtResource("1_grass")
+
+[node name="G12_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 368)
+texture = ExtResource("1_grass")
+
+[node name="G13_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 368)
+texture = ExtResource("1_grass")
+
+[node name="G14_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 368)
+texture = ExtResource("1_grass")
+
+[node name="G15_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 368)
+texture = ExtResource("1_grass")
+
+[node name="G16_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 368)
+texture = ExtResource("1_grass")
+
+[node name="G17_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 368)
+texture = ExtResource("1_grass")
+
+[node name="G18_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 368)
+texture = ExtResource("1_grass")
+
+[node name="G19_11" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 368)
+texture = ExtResource("1_grass")
+
+; Row 12 (y=400)
+[node name="G0_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 400)
+texture = ExtResource("1_grass")
+
+[node name="G1_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 400)
+texture = ExtResource("1_grass")
+
+[node name="G2_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 400)
+texture = ExtResource("1_grass")
+
+[node name="G3_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 400)
+texture = ExtResource("1_grass")
+
+[node name="G4_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 400)
+texture = ExtResource("1_grass")
+
+[node name="G5_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 400)
+texture = ExtResource("1_grass")
+
+[node name="G6_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 400)
+texture = ExtResource("1_grass")
+
+[node name="G7_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 400)
+texture = ExtResource("1_grass")
+
+[node name="G8_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 400)
+texture = ExtResource("1_grass")
+
+[node name="G9_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 400)
+texture = ExtResource("1_grass")
+
+[node name="G10_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 400)
+texture = ExtResource("1_grass")
+
+[node name="G11_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 400)
+texture = ExtResource("1_grass")
+
+[node name="G12_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 400)
+texture = ExtResource("1_grass")
+
+[node name="G13_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 400)
+texture = ExtResource("1_grass")
+
+[node name="G14_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 400)
+texture = ExtResource("1_grass")
+
+[node name="G15_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 400)
+texture = ExtResource("1_grass")
+
+[node name="G16_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 400)
+texture = ExtResource("1_grass")
+
+[node name="G17_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 400)
+texture = ExtResource("1_grass")
+
+[node name="G18_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 400)
+texture = ExtResource("1_grass")
+
+[node name="G19_12" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 400)
+texture = ExtResource("1_grass")
+
+; Row 13 (y=432)
+[node name="G0_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 432)
+texture = ExtResource("1_grass")
+
+[node name="G1_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 432)
+texture = ExtResource("1_grass")
+
+[node name="G2_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 432)
+texture = ExtResource("1_grass")
+
+[node name="G3_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 432)
+texture = ExtResource("1_grass")
+
+[node name="G4_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 432)
+texture = ExtResource("1_grass")
+
+[node name="G5_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 432)
+texture = ExtResource("1_grass")
+
+[node name="G6_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 432)
+texture = ExtResource("1_grass")
+
+[node name="G7_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 432)
+texture = ExtResource("1_grass")
+
+[node name="G8_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 432)
+texture = ExtResource("1_grass")
+
+[node name="G9_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 432)
+texture = ExtResource("1_grass")
+
+[node name="G10_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 432)
+texture = ExtResource("1_grass")
+
+[node name="G11_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 432)
+texture = ExtResource("1_grass")
+
+[node name="G12_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 432)
+texture = ExtResource("1_grass")
+
+[node name="G13_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 432)
+texture = ExtResource("1_grass")
+
+[node name="G14_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 432)
+texture = ExtResource("1_grass")
+
+[node name="G15_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 432)
+texture = ExtResource("1_grass")
+
+[node name="G16_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 432)
+texture = ExtResource("1_grass")
+
+[node name="G17_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 432)
+texture = ExtResource("1_grass")
+
+[node name="G18_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 432)
+texture = ExtResource("1_grass")
+
+[node name="G19_13" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 432)
+texture = ExtResource("1_grass")
+
+; Row 14 (y=464)
+[node name="G0_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 464)
+texture = ExtResource("1_grass")
+
+[node name="G1_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 464)
+texture = ExtResource("1_grass")
+
+[node name="G2_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 464)
+texture = ExtResource("1_grass")
+
+[node name="G3_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 464)
+texture = ExtResource("1_grass")
+
+[node name="G4_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 464)
+texture = ExtResource("1_grass")
+
+[node name="G5_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 464)
+texture = ExtResource("1_grass")
+
+[node name="G6_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 464)
+texture = ExtResource("1_grass")
+
+[node name="G7_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 464)
+texture = ExtResource("1_grass")
+
+[node name="G8_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 464)
+texture = ExtResource("1_grass")
+
+[node name="G9_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 464)
+texture = ExtResource("1_grass")
+
+[node name="G10_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 464)
+texture = ExtResource("1_grass")
+
+[node name="G11_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 464)
+texture = ExtResource("1_grass")
+
+[node name="G12_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 464)
+texture = ExtResource("1_grass")
+
+[node name="G13_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 464)
+texture = ExtResource("1_grass")
+
+[node name="G14_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 464)
+texture = ExtResource("1_grass")
+
+[node name="G15_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 464)
+texture = ExtResource("1_grass")
+
+[node name="G16_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 464)
+texture = ExtResource("1_grass")
+
+[node name="G17_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 464)
+texture = ExtResource("1_grass")
+
+[node name="G18_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 464)
+texture = ExtResource("1_grass")
+
+[node name="G19_14" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 464)
+texture = ExtResource("1_grass")
+
+; Row 15 (y=496)
+[node name="G0_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 496)
+texture = ExtResource("1_grass")
+
+[node name="G1_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 496)
+texture = ExtResource("1_grass")
+
+[node name="G2_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 496)
+texture = ExtResource("1_grass")
+
+[node name="G3_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 496)
+texture = ExtResource("1_grass")
+
+[node name="G4_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 496)
+texture = ExtResource("1_grass")
+
+[node name="G5_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 496)
+texture = ExtResource("1_grass")
+
+[node name="G6_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 496)
+texture = ExtResource("1_grass")
+
+[node name="G7_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 496)
+texture = ExtResource("1_grass")
+
+[node name="G8_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 496)
+texture = ExtResource("1_grass")
+
+[node name="G9_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 496)
+texture = ExtResource("1_grass")
+
+[node name="G10_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 496)
+texture = ExtResource("1_grass")
+
+[node name="G11_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 496)
+texture = ExtResource("1_grass")
+
+[node name="G12_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 496)
+texture = ExtResource("1_grass")
+
+[node name="G13_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 496)
+texture = ExtResource("1_grass")
+
+[node name="G14_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 496)
+texture = ExtResource("1_grass")
+
+[node name="G15_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 496)
+texture = ExtResource("1_grass")
+
+[node name="G16_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 496)
+texture = ExtResource("1_grass")
+
+[node name="G17_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 496)
+texture = ExtResource("1_grass")
+
+[node name="G18_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 496)
+texture = ExtResource("1_grass")
+
+[node name="G19_15" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 496)
+texture = ExtResource("1_grass")
+
+; Row 16 (y=528)
+[node name="G0_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 528)
+texture = ExtResource("1_grass")
+
+[node name="G1_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 528)
+texture = ExtResource("1_grass")
+
+[node name="G2_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 528)
+texture = ExtResource("1_grass")
+
+[node name="G3_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 528)
+texture = ExtResource("1_grass")
+
+[node name="G4_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 528)
+texture = ExtResource("1_grass")
+
+[node name="G5_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 528)
+texture = ExtResource("1_grass")
+
+[node name="G6_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 528)
+texture = ExtResource("1_grass")
+
+[node name="G7_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 528)
+texture = ExtResource("1_grass")
+
+[node name="G8_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 528)
+texture = ExtResource("1_grass")
+
+[node name="G9_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 528)
+texture = ExtResource("1_grass")
+
+[node name="G10_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 528)
+texture = ExtResource("1_grass")
+
+[node name="G11_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 528)
+texture = ExtResource("1_grass")
+
+[node name="G12_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 528)
+texture = ExtResource("1_grass")
+
+[node name="G13_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 528)
+texture = ExtResource("1_grass")
+
+[node name="G14_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 528)
+texture = ExtResource("1_grass")
+
+[node name="G15_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 528)
+texture = ExtResource("1_grass")
+
+[node name="G16_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 528)
+texture = ExtResource("1_grass")
+
+[node name="G17_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 528)
+texture = ExtResource("1_grass")
+
+[node name="G18_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 528)
+texture = ExtResource("1_grass")
+
+[node name="G19_16" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 528)
+texture = ExtResource("1_grass")
+
+; Row 17 (y=560)
+[node name="G0_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 560)
+texture = ExtResource("1_grass")
+
+[node name="G1_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 560)
+texture = ExtResource("1_grass")
+
+[node name="G2_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 560)
+texture = ExtResource("1_grass")
+
+[node name="G3_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 560)
+texture = ExtResource("1_grass")
+
+[node name="G4_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 560)
+texture = ExtResource("1_grass")
+
+[node name="G5_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 560)
+texture = ExtResource("1_grass")
+
+[node name="G6_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 560)
+texture = ExtResource("1_grass")
+
+[node name="G7_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 560)
+texture = ExtResource("1_grass")
+
+[node name="G8_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 560)
+texture = ExtResource("1_grass")
+
+[node name="G9_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 560)
+texture = ExtResource("1_grass")
+
+[node name="G10_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 560)
+texture = ExtResource("1_grass")
+
+[node name="G11_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 560)
+texture = ExtResource("1_grass")
+
+[node name="G12_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 560)
+texture = ExtResource("1_grass")
+
+[node name="G13_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 560)
+texture = ExtResource("1_grass")
+
+[node name="G14_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 560)
+texture = ExtResource("1_grass")
+
+[node name="G15_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 560)
+texture = ExtResource("1_grass")
+
+[node name="G16_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 560)
+texture = ExtResource("1_grass")
+
+[node name="G17_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 560)
+texture = ExtResource("1_grass")
+
+[node name="G18_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 560)
+texture = ExtResource("1_grass")
+
+[node name="G19_17" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 560)
+texture = ExtResource("1_grass")
+
+; Row 18 (y=592)
+[node name="G0_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 592)
+texture = ExtResource("1_grass")
+
+[node name="G1_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 592)
+texture = ExtResource("1_grass")
+
+[node name="G2_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 592)
+texture = ExtResource("1_grass")
+
+[node name="G3_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 592)
+texture = ExtResource("1_grass")
+
+[node name="G4_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 592)
+texture = ExtResource("1_grass")
+
+[node name="G5_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 592)
+texture = ExtResource("1_grass")
+
+[node name="G6_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 592)
+texture = ExtResource("1_grass")
+
+[node name="G7_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 592)
+texture = ExtResource("1_grass")
+
+[node name="G8_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 592)
+texture = ExtResource("1_grass")
+
+[node name="G9_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 592)
+texture = ExtResource("1_grass")
+
+[node name="G10_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 592)
+texture = ExtResource("1_grass")
+
+[node name="G11_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 592)
+texture = ExtResource("1_grass")
+
+[node name="G12_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 592)
+texture = ExtResource("1_grass")
+
+[node name="G13_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 592)
+texture = ExtResource("1_grass")
+
+[node name="G14_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 592)
+texture = ExtResource("1_grass")
+
+[node name="G15_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 592)
+texture = ExtResource("1_grass")
+
+[node name="G16_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 592)
+texture = ExtResource("1_grass")
+
+[node name="G17_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 592)
+texture = ExtResource("1_grass")
+
+[node name="G18_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 592)
+texture = ExtResource("1_grass")
+
+[node name="G19_18" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 592)
+texture = ExtResource("1_grass")
+
+; Row 19 (y=624)
+[node name="G0_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(16, 624)
+texture = ExtResource("1_grass")
+
+[node name="G1_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(48, 624)
+texture = ExtResource("1_grass")
+
+[node name="G2_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(80, 624)
+texture = ExtResource("1_grass")
+
+[node name="G3_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(112, 624)
+texture = ExtResource("1_grass")
+
+[node name="G4_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(144, 624)
+texture = ExtResource("1_grass")
+
+[node name="G5_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(176, 624)
+texture = ExtResource("1_grass")
+
+[node name="G6_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(208, 624)
+texture = ExtResource("1_grass")
+
+[node name="G7_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(240, 624)
+texture = ExtResource("1_grass")
+
+[node name="G8_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(272, 624)
+texture = ExtResource("1_grass")
+
+[node name="G9_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(304, 624)
+texture = ExtResource("1_grass")
+
+[node name="G10_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(336, 624)
+texture = ExtResource("1_grass")
+
+[node name="G11_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(368, 624)
+texture = ExtResource("1_grass")
+
+[node name="G12_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(400, 624)
+texture = ExtResource("1_grass")
+
+[node name="G13_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(432, 624)
+texture = ExtResource("1_grass")
+
+[node name="G14_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(464, 624)
+texture = ExtResource("1_grass")
+
+[node name="G15_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(496, 624)
+texture = ExtResource("1_grass")
+
+[node name="G16_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(528, 624)
+texture = ExtResource("1_grass")
+
+[node name="G17_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(560, 624)
+texture = ExtResource("1_grass")
+
+[node name="G18_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(592, 624)
+texture = ExtResource("1_grass")
+
+[node name="G19_19" type="Sprite2D" parent="FloorLayer"]
+position = Vector2(624, 624)
+texture = ExtResource("1_grass")
+
+; ============================================================================
+; TERRAIN LAYER - River with sandy edges (right side of map)
+; ============================================================================
+[node name="TerrainLayer" type="Node2D" parent="."]
+z_index = -5
+
+; Sand edges along the river - forms a vertical channel on right side
+; River runs from top to bridge area, then continues below bridge
+[node name="SandEdge1" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(500, 32)
+texture = ExtResource("12_sand_edge")
+
+[node name="SandEdge2" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(500, 96)
+texture = ExtResource("12_sand_edge")
+
+; Water tiles (river proper)
+[node name="Water1" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(520, 32)
+texture = ExtResource("11_water")
+
+[node name="Water2" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(520, 96)
+texture = ExtResource("11_water")
+
+[node name="Water3" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(520, 160)
+texture = ExtResource("11_water")
+
+; Water below bridge
+[node name="Water4" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(415, 310)
+texture = ExtResource("11_water")
+
+[node name="Water5" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(415, 374)
+texture = ExtResource("11_water")
+
+[node name="Water6" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(415, 438)
+texture = ExtResource("11_water")
+
+[node name="Water7" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(415, 502)
+texture = ExtResource("11_water")
+
+[node name="SandEdge3" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(500, 380)
+texture = ExtResource("12_sand_edge")
+
+[node name="SandEdge4" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(500, 444)
+texture = ExtResource("12_sand_edge")
+
+[node name="SandEdge5" type="Sprite2D" parent="TerrainLayer"]
+position = Vector2(500, 508)
+texture = ExtResource("12_sand_edge")
+
+; ============================================================================
+; PATH LAYER - Stone path in L-shape (below barn, going down then right)
+; ============================================================================
+[node name="PathLayer" type="Node2D" parent="."]
+z_index = -3
+
+; Horizontal section under barn (at y~200)
+[node name="PathH1" type="Sprite2D" parent="PathLayer"]
+position = Vector2(130, 200)
+texture = ExtResource("2_stone_path")
+
+[node name="PathH2" type="Sprite2D" parent="PathLayer"]
+position = Vector2(178, 200)
+texture = ExtResource("2_stone_path")
+
+; Vertical section going down (at x~130)
+[node name="PathV1" type="Sprite2D" parent="PathLayer"]
+position = Vector2(130, 248)
+texture = ExtResource("2_stone_path")
+
+[node name="PathV2" type="Sprite2D" parent="PathLayer"]
+position = Vector2(130, 296)
+texture = ExtResource("2_stone_path")
+
+[node name="PathV3" type="Sprite2D" parent="PathLayer"]
+position = Vector2(130, 344)
+texture = ExtResource("2_stone_path")
+
+[node name="PathV4" type="Sprite2D" parent="PathLayer"]
+position = Vector2(130, 392)
+texture = ExtResource("2_stone_path")
+
+; Horizontal section going right (at y~392)
+[node name="PathH3" type="Sprite2D" parent="PathLayer"]
+position = Vector2(178, 392)
+texture = ExtResource("2_stone_path")
+
+[node name="PathH4" type="Sprite2D" parent="PathLayer"]
+position = Vector2(226, 392)
+texture = ExtResource("2_stone_path")
+
+; Small decorative stone at path corner
+[node name="PathCorner" type="Sprite2D" parent="PathLayer"]
+position = Vector2(175, 200)
+texture = ExtResource("29_stone_small")
+
+; ============================================================================
+; OBJECTS LAYER - All sprites with y-sorting for proper depth
+; ============================================================================
+[node name="ObjectsLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+; ---- TREES (Upper left cluster + Lower left area) ----
+; Large tree behind barn (upper left)
+[node name="TreeBack1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(32, 50)
+texture = ExtResource("4_tree")
+
+[node name="TreeBack2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(16, 100)
+texture = ExtResource("4_tree")
+
+[node name="TreeBack3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(48, 130)
+texture = ExtResource("4_tree")
+
+; Lower left trees
+[node name="TreeLower1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(40, 510)
+texture = ExtResource("4_tree")
+
+[node name="TreeLower2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(80, 560)
+texture = ExtResource("4_tree")
+
+[node name="TreeLower3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(30, 590)
+texture = ExtResource("4_tree")
+
+; ---- BARN (Upper left, positioned so door is accessible) ----
+[node name="Barn" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(140, 90)
+texture = ExtResource("3_barn")
+
+; ---- HILLS (Brown dirt hill upper right, stone cliff lower right) ----
+; Brown hill in upper right area
+[node name="HillBrown" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(540, 70)
+texture = ExtResource("20_hill")
+
+; Stone/gray cliff lower right
+[node name="StoneCliff" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(590, 570)
+texture = ExtResource("19_stone_hill")
+
+; ---- BRIDGE (Stone arch bridge crossing river) ----
+; Bridge positioned to cross the river at y~240-280
+[node name="BridgeTopLeft" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(380, 200)
+texture = ExtResource("5_bridge_top")
+
+[node name="BridgeLeft" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(360, 250)
+texture = ExtResource("6_bridge_left")
+
+[node name="BridgeArch" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(400, 270)
+texture = ExtResource("7_bridge_arch")
+
+[node name="BridgeRight" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(440, 250)
+texture = ExtResource("8_bridge_right")
+
+; ---- HEDGED GARDEN (Square enclosure in center-left, ~3x3 hedge square) ----
+; Top row of hedges
+[node name="HedgeT1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(208, 290)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeT2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(232, 290)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeT3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(256, 290)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeT4" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(280, 290)
+texture = ExtResource("9_shrub")
+
+; Left side hedges
+[node name="HedgeL1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(208, 314)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeL2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(208, 338)
+texture = ExtResource("9_shrub")
+
+; Right side hedges
+[node name="HedgeR1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(280, 314)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeR2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(280, 338)
+texture = ExtResource("9_shrub")
+
+; Bottom row of hedges
+[node name="HedgeB1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(208, 362)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeB2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(232, 362)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeB3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(256, 362)
+texture = ExtResource("9_shrub")
+
+[node name="HedgeB4" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(280, 362)
+texture = ExtResource("9_shrub")
+
+; ---- WOODEN FENCE (Lower left area) ----
+[node name="Fence1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(150, 530)
+texture = ExtResource("10_fence")
+
+[node name="Fence2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(200, 530)
+texture = ExtResource("10_fence")
+
+; ---- LARGE MUSHROOM (Center-bottom area, red spotted) ----
+[node name="LargeMushroom" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(310, 480)
+texture = ExtResource("13_large_mushroom")
+
+; ---- LARGE BLUE MUSHROOM (Near river) ----
+[node name="LargeBlueMushroom" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(460, 60)
+texture = ExtResource("26_large_blue_mushroom")
+
+; ---- ROUND BUSHES (Scattered around map) ----
+; Near bridge
+[node name="BushSpotted1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(355, 180)
+texture = ExtResource("17_bush_spotted")
+
+[node name="BushSpotted2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(445, 180)
+texture = ExtResource("17_bush_spotted")
+
+; Near upper right area
+[node name="BushGreen1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(595, 110)
+texture = ExtResource("18_bush_green")
+
+[node name="BushGreen2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(480, 150)
+texture = ExtResource("18_bush_green")
+
+; Center area
+[node name="BushGreen3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(300, 230)
+texture = ExtResource("18_bush_green")
+
+; Near hedged garden
+[node name="BushSpotted3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(330, 310)
+texture = ExtResource("17_bush_spotted")
+
+; ---- WHITE SHRUBS (upper area near hill) ----
+[node name="ShrubWhite1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(450, 40)
+texture = ExtResource("22_shrub_white")
+
+[node name="ShrubWhite2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(380, 100)
+texture = ExtResource("22_shrub_white")
+
+; ---- YELLOW FLOWER SHRUBS ----
+[node name="ShrubYellow1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(200, 255)
+texture = ExtResource("27_shrub_yellow")
+
+; ---- ROCKS (Various sizes scattered) ----
+; Near barn
+[node name="Rock1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(70, 180)
+texture = ExtResource("14_rock")
+
+; Center area
+[node name="Rock2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(340, 430)
+texture = ExtResource("21_small_rock")
+
+; Near lower trees
+[node name="Rock3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(110, 500)
+texture = ExtResource("14_rock")
+
+; Small rock clusters
+[node name="SmallRocks1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(360, 540)
+texture = ExtResource("28_small_rocks")
+
+[node name="SmallRocks2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(500, 600)
+texture = ExtResource("28_small_rocks")
+
+; ---- TULIPS/FLOWERS (Scattered across grassy areas) ----
+[node name="Tulip1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(200, 175)
+texture = ExtResource("15_tulip")
+
+[node name="Tulip2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(250, 420)
+texture = ExtResource("15_tulip")
+
+[node name="Tulip3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(320, 540)
+texture = ExtResource("15_tulip")
+
+[node name="Tulip4" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(175, 340)
+texture = ExtResource("15_tulip")
+
+[node name="Tulip5" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(285, 200)
+texture = ExtResource("15_tulip")
+
+[node name="Tulip6" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(180, 450)
+texture = ExtResource("15_tulip")
+
+; ---- SMALL MUSHROOMS (Scattered) ----
+[node name="MushroomBlue1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(350, 380)
+texture = ExtResource("16_mushroom_blue")
+
+[node name="MushroomBlue2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(270, 450)
+texture = ExtResource("16_mushroom_blue")
+
+[node name="MushroomYellow1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(340, 240)
+texture = ExtResource("24_mushroom_yellow")
+
+[node name="MushroomYellow2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(400, 470)
+texture = ExtResource("24_mushroom_yellow")
+
+[node name="MushroomGreen1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(260, 500)
+texture = ExtResource("25_mushroom_green")
+
+; ---- LEAVES (Scattered on ground) ----
+[node name="Leaves1" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(55, 480)
+texture = ExtResource("23_leaves")
+
+[node name="Leaves2" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(430, 420)
+texture = ExtResource("23_leaves")
+
+[node name="Leaves3" type="Sprite2D" parent="ObjectsLayer"]
+position = Vector2(520, 500)
+texture = ExtResource("23_leaves")

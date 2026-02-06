@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr01_free_sample/fr01_free_sample_pack/FR_005_imp.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "fire_scorchling"
+display_name = "Scorchling"
+description = "A mischievous imp that leaves tiny burn marks wherever it walks. Loves to play pranks."
+element = "fire"
+base_hp = 30
+base_attack = 50
+base_defense = 25
+base_speed = 70
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["fire_ignite", "fire_ember", "fire_warm_glow", "fire_flame_strike"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(1.0, 0.3, 0.3, 1)
+color_secondary = Color(0.8, 0.1, 0.1, 1)
+height_m = 0.25
+weight_kg = 1.5

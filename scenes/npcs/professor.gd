@@ -4,20 +4,27 @@ class_name ProfessorOak
 ## Tracks whether player has spoken to him before via story flags.
 
 const FLAG_MET_PROFESSOR := "met_professor"
+const FLAG_RECEIVED_STARTER := "received_starter"
 
-## Dialogue for first meeting
+## Dialogue for first meeting (before receiving creature)
 var first_meeting_dialogue: Array[String] = [
 	"Ah, a new trainer! Welcome!",
 	"I'm Professor Oak. I study creatures in this region.",
-	"Would you like to receive your first creature?",
-	"Come visit me in the lab when you're ready!"
+	"Here, take this creature as your first partner!",
 ]
 
-## Dialogue after first meeting
+## Dialogue for receiving the creature
+var receive_creature_dialogue: Array[String] = [
+	"This is Primordius, the First.",
+	"An ancient being, forged from meteorite and carved with unknowable glyphs.",
+	"Take good care of it!",
+]
+
+## Dialogue after receiving creature
 var return_dialogue: Array[String] = [
-	"Welcome back!",
-	"Ready to choose your first creature?",
-	"The lab is just south of here."
+	"How is Primordius doing?",
+	"That creature has been with us since the beginning of time.",
+	"Treat it well, trainer!"
 ]
 
 
@@ -27,21 +34,40 @@ func _ready() -> void:
 
 
 func _update_dialogue() -> void:
-	var game_state := get_node_or_null("/root/GameState")
-	if game_state and game_state.get_story_flag(FLAG_MET_PROFESSOR):
+	if GameState.get_story_flag(FLAG_RECEIVED_STARTER):
 		dialogue_lines = return_dialogue
+	elif GameState.get_story_flag(FLAG_MET_PROFESSOR):
+		dialogue_lines = receive_creature_dialogue
 	else:
 		dialogue_lines = first_meeting_dialogue
 
 
 func _on_interact() -> void:
-	# Set the flag on first interaction
-	var game_state := get_node_or_null("/root/GameState")
-	if game_state and not game_state.get_story_flag(FLAG_MET_PROFESSOR):
-		game_state.set_story_flag(FLAG_MET_PROFESSOR, true)
+	var should_give_creature := false
+
+	# First interaction - set met flag
+	if not GameState.get_story_flag(FLAG_MET_PROFESSOR):
+		GameState.set_story_flag(FLAG_MET_PROFESSOR, true)
+		should_give_creature = true
+	# Second interaction - give the creature
+	elif not GameState.get_story_flag(FLAG_RECEIVED_STARTER):
+		should_give_creature = true
 
 	# Call parent to show dialogue
 	super._on_interact()
 
+	# Give creature after dialogue
+	if should_give_creature and not GameState.get_story_flag(FLAG_RECEIVED_STARTER):
+		_give_starter_creature()
+
 	# Update dialogue for next time
 	_update_dialogue()
+
+
+func _give_starter_creature() -> void:
+	# Create Primordius at level 10
+	var primordius := GameState.create_creature("legendary_earth_gorilla", 10, "Professor Oak's Lab")
+	if primordius:
+		GameState.add_to_party(primordius)
+		GameState.set_story_flag(FLAG_RECEIVED_STARTER, true)
+		print("Professor gave you Primordius!")

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr04_free_sample/fr04_free_sample_pack/FR_040_EldritchGod.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "air_galeor"
+display_name = "Galeor"
+description = "A fierce storm spirit. When angered, it can summon hurricane-force winds."
+element = "air"
+base_hp = 60
+base_attack = 75
+base_defense = 45
+base_speed = 70
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["air_gale_force", "air_gust", "air_weaken", "air_breeze"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.4, 0.5, 0.6, 1)
+color_secondary = Color(0.7, 0.75, 0.8, 1)
+height_m = 2.0
+weight_kg = 3.0

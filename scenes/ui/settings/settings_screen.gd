@@ -402,6 +402,8 @@ func _create_rebind_row(parent: Control, action: String, display_name: String) -
 	conflict_label.text = "CONFLICT"
 	conflict_label.add_theme_font_size_override("font_size", 8)
 	conflict_label.add_theme_color_override("font_color", Color.RED)
+	conflict_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	conflict_label.add_theme_constant_override("outline_size", 3)
 	conflict_label.visible = false
 	row.add_child(conflict_label)
 

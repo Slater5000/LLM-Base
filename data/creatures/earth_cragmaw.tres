@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr04_free_sample/fr04_free_sample_pack/FR_031_Foot.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "earth_cragmaw"
+display_name = "Cragmaw"
+description = "Its jaw is made of jagged stone. It chomps through rock to tunnel underground."
+element = "earth"
+base_hp = 60
+base_attack = 75
+base_defense = 70
+base_speed = 25
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["earth_rock_slam", "earth_stone_wall", "earth_dust_recovery", "earth_fortify"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.35, 0.3, 0.25, 1)
+color_secondary = Color(0.2, 0.15, 0.1, 1)
+height_m = 1.2
+weight_kg = 200.0

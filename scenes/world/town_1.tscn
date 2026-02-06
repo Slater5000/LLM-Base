@@ -4,7 +4,11 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="Script" uid="uid://box81h2psjai" path="res://scenes/components/spawn_point.gd" id="3_spawn"]
 [ext_resource type="Script" uid="uid://dj7ygm4t8iwvv" path="res://scenes/components/area_transition.gd" id="4_transition"]
-[ext_resource type="PackedScene" path="res://scenes/npcs/professor.tscn" id="5_professor"]
+[ext_resource type="PackedScene" uid="uid://25au2m6x8q7j" path="res://scenes/npcs/professor.tscn" id="5_professor"]
+[ext_resource type="PackedScene" uid="uid://dhealing_station1" path="res://scenes/world/objects/healing_station.tscn" id="8_healing"]
+[ext_resource type="PackedScene" uid="uid://dstorage_terminal1" path="res://scenes/world/objects/storage_terminal.tscn" id="9_storage"]
+[ext_resource type="PackedScene" uid="uid://dnpb7agyxkm3y" path="res://scenes/world/objects/tall_grass.tscn" id="6_tallgrass"]
+[ext_resource type="Script" uid="uid://c37nn3xdapj4c" path="res://scenes/world/objects/grass_encounter_zone.gd" id="7_encounterzone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary"]
 size = Vector2(700, 32)
@@ -89,6 +93,96 @@ y_sort_enabled = true
 [node name="Professor" parent="NPCs" unique_id=1885674516 instance=ExtResource("5_professor")]
 position = Vector2(340, 380)
 
+[node name="Stations" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="HealingStation" parent="Stations" instance=ExtResource("8_healing")]
+position = Vector2(180, 260)
+
+[node name="StorageTerminal" parent="Stations" instance=ExtResource("9_storage")]
+position = Vector2(180, 380)
+
+[node name="GrassPatch" type="Node2D" parent="." unique_id=1718765377]
+script = ExtResource("7_encounterzone")
+spawn_table = Array[String](["legendary_earth_gorilla", "legendary_air_octopus", "legendary_water_jellyfish", "legendary_fire_cat"])
+spawn_interval_min = 4.0
+spawn_interval_max = 8.0
+spawn_chance = 0.6
+creature_linger_min = 20.0
+creature_linger_max = 40.0
+
+[node name="Grass1" parent="GrassPatch" unique_id=1172844775 instance=ExtResource("6_tallgrass")]
+position = Vector2(480, 420)
+
+[node name="Grass2" parent="GrassPatch" unique_id=1616044437 instance=ExtResource("6_tallgrass")]
+position = Vector2(504, 420)
+
+[node name="Grass3" parent="GrassPatch" unique_id=540491678 instance=ExtResource("6_tallgrass")]
+position = Vector2(528, 420)
+
+[node name="Grass4" parent="GrassPatch" unique_id=716323218 instance=ExtResource("6_tallgrass")]
+position = Vector2(552, 420)
+
+[node name="Grass5" parent="GrassPatch" unique_id=687177204 instance=ExtResource("6_tallgrass")]
+position = Vector2(576, 420)
+
+[node name="Grass6" parent="GrassPatch" unique_id=21805862 instance=ExtResource("6_tallgrass")]
+position = Vector2(600, 420)
+
+[node name="Grass7" parent="GrassPatch" unique_id=553474264 instance=ExtResource("6_tallgrass")]
+position = Vector2(480, 444)
+
+[node name="Grass8" parent="GrassPatch" unique_id=1669643872 instance=ExtResource("6_tallgrass")]
+position = Vector2(504, 444)
+
+[node name="Grass9" parent="GrassPatch" unique_id=1443434508 instance=ExtResource("6_tallgrass")]
+position = Vector2(528, 444)
+
+[node name="Grass10" parent="GrassPatch" unique_id=1081016134 instance=ExtResource("6_tallgrass")]
+position = Vector2(552, 444)
+
+[node name="Grass11" parent="GrassPatch" unique_id=1449184894 instance=ExtResource("6_tallgrass")]
+position = Vector2(576, 444)
+
+[node name="Grass12" parent="GrassPatch" unique_id=333688400 instance=ExtResource("6_tallgrass")]
+position = Vector2(600, 444)
+
+[node name="Grass13" parent="GrassPatch" unique_id=1714444286 instance=ExtResource("6_tallgrass")]
+position = Vector2(480, 468)
+
+[node name="Grass14" parent="GrassPatch" unique_id=1462523602 instance=ExtResource("6_tallgrass")]
+position = Vector2(504, 468)
+
+[node name="Grass15" parent="GrassPatch" unique_id=260474636 instance=ExtResource("6_tallgrass")]
+position = Vector2(528, 468)
+
+[node name="Grass16" parent="GrassPatch" unique_id=84893712 instance=ExtResource("6_tallgrass")]
+position = Vector2(552, 468)
+
+[node name="Grass17" parent="GrassPatch" unique_id=2037960782 instance=ExtResource("6_tallgrass")]
+position = Vector2(576, 468)
+
+[node name="Grass18" parent="GrassPatch" unique_id=259142356 instance=ExtResource("6_tallgrass")]
+position = Vector2(600, 468)
+
+[node name="Grass19" parent="GrassPatch" unique_id=777053529 instance=ExtResource("6_tallgrass")]
+position = Vector2(480, 492)
+
+[node name="Grass20" parent="GrassPatch" unique_id=482756246 instance=ExtResource("6_tallgrass")]
+position = Vector2(504, 492)
+
+[node name="Grass21" parent="GrassPatch" unique_id=1345037573 instance=ExtResource("6_tallgrass")]
+position = Vector2(528, 492)
+
+[node name="Grass22" parent="GrassPatch" unique_id=1408320478 instance=ExtResource("6_tallgrass")]
+position = Vector2(552, 492)
+
+[node name="Grass23" parent="GrassPatch" unique_id=1494270962 instance=ExtResource("6_tallgrass")]
+position = Vector2(576, 492)
+
+[node name="Grass24" parent="GrassPatch" unique_id=2094917587 instance=ExtResource("6_tallgrass")]
+position = Vector2(600, 492)
+
 [node name="Player" parent="." unique_id=813389767 instance=ExtResource("2_player")]
 position = Vector2(340, 316)
 
@@ -102,5 +196,5 @@ offset_bottom = 38.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 17
 text = "STARTER TOWN"

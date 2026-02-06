@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/Generation0/aaron_gp0_007.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "fire_flamara"
+display_name = "Flamara"
+description = "A graceful fire dancer. It performs elaborate displays to attract mates during mating season."
+element = "fire"
+base_hp = 40
+base_attack = 55
+base_defense = 40
+base_speed = 80
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["fire_ignite", "fire_warm_glow", "fire_ember", "fire_flame_strike"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(1.0, 0.6, 0.8, 1)
+color_secondary = Color(1.0, 0.3, 0.5, 1)
+height_m = 0.7
+weight_kg = 12.0

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/moves/move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+move_id = "earth_terra_shield"
+display_name = "Terra Shield"
+description = "Raises earthen barriers to protect all allies."
+element = "earth"
+target_type = "all_allies"
+effect_type = "shield"
+power = 60
+stat_modifier = 0.0
+stat_affected = "none"
+duration_turns = 0
+speed_modifier = 0.9

@@ -1,7 +1,29 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(ls:*)",
+      "Bash(python tools/extract_from_tmx.py:*)",
+      "Bash(python:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd world assets, Craftpix packs, and decoration scenes\n\nBiome 01 Assets:\n- Terrain transition tiles \\(grass, dirt, sand, water, beach\\)\n- Decorations \\(bushes, mushrooms, rocks, shrubs, flowers\\)\n- Hills, fences, bridges, trees\n\nCraftpix Asset Packs:\n- cursed_land, fields, guild_hall, home\n- plants, trees, undead, village, workshop, ui\n\nTilesets:\n- biome01_terrain.tres\n- cursed_ground.tres\n\nDecoration Scenes:\n- Trees \\(tree1-3, flower_tree\\)\n- Bushes \\(plain, pink/white/yellow flowers\\)\n- Rocks \\(small, medium, big, cluster\\)\n- Mushrooms \\(blue, green, yellow\\)\n- Misc \\(fence, pot, flower, leaves\\)\n\nWorld Scenes:\n- Updated town_1, route_1, house_interior\n- Test scenes\n\nTools:\n- Sprite extraction scripts\n- TMX parser for Tiled maps\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(dir:*)",
+      "Bash(where /r \"%APPDATA%\" save.json)",
+      "Bash(findstr:*)",
+      "Bash(cmd /c \"dir /s /b C:\\\\Users\\\\slate\\\\AppData\\\\*save.json 2>nul\")",
+      "Bash(cmd /c:*)",
+      "Bash(copy:*)",
+      "Bash(powershell:*)",
+      "Bash(magick identify:*)",
+      "Bash(godot:*)",
+      "WebFetch(domain:civitai.com)",
+      "WebFetch(domain:steamcommunity.com)",
+      "WebFetch(domain:aethermancer.wiki.gg)",
+      "WebFetch(domain:bulbapedia.bulbagarden.net)",
+      "WebFetch(domain:gameuidatabase.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

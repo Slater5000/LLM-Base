@@ -27,8 +27,14 @@ var element: String = "fire"
 @export var move_learn_levels: Array[int] = []
 
 @export_group("Visuals")
+@export var sprite_texture: Texture2D
+@export var sprite_scale: float = 1.0  ## Scale multiplier for display (use < 1.0 for larger source assets)
 @export var color_primary: Color = Color.WHITE
 @export var color_secondary: Color = Color.GRAY
+
+@export_group("Physical")
+@export var height_m: float = 1.0  ## Height in meters
+@export var weight_kg: float = 10.0  ## Weight in kg
 
 
 ## Get display name, falling back to species_id if empty

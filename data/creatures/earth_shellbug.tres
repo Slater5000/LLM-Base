@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr01_free_sample/fr01_free_sample_pack/FR_006_ladybug.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "earth_shellbug"
+display_name = "Shellbug"
+description = "A cheerful beetle with an armored shell. Farmers welcome it as a sign of good harvest."
+element = "earth"
+base_hp = 45
+base_attack = 35
+base_defense = 70
+base_speed = 40
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["earth_fortify", "earth_stone_wall", "earth_rock_slam", "earth_dust_recovery"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.9, 0.2, 0.2, 1)
+color_secondary = Color(0.1, 0.1, 0.1, 1)
+height_m = 0.3
+weight_kg = 5.0

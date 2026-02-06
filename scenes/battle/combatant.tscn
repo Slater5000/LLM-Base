@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://combatant_battle_node"]
+
+[ext_resource type="Script" path="res://scenes/battle/combatant.gd" id="1_script"]
+
+[node name="Combatant" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CreatureSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -32)
+
+[node name="BarsContainer" type="Node2D" parent="."]
+position = Vector2(0, 16)
+
+[node name="NameLabel" type="Label" parent="BarsContainer"]
+position = Vector2(-26, -8)
+size = Vector2(52, 12)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 8
+text = "Creature Lv5"
+horizontal_alignment = 1
+
+[node name="HPBar" type="Node2D" parent="BarsContainer"]
+position = Vector2(0, 4)
+
+[node name="Background" type="ColorRect" parent="BarsContainer/HPBar"]
+position = Vector2(-24, 0)
+size = Vector2(48, 6)
+color = Color(0.15, 0.15, 0.15, 1)
+
+[node name="Fill" type="ColorRect" parent="BarsContainer/HPBar"]
+position = Vector2(-24, 0)
+size = Vector2(48, 6)
+color = Color(0.2, 0.8, 0.2, 1)
+
+[node name="ActionBar" type="Node2D" parent="BarsContainer"]
+position = Vector2(0, 12)
+
+[node name="Background" type="ColorRect" parent="BarsContainer/ActionBar"]
+position = Vector2(-24, 0)
+size = Vector2(48, 4)
+color = Color(0.1, 0.1, 0.1, 1)
+
+[node name="Fill" type="ColorRect" parent="BarsContainer/ActionBar"]
+position = Vector2(-24, 0)
+size = Vector2(0, 4)
+color = Color(0.2, 0.6, 0.9, 1)
+
+[node name="SwapFreezeLabel" type="Label" parent="."]
+position = Vector2(-15, -60)
+size = Vector2(30, 15)
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 10
+text = "5.0"
+horizontal_alignment = 1
+visible = false

@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://route_2_scene"]
+[gd_scene load_steps=7 format=3 uid="uid://route_2_scene"]
 
 [ext_resource type="Script" path="res://scenes/world/route_1.gd" id="1_route1"]
 [ext_resource type="Script" path="res://scenes/components/spawn_point.gd" id="2_spawn"]
 [ext_resource type="Script" path="res://scenes/components/area_transition.gd" id="3_transition"]
+[ext_resource type="PackedScene" path="res://scenes/world/objects/tall_grass.tscn" id="4_tallgrass"]
+[ext_resource type="Script" path="res://scenes/world/objects/grass_encounter_zone.gd" id="5_encounter"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(32, 32)
@@ -63,26 +65,54 @@ offset_right = 240.0
 offset_bottom = 700.0
 color = Color(0.2, 0.42, 0.22, 1)
 
-[node name="TopForest1" type="ColorRect" parent="ForestBorder"]
+[node name="TopForest1Left" type="ColorRect" parent="ForestBorder"]
 offset_left = -100.0
+offset_top = -100.0
+offset_right = 115.0
+offset_bottom = 30.0
+color = Color(0.12, 0.32, 0.14, 1)
+
+[node name="TopForest1Right" type="ColorRect" parent="ForestBorder"]
+offset_left = 185.0
 offset_top = -100.0
 offset_right = 400.0
 offset_bottom = 30.0
 color = Color(0.12, 0.32, 0.14, 1)
 
-[node name="TopForest2" type="ColorRect" parent="ForestBorder"]
+[node name="TopForest2Left" type="ColorRect" parent="ForestBorder"]
 offset_left = -100.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 50.0
+color = Color(0.16, 0.38, 0.18, 1)
+
+[node name="TopForest2Right" type="ColorRect" parent="ForestBorder"]
+offset_left = 180.0
 offset_top = 20.0
 offset_right = 400.0
 offset_bottom = 50.0
 color = Color(0.16, 0.38, 0.18, 1)
 
-[node name="TopForest3" type="ColorRect" parent="ForestBorder"]
+[node name="TopForest3Left" type="ColorRect" parent="ForestBorder"]
 offset_left = -100.0
+offset_top = 40.0
+offset_right = 125.0
+offset_bottom = 65.0
+color = Color(0.2, 0.42, 0.22, 1)
+
+[node name="TopForest3Right" type="ColorRect" parent="ForestBorder"]
+offset_left = 175.0
 offset_top = 40.0
 offset_right = 400.0
 offset_bottom = 65.0
 color = Color(0.2, 0.42, 0.22, 1)
+
+[node name="CursedPathTeaser" type="ColorRect" parent="ForestBorder"]
+offset_left = 115.0
+offset_top = -100.0
+offset_right = 185.0
+offset_bottom = 65.0
+color = Color(0.42, 0.18, 0.15, 0.6)
 
 [node name="BottomForest1" type="ColorRect" parent="ForestBorder"]
 offset_left = -100.0
@@ -537,14 +567,23 @@ scale = Vector2(0.25, 0.25)
 
 [node name="Boundaries" type="Node2D" parent="."]
 
-[node name="TopWall" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(150, 65)
+[node name="TopWallLeft" type="StaticBody2D" parent="Boundaries"]
+position = Vector2(100, 65)
 collision_layer = 1
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/TopWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/TopWallLeft"]
 shape = SubResource("RectangleShape2D_wall")
-scale = Vector2(6, 1)
+scale = Vector2(1.5, 1)
+
+[node name="TopWallRight" type="StaticBody2D" parent="Boundaries"]
+position = Vector2(200, 65)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/TopWallRight"]
+shape = SubResource("RectangleShape2D_wall")
+scale = Vector2(1.5, 1)
 
 [node name="LeftWall" type="StaticBody2D" parent="Boundaries"]
 position = Vector2(85, 300)
@@ -577,7 +616,25 @@ script = ExtResource("2_spawn")
 spawn_id = "from_left"
 facing_direction = "up"
 
+[node name="FromCursed" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(150, 100)
+script = ExtResource("2_spawn")
+spawn_id = "from_cursed"
+facing_direction = "down"
+
 [node name="Transitions" type="Node2D" parent="."]
+
+[node name="NorthEdge" type="Area2D" parent="Transitions"]
+position = Vector2(150, 70)
+script = ExtResource("3_transition")
+target_scene = "res://scenes/world/cursed_lands.tscn"
+target_spawn_id = "from_north"
+trigger_mode = 0
+edge_direction = "top"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/NorthEdge"]
+shape = SubResource("RectangleShape2D_wall")
+scale = Vector2(3, 0.5)
 
 [node name="SouthEdge" type="Area2D" parent="Transitions"]
 position = Vector2(150, 555)
@@ -601,3 +658,97 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 14
 text = "ROUTE 1"
+
+[node name="CursedSign" type="Node2D" parent="."]
+position = Vector2(150, 80)
+
+[node name="Shadow" type="ColorRect" parent="CursedSign"]
+z_index = -1
+offset_left = -3.0
+offset_top = 22.0
+offset_right = 8.0
+offset_bottom = 28.0
+color = Color(0.1, 0.08, 0.06, 0.4)
+
+[node name="Post" type="ColorRect" parent="CursedSign"]
+offset_left = -2.0
+offset_right = 2.0
+offset_bottom = 24.0
+color = Color(0.35, 0.22, 0.18, 1)
+
+[node name="Sign" type="ColorRect" parent="CursedSign"]
+offset_left = -32.0
+offset_top = -14.0
+offset_right = 32.0
+offset_bottom = 4.0
+color = Color(0.45, 0.25, 0.2, 1)
+
+[node name="SignFront" type="ColorRect" parent="CursedSign"]
+offset_left = -30.0
+offset_top = -12.0
+offset_right = 30.0
+offset_bottom = 2.0
+color = Color(0.55, 0.32, 0.28, 1)
+
+[node name="Text" type="Label" parent="CursedSign"]
+offset_left = -30.0
+offset_top = -11.0
+offset_right = 30.0
+offset_bottom = 3.0
+theme_override_colors/font_color = Color(0.8, 0.15, 0.12, 1)
+theme_override_font_sizes/font_size = 8
+text = "↑ CURSED LANDS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Collision" type="StaticBody2D" parent="CursedSign"]
+position = Vector2(0, 18)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CursedSign/Collision"]
+shape = SubResource("RectangleShape2D_wall")
+scale = Vector2(0.25, 0.25)
+
+[node name="GrassEncounterZone" type="Node2D" parent="."]
+script = ExtResource("5_encounter")
+spawn_table = Array[String](["legendary_earth_gorilla", "legendary_air_octopus", "legendary_water_jellyfish", "legendary_fire_cat"])
+spawn_interval_min = 3.0
+spawn_interval_max = 8.0
+spawn_chance = 0.8
+
+[node name="Grass1_1" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(105, 120)
+
+[node name="Grass1_2" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(125, 120)
+
+[node name="Grass1_3" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(115, 140)
+
+[node name="Grass2_1" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(170, 200)
+
+[node name="Grass2_2" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(190, 200)
+
+[node name="Grass2_3" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(180, 220)
+
+[node name="Grass3_1" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(100, 320)
+
+[node name="Grass3_2" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(115, 340)
+
+[node name="Grass4_1" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(175, 420)
+
+[node name="Grass4_2" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(195, 440)
+
+[node name="Grass5_1" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(105, 490)
+
+[node name="Grass5_2" parent="GrassEncounterZone" instance=ExtResource("4_tallgrass")]
+position = Vector2(125, 510)

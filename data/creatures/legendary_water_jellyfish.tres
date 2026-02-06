@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="AtlasTexture" path="res://assets/sprites/creatures/luminara_front.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -16,6 +17,9 @@ evolves_from = ""
 evolves_at_level = 0
 evolves_to = ""
 learnable_moves = ["water_hydro_pulse", "water_healing_wave", "water_refreshing_mist", "water_bubble_shield"]
-move_learn_levels = [1, 10, 25, 40]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
 color_primary = Color(0.3, 0.6, 0.9, 1)
 color_secondary = Color(0.8, 0.9, 1.0, 1)
+height_m = 1.2
+weight_kg = 45.0

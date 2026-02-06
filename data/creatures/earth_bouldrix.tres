@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CreatureSpecies" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/creatures/creature_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/monster_packs/fr01_free_sample/fr01_free_sample_pack/FR_010_gigas.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+species_id = "earth_bouldrix"
+display_name = "Bouldrix"
+description = "An ancient stone giant awakened from a mountain. Moves slowly but hits like an avalanche."
+element = "earth"
+base_hp = 85
+base_attack = 80
+base_defense = 90
+base_speed = 15
+evolves_from = ""
+evolves_at_level = 0
+evolves_to = ""
+learnable_moves = ["earth_rock_slam", "earth_stone_wall", "earth_fortify", "earth_dust_recovery"]
+move_learn_levels = [1, 5, 10, 17]
+sprite_texture = ExtResource("2")
+sprite_scale = 1.0
+color_primary = Color(0.3, 0.3, 0.35, 1)
+color_secondary = Color(0.5, 0.5, 0.55, 1)
+height_m = 3.5
+weight_kg = 800.0
