@@ -1,0 +1,501 @@
+extends RefCounted
+## Pure data definitions for all upgrades and evolutions.
+## No game logic here — just dictionaries describing what each upgrade does.
+
+# Upgrade categories
+enum Category { PASSIVE_WEAPON, BULLET_MOD, STATUS_EFFECT, STAT, EVOLUTION }
+
+# Icon shape types (drawn procedurally in level-up UI)
+enum IconShape { DIAMOND, CIRCLE, ARROW_UP, FLAME, STAR }
+
+# --- Upgrade Definitions ---
+# Each upgrade is a Dictionary with:
+#   id: String — unique key
+#   name: String — display name
+#   description: String — what it does (updated per level)
+#   category: Category
+#   icon_shape: IconShape
+#   color: Color — icon and card accent color
+#   max_level: int — 1-5
+#   descriptions: Array[String] — per-level description text
+
+static func get_all_upgrades() -> Dictionary:
+	return {
+		# === PASSIVE WEAPONS (15) ===
+		"fireball": {
+			"id": "fireball",
+			"name": "FIREBALL",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(1.0, 0.4, 0.1),
+			"max_level": 5,
+			"descriptions": [
+				"Explosion at nearest enemy every 3s",
+				"Faster (2.5s), larger radius",
+				"Faster (2s), even larger",
+				"Faster (1.5s), massive radius",
+				"Fastest (1s), devastating blasts",
+			],
+		},
+		"chain_lightning": {
+			"id": "chain_lightning",
+			"name": "CHAIN LIGHTNING",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.4, 0.6, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"Bolt chains to 2 enemies every 2s",
+				"Chains to 3, faster (1.7s)",
+				"Chains to 4, faster (1.4s)",
+				"Chains to 5, faster (1.1s)",
+				"Chains to 6, fastest (0.8s)",
+			],
+		},
+		"death_spiral": {
+			"id": "death_spiral",
+			"name": "DEATH SPIRAL",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.9, 0.1, 0.2),
+			"max_level": 5,
+			"descriptions": [
+				"1 blade orbits you",
+				"2 blades orbit you",
+				"3 blades orbit you",
+				"4 blades orbit you",
+				"5 blades orbit you",
+			],
+		},
+		"ice_nova": {
+			"id": "ice_nova",
+			"name": "ICE NOVA",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.6, 0.85, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"Freezing ring every 6s",
+				"Faster (5s), wider ring",
+				"Faster (4s), longer freeze",
+				"Faster (3s), huge radius",
+				"Fastest (2.5s), long freeze",
+			],
+		},
+		"poison_cloud": {
+			"id": "poison_cloud",
+			"name": "POISON CLOUD",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.3, 0.9, 0.2),
+			"max_level": 3,
+			"descriptions": [
+				"Toxic zone follows you (1 DPS)",
+				"Larger zone (2 DPS)",
+				"Huge zone (3 DPS)",
+			],
+		},
+		"runetracer": {
+			"id": "runetracer",
+			"name": "RUNETRACER",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.3, 0.9, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"1 permanent bouncing rune",
+				"Faster hit rate",
+				"2 bouncing runes",
+				"3 runes, faster spawn",
+				"4 runes, fastest spawn",
+			],
+		},
+		"meteor_shower": {
+			"id": "meteor_shower",
+			"name": "METEOR SHOWER",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(1.0, 0.7, 0.1),
+			"max_level": 5,
+			"descriptions": [
+				"1 meteor every 4s",
+				"Faster (3.5s)",
+				"2 meteors per cast (3s)",
+				"Faster (2.5s)",
+				"3 meteors per cast (2s)",
+			],
+		},
+		"thunder_strike": {
+			"id": "thunder_strike",
+			"name": "THUNDER STRIKE",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.5, 0.8, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"Lightning bolt every 3s",
+				"Faster (2.5s)",
+				"Faster (2s)",
+				"2 strikes per cast (1.5s)",
+				"2 strikes, fastest (1s)",
+			],
+		},
+		"holy_water": {
+			"id": "holy_water",
+			"name": "HOLY WATER",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.6, 0.7, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"Sacred damage zone every 5s",
+				"Faster (4s), wider zone",
+				"Larger zone, longer (3.5s)",
+				"Faster (3s), huge zone",
+				"Max zone, longest (2.5s)",
+			],
+		},
+		"homing_missiles": {
+			"id": "homing_missiles",
+			"name": "HOMING MISSILES",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(1.0, 0.7, 0.2),
+			"max_level": 5,
+			"descriptions": [
+				"1 seeking missile every 3s",
+				"Faster (2.5s)",
+				"2 missiles per burst (2s)",
+				"3 missiles (1.5s)",
+				"4 missiles, fastest (1s)",
+			],
+		},
+		"gravity_well": {
+			"id": "gravity_well",
+			"name": "GRAVITY WELL",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.5, 0.2, 0.8),
+			"max_level": 5,
+			"descriptions": [
+				"Singularity pulls enemies (7s)",
+				"Faster (6s), wider pull",
+				"Faster (4.5s), stronger",
+				"Faster (3s), huge radius",
+				"Fastest (2s), devastating",
+			],
+		},
+		"shockwave": {
+			"id": "shockwave",
+			"name": "SHOCKWAVE",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.8, 0.9, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"Expanding ring every 4s",
+				"Faster (3.5s), wider",
+				"Faster (3s), more damage",
+				"Faster (2s), huge ring",
+				"Fastest (1.5s), massive",
+			],
+		},
+		"drone_swarm": {
+			"id": "drone_swarm",
+			"name": "DRONE SWARM",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.3, 0.9, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"1 orbiting drone",
+				"2 drones",
+				"3 drones",
+				"4 drones",
+				"6 drones",
+			],
+		},
+		"soul_harvest": {
+			"id": "soul_harvest",
+			"name": "SOUL HARVEST",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.8, 0.3, 0.9),
+			"max_level": 3,
+			"descriptions": [
+				"15% kill explosion chance",
+				"25% chance, wider blast",
+				"40% chance, huge blast",
+			],
+		},
+		"thorn_aura": {
+			"id": "thorn_aura",
+			"name": "THORN AURA",
+			"category": Category.PASSIVE_WEAPON,
+			"icon_shape": IconShape.DIAMOND,
+			"color": Color(0.6, 0.9, 0.2),
+			"max_level": 5,
+			"descriptions": [
+				"Damage ring around you (1 DPS)",
+				"Wider ring (2 DPS)",
+				"Wider ring (3 DPS)",
+				"Huge ring (4 DPS)",
+				"Max ring (6 DPS)",
+			],
+		},
+
+		# === BULLET MODS (5) ===
+		"fire_rate": {
+			"id": "fire_rate",
+			"name": "RAPID FIRE",
+			"category": Category.BULLET_MOD,
+			"icon_shape": IconShape.CIRCLE,
+			"color": Color(1.0, 0.9, 0.3),
+			"max_level": 5,
+			"descriptions": [
+				"+20% fire rate",
+				"+40% fire rate",
+				"+60% fire rate",
+				"+80% fire rate",
+				"+100% fire rate",
+			],
+		},
+		"bullet_size": {
+			"id": "bullet_size",
+			"name": "HEAVY ROUNDS",
+			"category": Category.BULLET_MOD,
+			"icon_shape": IconShape.CIRCLE,
+			"color": Color(0.7, 0.7, 0.9),
+			"max_level": 5,
+			"descriptions": [
+				"+30% bullet size",
+				"+60% bullet size",
+				"+90% bullet size",
+				"+120% bullet size",
+				"+150% bullet size",
+			],
+		},
+		"spread_shot": {
+			"id": "spread_shot",
+			"name": "SPREAD SHOT",
+			"category": Category.BULLET_MOD,
+			"icon_shape": IconShape.CIRCLE,
+			"color": Color(0.4, 0.9, 0.6),
+			"max_level": 5,
+			"descriptions": [
+				"2 bullets per shot",
+				"3 bullets per shot",
+				"4 bullets per shot",
+				"5 bullets per shot",
+				"6 bullets per shot",
+			],
+		},
+		"piercing": {
+			"id": "piercing",
+			"name": "PIERCING",
+			"category": Category.BULLET_MOD,
+			"icon_shape": IconShape.CIRCLE,
+			"color": Color(0.9, 0.5, 0.3),
+			"max_level": 3,
+			"descriptions": [
+				"Bullets pierce 1 enemy",
+				"Bullets pierce 2 enemies",
+				"Bullets pierce 3 enemies",
+			],
+		},
+		"laser": {
+			"id": "laser",
+			"name": "LASER BEAM",
+			"category": Category.BULLET_MOD,
+			"icon_shape": IconShape.CIRCLE,
+			"color": Color(0.3, 1.0, 0.9),
+			"max_level": 1,
+			"descriptions": [
+				"Replace bullets with a beam",
+			],
+		},
+
+		# === STATUS EFFECTS (2) ===
+		"burn": {
+			"id": "burn",
+			"name": "IGNITE",
+			"category": Category.STATUS_EFFECT,
+			"icon_shape": IconShape.FLAME,
+			"color": Color(1.0, 0.5, 0.1),
+			"max_level": 3,
+			"descriptions": [
+				"15% burn chance on hit",
+				"25% burn chance on hit",
+				"35% burn chance on hit",
+			],
+		},
+		"freeze": {
+			"id": "freeze",
+			"name": "FREEZE",
+			"category": Category.STATUS_EFFECT,
+			"icon_shape": IconShape.FLAME,
+			"color": Color(0.5, 0.8, 1.0),
+			"max_level": 3,
+			"descriptions": [
+				"15% freeze chance on hit",
+				"25% freeze chance on hit",
+				"35% freeze chance on hit",
+			],
+		},
+
+		# === STAT UPGRADES (5) ===
+		"move_speed": {
+			"id": "move_speed",
+			"name": "SPEED BOOST",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(0.3, 1.0, 0.5),
+			"max_level": 5,
+			"descriptions": [
+				"+10% move speed",
+				"+20% move speed",
+				"+30% move speed",
+				"+40% move speed",
+				"+50% move speed",
+			],
+		},
+		"magnet": {
+			"id": "magnet",
+			"name": "MAGNET",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(0.9, 0.6, 1.0),
+			"max_level": 5,
+			"descriptions": [
+				"+30% pickup range",
+				"+60% pickup range",
+				"+90% pickup range",
+				"+120% pickup range",
+				"+150% pickup range",
+			],
+		},
+		"xp_boost": {
+			"id": "xp_boost",
+			"name": "XP BOOST",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(0.5, 1.0, 0.7),
+			"max_level": 3,
+			"descriptions": [
+				"+15% XP gain",
+				"+30% XP gain",
+				"+45% XP gain",
+			],
+		},
+		"extra_life": {
+			"id": "extra_life",
+			"name": "EXTRA LIFE",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(1.0, 0.3, 0.4),
+			"max_level": 2,
+			"descriptions": [
+				"+1 life",
+				"+1 life",
+			],
+		},
+		"extra_bomb": {
+			"id": "extra_bomb",
+			"name": "EXTRA BOMB",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(1.0, 1.0, 0.4),
+			"max_level": 3,
+			"descriptions": [
+				"+1 bomb",
+				"+1 bomb",
+				"+1 bomb",
+			],
+		},
+	}
+
+
+static func get_all_evolutions() -> Dictionary:
+	return {
+		"bullet_storm": {
+			"id": "bullet_storm",
+			"name": "BULLET STORM",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(1.0, 0.9, 0.3),
+			"requires": ["fire_rate", "spread_shot"],
+			"description": "8 bullets per shot, +50% fire rate, smart-aim",
+		},
+		"railgun": {
+			"id": "railgun",
+			"name": "RAILGUN",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.7, 0.7, 0.9),
+			"requires": ["bullet_size", "piercing"],
+			"description": "Massive bullet, infinite pierce, damage trail",
+		},
+		"inferno": {
+			"id": "inferno",
+			"name": "INFERNO",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(1.0, 0.4, 0.0),
+			"requires": ["fireball", "burn"],
+			"description": "Fireballs leave burning ground",
+		},
+		"thunder_storm": {
+			"id": "thunder_storm",
+			"name": "THUNDER STORM",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.4, 0.6, 1.0),
+			"requires": ["chain_lightning", "freeze"],
+			"description": "Lightning chains to ALL enemies, each freezes",
+		},
+		"void_reaper": {
+			"id": "void_reaper",
+			"name": "VOID REAPER",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.5, 0.1, 0.6),
+			"requires": ["death_spiral", "move_speed"],
+			"description": "2x larger blades with gravitational pull",
+		},
+		"prismatic_storm": {
+			"id": "prismatic_storm",
+			"name": "PRISMATIC STORM",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.9, 0.5, 1.0),
+			"requires": ["runetracer", "bullet_size"],
+			"description": "3x larger runes, bounces spawn mini-runes",
+		},
+		"singularity": {
+			"id": "singularity",
+			"name": "SINGULARITY",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.3, 0.1, 0.5),
+			"requires": ["gravity_well", "ice_nova"],
+			"description": "Well freezes enemies, collapse shatters them",
+		},
+		"guardian_angel": {
+			"id": "guardian_angel",
+			"name": "GUARDIAN ANGEL",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(1.0, 1.0, 0.8),
+			"requires": ["drone_swarm", "shockwave"],
+			"description": "3x larger drones with mini-shockwaves",
+		},
+		"plague": {
+			"id": "plague",
+			"name": "PLAGUE",
+			"category": Category.EVOLUTION,
+			"icon_shape": IconShape.STAR,
+			"color": Color(0.2, 0.6, 0.1),
+			"requires": ["soul_harvest", "poison_cloud"],
+			"description": "Deaths release poison clouds, self-propagating",
+		},
+	}

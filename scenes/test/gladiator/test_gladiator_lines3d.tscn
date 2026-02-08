@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://test_gladiator_lines3d"]
+
+[ext_resource type="Script" path="res://scenes/test/gladiator/test_gladiator_lines3d.gd" id="1_main"]
+[ext_resource type="Script" path="res://scenes/test/gladiator/gladiator_lines3d.gd" id="2_fighter"]
+[ext_resource type="Script" path="res://scenes/test/gladiator/shared/rng_combat.gd" id="3_combat"]
+
+[sub_resource type="Environment" id="Environment_neon"]
+background_mode = 1
+background_color = Color(0.01, 0.01, 0.02, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.05, 0.05, 0.1, 1)
+ambient_light_energy = 0.3
+glow_enabled = true
+glow_intensity = 2.0
+glow_strength = 1.8
+glow_bloom = 0.6
+glow_blend_mode = 0
+
+[node name="TestGladiatorLines3D" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_neon")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 5)
+
+[node name="GridFloor" type="Node3D" parent="."]
+
+[node name="FighterA" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 0)
+script = ExtResource("2_fighter")
+fighter_name = "Cyan"
+base_color = Color(0, 1, 1, 1)
+facing_right = true
+weapon_color = Color(1, 0.5, 0, 1)
+
+[node name="FighterB" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 0)
+script = ExtResource("2_fighter")
+fighter_name = "Magenta"
+base_color = Color(1, 0, 1, 1)
+facing_right = false
+weapon_color = Color(0.5, 1, 0, 1)
+
+[node name="RNGCombat" type="Node" parent="."]
+script = ExtResource("3_combat")
+
+[node name="UILayer" type="CanvasLayer" parent="."]

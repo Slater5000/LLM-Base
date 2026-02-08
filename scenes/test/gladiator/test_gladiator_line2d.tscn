@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://test_gladiator_line2d"]
+
+[ext_resource type="Script" path="res://scenes/test/gladiator/test_gladiator_line2d.gd" id="1_main"]
+[ext_resource type="Script" path="res://scenes/test/gladiator/gladiator_line2d.gd" id="2_fighter"]
+[ext_resource type="Script" path="res://scenes/test/gladiator/shared/rng_combat.gd" id="3_combat"]
+
+[sub_resource type="Environment" id="Environment_glow"]
+background_mode = 1
+background_color = Color(0.05, 0.05, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.2, 0.3, 1)
+glow_enabled = true
+glow_intensity = 0.8
+glow_strength = 1.2
+glow_bloom = 0.3
+glow_blend_mode = 0
+
+[node name="TestGladiatorLine2D" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_glow")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(1.5, 1.5)
+
+[node name="Arena" type="Node2D" parent="."]
+
+[node name="Floor" type="Line2D" parent="Arena"]
+points = PackedVector2Array(-400, 120, 400, 120)
+width = 3.0
+default_color = Color(0.3, 0.3, 0.4, 1)
+
+[node name="LeftWall" type="Line2D" parent="Arena"]
+points = PackedVector2Array(-400, 120, -400, -200)
+width = 2.0
+default_color = Color(0.2, 0.2, 0.3, 1)
+
+[node name="RightWall" type="Line2D" parent="Arena"]
+points = PackedVector2Array(400, 120, 400, -200)
+width = 2.0
+default_color = Color(0.2, 0.2, 0.3, 1)
+
+[node name="FighterA" type="Node2D" parent="."]
+position = Vector2(-150, 50)
+script = ExtResource("2_fighter")
+fighter_name = "Cyan"
+base_color = Color(0, 1, 1, 1)
+facing_right = true
+
+[node name="FighterB" type="Node2D" parent="."]
+position = Vector2(150, 50)
+script = ExtResource("2_fighter")
+fighter_name = "Magenta"
+base_color = Color(1, 0, 1, 1)
+facing_right = false
+
+[node name="RNGCombat" type="Node" parent="."]
+script = ExtResource("3_combat")
+
+[node name="UILayer" type="CanvasLayer" parent="."]

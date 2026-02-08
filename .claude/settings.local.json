@@ -23,7 +23,15 @@
       "WebFetch(domain:bulbapedia.bulbagarden.net)",
       "WebFetch(domain:gameuidatabase.com)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:docs.godotengine.org)",
+      "Bash(gdlint:*)",
+      "Bash(\"C:\\\\Users\\\\slate\\\\OneDrive\\\\Desktop\\\\Godot_v4.6-stable_win64.exe\" --headless --path \"c:\\\\Projects\\\\Firstpass\\\\LLM-Base\" --quit)",
+      "Bash(\"C:\\\\Users\\\\slate\\\\OneDrive\\\\Desktop\\\\Godot_v4.6-stable_win64.exe\" --headless --path \"c:\\\\Projects\\\\Firstpass\\\\LLM-Base\" --check-only --script \"res://scenes/prototypes/shmup/effects/vfx_manager.gd\")",
+      "Bash(git status:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Projects\\Firstpass\\LLM-Base"
     ]
   }
 }

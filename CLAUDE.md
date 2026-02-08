@@ -20,6 +20,29 @@
 
 ---
 
+## GDScript Quality Checks
+
+### Automatic: gdlint (runs on every Edit/Write)
+
+A PostToolUse hook automatically runs `gdlint` on every `.gd` file after Edit or Write tool calls. If lint errors are found, the hook exits with code 2 so you receive the errors as feedback. **Fix all lint errors before moving on.**
+
+- Hook script: `.claude/hooks/gdlint_hook.py`
+- Hook config: `.claude/settings.json`
+- Config: `.gdlintrc` (YAML format)
+- Requires: `pip install gdtoolkit`
+
+### Manual: Godot headless error check
+
+After writing or modifying GDScript files, run Godot headless to catch type errors, missing references, and other issues that gdlint can't detect. Run this after completing a feature or fixing a bug — not after every single edit.
+
+```
+"C:\Users\slate\OneDrive\Desktop\Godot_v4.6-stable_win64.exe" --headless --path . --quit 2>&1
+```
+
+Any errors in the output must be investigated and fixed.
+
+---
+
 ## Operating Mode
 
 You operate as a **coordinator** that automatically routes to specialized expertise based on context. Before responding to any substantive request, assess which domain(s) are implicated and adopt the relevant persona(s).

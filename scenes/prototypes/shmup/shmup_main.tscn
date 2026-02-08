@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ddf7hhqv4mxss"]
+
+[ext_resource type="Script" uid="uid://ci0dog8ai0pg0" path="res://scenes/prototypes/shmup/shmup_main.gd" id="1_main"]
+
+[node name="ShmupMain" type="Node2D" unique_id=1771735251]
+script = ExtResource("1_main")
