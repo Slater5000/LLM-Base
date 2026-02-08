@@ -58,8 +58,9 @@ Selectable from the main menu as an alternative to the normal game. A **pure ant
 - **No food counter visible.** Food is tracked internally for auto-spawning but the player never sees a number or a menu. Pure visual experience.
 - **Player CAN name ants.** Click any ant to name it. This is Education Mode's main interaction — watch Greg haul food, watch Steve dig tunnels.
 - **Cosmetics from normal mode available.** Any hats, trails, or cosmetics unlocked in normal mode can be used in Education Mode. Education Mode is a **viewer, not an unlocker** — you can't earn new cosmetics here.
-- **Multiple save slots.** Each Education Mode colony is its own save. Start new ones whenever, return to old ones. Same save system as normal mode.
+- **One save slot.** Education Mode has a single save slot. One colony at a time. Reset to start fresh.
 - **Infinite, gentle scaling.** Colony grows slowly over time, expanding outward. No endgame, no goals. Just watch it go.
+- **Also powers the main menu background.** See Main Menu section.
 
 **Auto-Spawner System (Hidden):**
 
@@ -96,16 +97,106 @@ The colony grows itself. All of this is invisible to the player — no numbers, 
 
 ---
 
+## Main Menu & Navigation
+
+### Main Menu
+- **Background:** A running Education Mode-style ant colony. Couple hundred ants, healthy colony, purely cosmetic. **Freshly generated each app launch** — not saved, not persistent. Low ant count for performance.
+- **Buttons overlaid on top** of the background colony.
+
+**Main Menu Flow:**
+```
+MAIN MENU (anthill background)
+├── Start Game → [Normal Mode | Education Mode | Back]
+│   ├── Normal Mode → Colony Screen
+│   │   ├── Current Colony (active save)
+│   │   ├── Delete Colony button (with "Are you sure?" confirmation)
+│   │   └── Legacy Colonies button (only visible after beating first colony)
+│   │       └── Scrollable list of retired colonies (name + click to resume)
+│   └── Education Mode → Single save slot (play or reset)
+├── Options → Settings Menu
+└── Quit
+```
+
+### Save System
+
+**One active colony per mode.** Normal Mode has one active colony. Education Mode has one active colony. That's it.
+
+**Normal Mode progression:**
+- **First time playing:** One save slot. No Legacy menu visible.
+- **Beat the game** (buy "Over the Rainbow") → colony is "completed." Player may choose to start a new colony.
+- **Starting a new colony** retires the completed colony to the **Legacy Colonies** screen.
+- **Resetting** deletes the current colony back to zero (with confirmation dialog). Does NOT count as beating the game.
+- **Legacy Colonies** are fully playable save slots — return to any retired colony, keep playing, save progress.
+- **Cannot start a new colony** until the current one is beaten (Over the Rainbow) or reset to zero. Committed to your choices.
+- **Colony count** (number of retired colonies) determines meta-progression (+1 starting worker per colony founded).
+
+**Save deletion:** Only accessible from the Colony Screen (Normal Mode menu). NOT from in-game settings/pause menu.
+
+**What persists between colonies:** See Prestige System section.
+
+**No offline progression.** The game only runs when open. No fake idle rewards. It's a screen saver, not a mobile game trying to trick you into thinking you're rewarded for not playing.
+
+### Settings Menu
+
+Settings save **separately from game saves** — persist across all colonies and modes.
+
+**Phase 1 (ship with):**
+
+| Category | Settings |
+|----------|----------|
+| **Audio** | Master volume, Music volume, SFX volume |
+| **Display** | Window Mode (borderless default), Resolution, Max FPS (30/60/120/144/Unlimited), UI Scale, Screen Shake (slider) |
+| **Gameplay** | Number Format (Standard 1500 / Short 1.5K / Scientific 1.5e3), Auto-Save Interval |
+| **Performance** | Quality Preset (Low/Medium/High), Max Visible Ants (slider, ants beyond cap still simulated but not drawn), Show FPS Counter |
+| **Controls** | Key Rebinding |
+| **Data** | Manual Save, Delete Save (with confirmation) |
+
+**Phase 2 (as systems come online):**
+
+| Category | Settings |
+|----------|----------|
+| **Visuals** | Pheromone Trail Visibility (slider) + Quality (Simple/Normal/Detailed), Ant Detail Level (dots/normal/full), Show Ant Names |
+| **Accessibility** | Colorblind Mode (Deuteranopia/Protanopia/Tritanopia), Reduced Motion |
+| **Gameplay** | Zoom Speed, Edge Scrolling |
+
+**Phase 3 (polish):**
+
+| Category | Settings |
+|----------|----------|
+| **Accessibility** | High Contrast Mode, Font Size, Large Cursor |
+| **Controls** | Controller Support (future), Controller Deadzone |
+| **Data** | Cloud Save, Export/Import Save |
+
+**Architecture notes:**
+- Settings persist across save slots (separate save file)
+- Number formatting = shared utility class (called thousands of times per frame)
+- Max Visible Ants is the single most impactful performance lever
+- Auto-reduce system: lightweight autoload monitors FPS, progressively dials down visual settings
+
+---
+
 ## The World
 
 ### Starting State
 - Entire screen is **solid brown dirt**
 - Center of screen: a small **half-circle chamber** (flat bottom, curved top)
 - Inside the chamber: **the Queen Ant** (player) — noticeably larger than worker ants introduced later
-- **Food pile** in center of chamber — starts with ~5 orange food bits
-- Food pile has a **red circle radius indicator** on the floor showing its collection zone
-- The floor under the food pile and starting chamber is **indestructible**
-- Tunnel background is **black** (or dark — TBD). Empty space = black. Dirt = brown. Clean contrast.
+- **The Larder** in center of chamber — the food storage area. Starts with ~5 orange food bits on a dirt pedestal.
+- The starting chamber has a **warm orange-yellow glow gradient** on the floor that fades from center outward. **This glow IS the collection zone** — ants entering the glow auto-deposit food. No harsh red circle.
+- **The entire starting chamber is the deposit radius.** No radius upgrade — the room size is the radius. If it feels too big, shrink the room.
+- The floor under the Larder and starting chamber is **indestructible** — can never mine out your own home base.
+- The starting chamber has **visually distinct walls** — smoother, subtle root details, feels like "home" compared to raw tunnel.
+- Tunnel background is **very dark brown** (`~Color(0.12, 0.08, 0.05)`). NOT pure black — reads as deep earth shadow, not void. Clearly "empty space" but thematically underground.
+
+**Larder Visual Progression (food pile grows with deposits):**
+
+| Food Amount | Visual |
+|-------------|--------|
+| 0-50 | Small dirt pedestal, scattered orange pieces on top |
+| 50-500 | Growing mound, food visibly piling up, slight warm glow |
+| 500-5000 | Proper hill of food, some tumbling off edges, golden-orange glow |
+| 5000-50000 | Overflowing mountain, food embedded in nearby walls, strong warm glow |
+| 50000+ | Absurd pile, fills most of the starting chamber, practically radiating |
 
 ### Terrain System
 - **Granular carve aesthetics** — the visual reference is Noita-style destruction: organic crater shapes, sharp irregular edges, bite marks that look like bites. NOT Noita's physics engine (no falling sand, no liquid simulation, no cellular automata). The reference is purely visual — how terrain *looks* when destroyed, not how it *behaves* afterward. Noita was built on a custom engine specifically for pixel physics; we don't need that. We need the *carve feel* — granular enough to avoid blocky tile removal.
@@ -136,31 +227,37 @@ The colony grows itself. All of this is invisible to the player — no numbers, 
 - Large rocks (15+ tiles): major obstacles that shape entire tunnel networks
 - **No damage, no death, no hazards.** Just logistics obstacles.
 
-### Distance-Based Gradient System (No Hard Layers)
+### Distance-Based Gradient System — Geological Eras (No Hard Layers)
 
-Instead of discrete concentric layers with hard borders, terrain difficulty and food types are based on **distance from the starting chamber** with smooth gradient transitions.
+Instead of discrete concentric layers with hard borders, terrain difficulty and food types are based on **distance from the starting chamber** with smooth gradient transitions. The terrain passes through distinct **geological eras** that shift the entire color palette — the journey never just "ends at black."
 
 **How it works:**
 - `distance_from_origin` determines everything: dirt hardness, dirt color, food value (linear band scaling)
-- Colors blend smoothly — brown gradually shifts to tan, then darker, etc.
+- Colors blend smoothly between eras — no visible borders between "zones"
 - Food is always orange — value increases with distance but appearance stays the same
-- No visible borders between "zones" — just gradual transitions in terrain color and difficulty
 - The terrain gradient IS the visual indicator of depth and food value
+- **Indestructible rocks shift tint with era** — gray in topsoil, reddish-gray in clay, blue-gray in basalt, dark violet in crystal. Always clearly "rock" but they belong to their environment.
 
-**Distance Scaling:**
+**Geological Eras:**
 
-| Distance | Dirt Color Shift | Dig Difficulty | Food Value (linear bands) | Special |
-|----------|-----------------|----------------|--------------------------|---------|
-| 0-200 | Brown | 1x (1-2 bites) | Low (early bands) | — |
-| 200-500 | Brown → Tan | 2-3x | ↑ | — |
-| 500-1000 | Tan → Dark Brown | 4-6x | ↑ | — |
-| 1000-2000 | Dark Brown → Clay Grey | 8-12x | ↑ | — |
-| 2000-4000 | Grey → Dark Grey/Stone | 16-24x | ↑ | — |
-| 4000-8000 | Stone → Slate | 32-48x | ↑ | — |
-| 8000-16000 | Slate → Obsidian | 64-96x | High (deep bands) | — |
-| 16000+ | Obsidian + Crystal Veins | 128x+ (exponential) | Highest | Rainbow food spawns (endgame currency) |
+| Distance | Era | Palette | Dig Difficulty | Background Accents |
+|----------|-----|---------|----------------|-------------------|
+| 0-500 | **Topsoil** | Sandy tan → warm brown | 1-2x | Roots, worm tunnels, small stones |
+| 500-1500 | **Earth** | Rich brown → dark brown | 2-4x | Organic matter, embedded beetle fossils |
+| 1500-3000 | **Clay** | Reddish-brown → terra cotta | 4-8x | Compressed horizontal layers, pottery-like |
+| 3000-5000 | **Limestone** | Cream → pale yellow | 8-16x | Fossil shells, ammonite spirals, sediment lines |
+| 5000-8000 | **Granite** | Pink-gray speckled | 16-32x | Mica flecks, quartz veins, crystalline texture |
+| 8000-12000 | **Basalt** | Dark blue-gray | 32-64x | Volcanic veins, occasional orange lava streaks |
+| 12000-16000 | **Crystal** | Deep purple → violet | 64-128x | Amethyst formations, sparkle, crystal shards |
+| 16000-24000 | **Prismatic** | Shifting iridescent | 128x+ | Rainbow food territory, otherworldly shimmer |
+| 24000-40000 | **Bioluminescent** | Deep sea teal/cyan | Extreme | Glowing fungi, alien organic textures |
+| 40000+ | **Cosmic** | Space purple-black + star specks | Extreme | Nebula wisps, rotating colors, infinite variety |
 
-All regular food is **orange** regardless of distance. Value = band number (linear: 1, 2, 3...). The terrain gradient IS the visual indicator of food worth. See **Food System → Food Value** for details.
+**The deepest layers are MORE colorful, not darker.** The journey goes warm → earthy → pale → hard → dark → sparkly → magical → alien → cosmic. You never hit a boring visual dead end. The Cosmic layer can go on forever — space-purple with varying nebula accents never hits a wall.
+
+**Each era transition is a milestone moment.** "I just broke into the Crystal layer!" feels like an achievement even without a popup. Players recognize where they are by color.
+
+All regular food is **orange** regardless of distance. Value = band number (linear: 1, 2, 3...). Band size (~200 tiles, needs tuning) determines how quickly value scales. See **Food System → Food Value** for details.
 
 **World Discovery / Zoom:**
 - Camera starts zoomed in on starting chamber
@@ -192,20 +289,23 @@ All regular food is **orange** regardless of distance. Value = band number (line
 
 ### Controls
 - **WASD** — Movement (left, right, up, down)
-- **Mouse Click (Left)** — Dig in aimed direction
-- **Hold Mouse Click** — Auto-mine (continuous digging at cooldown rate)
-- **Mouse position** — Aim direction for digging
-- **Scroll Wheel** — Zoom in/out
-- **Tab / E** — Open upgrade menu
-- **Q** — Place dirt (reverse dig, build ramps/bridges) — requires Dirt Placement upgrade
+- **Mouse position** — Aim direction (queen's head tracks mouse, allows aiming up/down/left/right in 2D side-view)
+- **Left Click** — Dig in aimed direction
+- **Hold Left Click** — Auto-mine (continuous digging at cooldown rate)
+- **Right Click** — Place dirt at mouse position (fixed range, doesn't scale with any upgrade). When hovering over transport/logistics, right-click opens context menu instead.
 - **Hold duration** — Controls bite size (tap = small, short hold = medium, long hold = large)
+- **Scroll Wheel** — Zoom in/out
+- **Tab / E** — Open Evolve (upgrade) menu
+- **B** — Open Build menu (transport placement)
+- **Click on any ant** — Name/rename dialog
 
 ### Movement Rules
 - **Wall climbing** — Ants stick to any surface (floor, walls, ceiling)
 - **No jumping at start** — unlockable via Jump+Dash or other Player Traversal pick
-- **Traversal solution** — Place dirt to create climbable surfaces / ramps / bridges (Place Dirt upgrade)
+- **Traversal solution** — Place dirt (right-click) to create climbable surfaces / ramps / bridges (Place Dirt upgrade)
 - **Gravity** — Ants fall if not touching a surface (unless Jetpack traversal pick)
 - Movement speed upgradeable
+- **Queen NEVER has a speed penalty.** Not from carrying food, not from anything. Always at full speed.
 
 ### Digging
 - Click in a direction → Queen bites/digs a chunk of dirt in that direction
@@ -223,13 +323,24 @@ All regular food is **orange** regardless of distance. Value = band number (line
 - **Dig Methods** replace basic bite animation — see Upgrade System → PLAYER ANT for Gun, Laser, Butt Acid, Explosion (pick 1 of 4)
 - **Endgame (rainbow food):** Super Mandibles (one-bite anything), Mega Bite (massive AOE)
 
+### Place Dirt (Right-Click)
+- **Requires Place Dirt upgrade** from LOGISTICS panel
+- **Right-click** to place dirt at mouse position within range
+- **Fixed baked-in range** — decent mid-range distance, never changes, NOT tied to any upgrade (tying it to Dig Range would make Dig Range mandatory/OP)
+- **Doesn't need to connect to anything** — floating dirt in mid-air is fine (build bridges, platforms, ramps)
+- **Placed dirt = base hardness** — easy to re-dig if you make a mistake
+- **Cannot place over transport routes** — shows warning icon / red highlight. Prevents accidentally breaking infrastructure.
+- **Cannot place in starting chamber** — Larder area is always protected
+- **Visual:** Dirt chunks fly from queen in aimed direction and solidify on impact
+
 ### Carrying
 - Touch exposed food → it attaches to top of Queen's body
 - **Carry capacity** starts at 3-5 pieces
 - Food visually stacks on the ant
-- Must return to food pile to deposit
+- **No speed penalty.** Queen always moves at full speed regardless of how much food she's carrying.
+- **Food auto-deposits** when entering the Larder (starting chamber glow zone). Just walk in.
 - **Upgradeable progression:**
-  - More carry slots (Carry Capacity upgrade, 1/10 tiers)
+  - More carry slots (Carry Capacity upgrade, 0/10 tiers)
   - Void storage (food auto-deposits on pickup — endgame rainbow food unlock)
 
 ---
@@ -269,12 +380,13 @@ Food value scales linearly based on distance bands (layers) from the starting ch
 - Extremely rare — finding one is an event
 - Rainbow food menu only **visible and accessible** after buying "Over the Rainbow" (see below)
 
-### Food Pile
+### The Larder (Food Pile)
 - Located in the starting chamber
-- **Red circle radius** — shows collection zone
-- Workers automatically deposit food here when they enter the radius
-- Radius is upgradeable (larger = workers deposit from further away)
-- Indestructible floor — can never lose your pile
+- **Warm glow gradient** on tunnel floor marks the collection zone (no harsh red circle). Fades from center outward.
+- **The starting chamber IS the collection radius.** No radius upgrade — the room size is the radius. Enter the glow, auto-deposit.
+- Workers automatically deposit food here when they enter the glow zone
+- Indestructible floor — can never mine out your own home base
+- Visually grows through stages as food accumulates (see Starting State section for progression table)
 
 ### Ant Egg Colors
 Real ant eggs are **white/cream/translucent**. So:
@@ -290,22 +402,25 @@ Real ant eggs are **white/cream/translucent**. So:
 
 ## Upgrade System
 
-### Structure: "Evolve" Tree with Tabs
-Open with **Tab/E** at any time (pauses or overlays). The upgrade menu is called **"Evolve"** — thematically, every upgrade is your colony evolving. Categories across the top as tabs. Each category is a branching skill tree with standard upgrades and Build Choice forks. Spend **food currency** to unlock nodes. Some nodes have prerequisites (buy the one above to unlock the one below).
+### Structure: "Evolve" Menu — Three Panels
+Open with **Tab/E** at any time (pauses or overlays). The upgrade menu is called **"Evolve"** — thematically, every upgrade is your colony evolving. Three panels displayed **side by side on one page** — Player Ant, Colony, Logistics. NOT tabs — all three visible simultaneously. Spend **food currency** to unlock nodes.
 
-**Rainbow Food upgrades** are a separate tab — only visible once rainbow food has been found. Functions as an endgame "cheat menu" with absurd power fantasy unlocks.
+**No tier locking.** Upgrades are laid out top-to-bottom as intended progression, but nothing is gated behind prerequisites. You can skip entire rows and save up for something further down. It wouldn't be efficient (lower upgrades are cheaper and useful), but you can. Nothing is a requirement — every purchase is your choice.
+
+**Rainbow Food upgrades** are a separate section — only visible once rainbow food has been found. Functions as an endgame "cheat menu" with absurd power fantasy unlocks.
 
 **Transport infrastructure is FREE to place once unlocked.** You spend food to unlock the UPGRADE (e.g., "Minecart System"), then you can place unlimited track/carts for free. No per-piece cost. Building the network is the fun part, not the tax.
 
-**All tiered upgrades are 1/10** (ten levels each) unless otherwise noted. This gives smooth progression with lots of small bumps rather than a few big jumps.
+**All tiered upgrades are 0/10** (ten purchases each) unless otherwise noted. 0/10 means: you have 10 upgrades to buy. Each one gives the same increment. Start at 0, buy up to 10. Simple.
 
-**Upgrade Toggleability:** All upgrades with active effects (Base Conveyor, Ant Cannon, Food Singularity, Relay Chains, Boogie Bomb, etc.) can be **toggled on/off** at any time. Purchases are permanent — you can't un-buy or switch forks — but activation is optional. This lets players experiment without regret.
+**Upgrade Toggleability:** All upgrades with active effects (Auto Conveyor, Ant Cannon, Food Singularity, Relay Chains, Boogie Bomb, etc.) can be **toggled on/off** at any time. Purchases are permanent — you can't un-buy or switch forks — but activation is optional. This lets players experiment without regret.
 
 ### Build Choice Forks
 
 The upgrade tree contains **mutually exclusive forks** at key progression points. Fork size varies by context:
 - **Pick 2 of 3** — for stat choices where you want variety without being gimped (e.g., dig range/speed/radius)
 - **Pick 1 of 4** — for transformative choices that define your playstyle (e.g., dig methods, player traversal)
+- **Pick 1 of 3** — for hauling efficiency choices with distinct identities
 - **Pick 1 of 2** — for infrastructure choices with clear tradeoffs (e.g., tramway vs conveyor)
 
 All forks are **permanent per colony.** Different colonies = different builds = reason to prestige. **All fork options are pure positives** — no drawbacks unique to one option. Differentiation is what they're good AT, not what they cost.
@@ -330,16 +445,26 @@ Both player dig strength and miner dig strength have extended progression:
 
 ### PLAYER ANT
 
-The queen's personal abilities. This is your "character build."
+The queen's personal abilities, stats, and automation tools. This is your "character build."
 
-**Unlock order (top to bottom in tree):**
+**Upgrade order (top to bottom in panel):**
 
 | Upgrade | Type | Effect |
 |---------|------|--------|
 | Auto Mining | Standard | Hold click to continuously dig. **First unlock in the game** — don't make the player click-spam. |
-| Scaling Dig Strength | Standard (1/50) | Increases player dig damage. Cross-colony persistence after tier 50. See Dig Power Scaling above. |
-| Dig Range / Dig Speed / Dig Radius | **Pick 2 of 3** (each 1/10) | Range = dig from further away. Speed = faster cooldown. Radius = bigger bite. Can't have all three. |
+| Scaling Dig Strength | Standard (0/50) | Increases player dig damage. Cross-colony persistence after tier 50. See Dig Power Scaling above. |
+| Food Magnet | Standard (0/10) | Exposed food flies toward queen from increasing distance. Convenience, not game-breaking. |
+| Player Speed | Standard (0/10) | Queen moves faster. |
+| Carry Capacity | Standard (0/10) | Queen carries more food. Visually stacks on ant body. |
+| Dig Range / Dig Speed / Dig Radius | **Pick 2 of 3** (each 0/10) | Range = dig from further away. Speed = faster cooldown. Radius = bigger bite. Can't have all three. |
+| Auto Worker | Standard | Set miner/hauler ratio + food threshold. When food exceeds threshold, auto-hires at the set ratio. Idle game QOL. |
+| Architect Ant | Standard | Special ant that auto-places and upgrades logistics infrastructure. Cycles between transport systems. Competent, not weak — decent auto-placement. Single purchase. |
+| Auto Evolve | Standard | UI feature: checkbox on each upgrade node — "auto-buy when affordable." Player decides WHAT to auto-buy, system handles the clicking. |
 | Gun / Laser / Butt Acid / Explosion | **Pick 1 of 4** | Transforms HOW the queen digs. Biggest build-defining choice. See Dig Methods below. |
+
+Void Storage moved to Rainbow Food endgame. Magnet + Capacity + Speed is a clean trio — convenience, volume, mobility.
+
+**Auto Worker + Architect Ant + Auto Evolve** are the mid-game automation trio. All buyable (not a fork), each filling a distinct role. The Architect is a single, competent ant that cycles through your transport systems placing infrastructure. You will appreciate and love your architect ant.
 
 **Dig Methods (Pick 1 of 4):**
 
@@ -367,27 +492,70 @@ These replace the default bite animation but don't lock you out of it. Each has 
 
 **Note on visuals:** Stat upgrades affect the visual (bigger bullet, wider beam, etc.) but the MECHANICAL effect is always "more dirt pixels removed per attack." The visual reflects the reality.
 
-### MOVEMENT
+### COLONY
 
-Player traversal + all transport infrastructure (for ants and food). All transport infrastructure is **free to place** once unlocked. The upgrade cost IS the gate.
+Worker ant upgrades. Miners get their **OWN** dig method pick, independent from the player's choice.
 
-**Conveyor belts work on ANY solid surface** — floor, walls, ceiling. Anywhere there's continuous solid terrain, you can run a conveyor.
-
-**Unlock order (top to bottom in tree):**
+**Upgrade order (top to bottom in panel):**
 
 | Upgrade | Type | Effect |
 |---------|------|--------|
-| Place Dirt | Standard | Place dirt blocks to build ramps/bridges/walls. **First unlock in Movement.** |
-| Player Speed | Standard (1/10) | Queen moves faster |
-| Ant Move Speed | Standard (1/10) | All worker ants move faster |
-| Pheromone Highways | Standard | All ants + player leave pheromone trails. Well-traveled routes give speed boost. See below. |
+| Unlock Workers | Standard | Unlocks miners and haulers. See Worker Unlock Flow below. |
+| Scaling Miner Strength | Standard (0/50) | Miner dig damage scales with terrain difficulty. Cross-colony persistence after tier 50. |
+| Ant Move Speed | Standard (0/10) | All worker ants move faster. |
+| Ant Haul Capacity | Standard (0/10) | Haulers carry more food per trip. Base 5, +1 per tier, max 15. |
+| Relay Chain / Food Singularity / Ant Cannon | **Pick 1 of 3** | Mid-game hauling efficiency. Cannon = active/exciting, Singularity = passive/magical, Relay = team-coordination. See Hauling Efficiency below. |
+| Miner Dig Range / Speed / Radius | **Pick 2 of 3** (each 0/10) | Same stat types as player but for miners. Independent choice. |
+| Miner Gun / Laser / Butt Acid / Explosion | **Pick 1 of 4** | Same dig methods as player but for miners. Independent choice. |
+
+**Miners get their own build identity.** "My queen has a laser but my miners have guns" is a valid build. This is an idle game — the automation deserves as much creative identity as the player.
+
+**Worker Unlock Flow:**
+1. Buy "Unlock Workers" → miners and haulers both become available
+2. If any unassigned basic gatherers exist, a **slider UI** appears to assign them (Miner ↔ Hauler ratio)
+3. After assignment, two buttons appear permanently: **Buy Miner** and **Buy Hauler** (each costs food)
+4. All assignments are permanent — no swapping roles
+
+**Hauler AI — Claiming System (Blackboard Pattern):**
+Central **Food Manager** runs every ~0.5 seconds, coordinating all haulers:
+- Assigns nearest unclaimed food to idle haulers
+- **Claims** prevent two haulers targeting the same food piece
+- **Proximity-based claim stealing:** If a closer hauler becomes idle and an existing claim is held by a distant hauler, the closer hauler steals the claim. The distant hauler gets reassigned.
+- Food being carried or on transport gets an `in_transport` flag — invisible to hauler targeting
+- This ensures efficient hauler distribution without player micromanagement
+
+**Hauling Efficiency — Pick 1 of 3:**
+
+| Option | How It Works | Strengths |
+|--------|-------------|-----------|
+| **Ant Cannon** | Physical turret placed at base. Haulers deposit food, walk to turret, get launched toward nearest food cluster. Ants STICK to whatever surface they hit (no bounce), then resume AI pathfinding. Toggle: AI-aimed (auto-targets nearest food cluster) or player-aimed (manual turret rotation). Toggleable on/off. | Active, exciting. Rewards clean tunnel design. |
+| **Food Singularity** | Unclaimed exposed food slowly slides along the ground toward home, following the hauler flow field. Only affects food that isn't being carried or on transport. Passive, always-on. Toggleable on/off. Falls back to loading station radius pull if flow field is unavailable. Needs "direction home" awareness — not just nearest station, but toward the food pile. | Passive, magical. Reduces hauler trips. Synergizes with transport infrastructure. |
+| **Relay Chains** | Haulers form bucket brigades. When a hauler carrying food encounters another hauler with available capacity closer to home, they transfer food instantly on contact. **Partial transfers** — if Steve has 7/15 capacity, Greg gives him 8 food (filling Steve to 15), Greg keeps the remaining 2. **Capacity-based claiming** prevents conflicts — nearby haulers "claim" available inventory slots so two carriers can't try to fill the same space. After handing off, the now-lighter hauler walks back toward the frontier for more food. Food hops ant-to-ant through the colony. Toggleable on/off. | More haulers = shorter relay segments = dramatically faster food flow. Solves the late-game distance problem elegantly. Visually adorable (bucket brigade). Makes having lots of haulers feel rewarding — they're all busy, never idle. |
+
+**Relay Chains — How the AI works:**
+Each hauler carrying food scans nearby for haulers with available capacity that are closer to home. Transfer is **instant on contact** — no pause, no animation. Just a number transfer and visual size change. After transferring, the lighter hauler walks back toward the food frontier. The receiving hauler continues toward home (or passes food along to the next relay).
+
+**Self-organizing distribution:** Without explicit zone assignment, haulers naturally settle into "segments" of the route. Haulers near food pick up and pass quickly. Middle haulers shuttle food through relay hops. Haulers near home receive and deposit. The MORE haulers on a route, the SHORTER each segment, and the FASTER food flows. This is the key scaling property — Relay Chains get measurably faster with every additional hauler.
+
+**Interaction with Hauler AI Claiming:** When food is transferred between haulers, the Food Manager's claim transfers to the receiving hauler. Food remains continuously "claimed" — just by a different ant. Clean handoff, no double-targeting.
+
+### LOGISTICS
+
+Transport infrastructure, colony logistics, and player traversal. All transport infrastructure is **free to place** once unlocked. The upgrade cost IS the gate.
+
+**Conveyor belts work on ANY solid surface** — floor, walls, ceiling. Anywhere there's continuous solid terrain, you can run a conveyor.
+
+**Upgrade order (top to bottom in panel):**
+
+| Upgrade | Type | Effect |
+|---------|------|--------|
+| Place Dirt | Standard | Place dirt blocks to build ramps/bridges/walls. **First unlock in Logistics.** |
+| Transport Capacity | Standard (0/10) | More cars/units per transport route. Each tier adds capacity to your chosen transport system. |
 | Elevator / Minecart / Platform / Zip Line | **Pick 1 of 4** | Transport Tier 1: how ants + food move through your colony. See below. |
+| Pheromone Highways | Standard | All ants + player leave pheromone trails. Well-traveled routes give speed boost. See below. |
+| Auto Conveyor | Standard (Toggleable) | Auto-extends a slow conveyor belt from your food pile toward the furthest active mine. One direction, auto-placed. First taste of "things happen without me building them." |
 | Aerial Tramway / Conveyor Belt | **Pick 1 of 2** | Transport Tier 2: food-only transport optimization. See below. |
-| Mega Speed / Grapple Hook / Jetpack / Jump+Dash | **Pick 1 of 4** | Player Traversal: queen's personal movement ability. See below. |
-| Ant Cannon | Standard | Haulers launched toward nearest food cluster after depositing. See below. |
-| Architect Ant | Standard | Special ant that auto-places and upgrades logistics infrastructure. Cycles between transport systems. Competent, not weak — decent auto-placement. Single purchase. See below. |
-| Auto-Upgrade | Standard | UI feature: checkbox on each upgrade node — "auto-buy when affordable." Player decides WHAT to auto-buy, system handles the clicking. |
-| Auto-Buy Worker | Standard | Set miner/hauler ratio + food threshold. When food exceeds threshold, auto-hires at the set ratio. Idle game QOL. |
+| More Legs / Grapple Hook / Jetpack / Jump+Dash | **Pick 1 of 4** | Player Traversal: queen's personal movement ability. See below. |
 | Teleporters / Pneumatic Tubes | **Pick 1 of 2** | Endgame Transport: strategic shortcuts. See below. |
 
 **Pheromone Highways (Standard Upgrade — Core System):**
@@ -412,13 +580,11 @@ Unlocks pheromone trails for **all ants AND the player.** Every ant that walks a
 
 **Note:** Pheromone values and speed formulas need playtesting. The core mechanic is solid but the numbers (deposit rate, decay rate, max speed boost) must be tuned to feel right without being overpowered.
 
-**Architect Ant + Auto-Upgrade + Auto-Buy Worker** unlock in a row (all buyable, not a fork) after Transport Tier 1. These are the mid-game automation trio — keep them separate purchases, each filling a distinct role. The Architect is a single, competent ant that cycles through your transport systems placing infrastructure. You will appreciate and love your architect ant.
-
 **Transport Tier 1 — Pick 1 of 4:**
 
 | Option | Directions | Speed | Best For |
 |--------|-----------|-------|----------|
-| **Elevator** | Vertical (up/down) | Fast | Deep vertical mining colonies |
+| **Elevator (Lift)** | Vertical (up/down) | Fast | Deep vertical mining colonies |
 | **Minecart** | Horizontal (left/right) | Fast | Wide horizontal tunnel networks |
 | **Platform** | 4-directional (NSEW) | Slowish | Flexible general-purpose |
 | **Zip Line** | Diagonal | Fast down, slow up | Diagonal shortcuts, uses gravity |
@@ -440,34 +606,12 @@ Tramway rewards big open chambers. Conveyor rewards clean connected tunnel netwo
 
 | Option | Fantasy | Speed | Natural Limitation |
 |--------|---------|-------|--------------------|
-| **Mega Speed (More Legs)** | The Flash | Very fast | Needs surfaces — can't cross gaps you've dug |
-| **Grapple Hook** | Spider-Man | Fast (burst) | Needs target wall within range — useless in big open spaces |
-| **Jetpack** | Helicopter | Medium | Slower than everything else — but works anywhere, no surfaces needed |
-| **Jump + Dash** | Mario | Moderate | Limited height, limited dash distance |
+| **More Legs (Mega Speed)** | The Flash | Very fast | Needs surfaces — can't cross gaps you've dug |
+| **Grapple Hook** | Spider-Man | Fast (burst) | Can't hover — needs target wall within range, attaches to surfaces |
+| **Jetpack** | Helicopter | Medium | Can hover — slower than everything else but works anywhere |
+| **Mega Jump + Mega Dash** | Mario | Moderate | In-air dash. Limited height, limited dash distance |
 
 No artificial fuel/cooldown mechanics. Each is limited by the terrain naturally.
-
-**Hauling Efficiency — Pick 1 of 3 (Mid-Game):**
-
-| Option | How It Works | Strengths |
-|--------|-------------|-----------|
-| **Ant Cannon** | Physical turret placed at base. Haulers deposit food, walk to turret, get launched toward nearest food cluster. Ants STICK to whatever surface they hit (no bounce), then resume AI pathfinding. Toggle: AI-aimed (auto-targets nearest food cluster) or player-aimed (manual turret rotation). Toggleable on/off. | Active, exciting. Rewards clean tunnel design. |
-| **Food Singularity** | Unclaimed exposed food slowly slides along the ground toward home, following the hauler flow field. Only affects food that isn't being carried or on transport. Passive, always-on. Toggleable on/off. Falls back to loading station radius pull if flow field is unavailable. Needs "direction home" awareness — not just nearest station, but toward the food pile. | Passive, magical. Reduces hauler trips. Synergizes with transport infrastructure. |
-| **Relay Chains** | Haulers form bucket brigades. When a hauler carrying food encounters another hauler with available capacity closer to home, they transfer food instantly on contact. **Partial transfers** — if Steve has 7/15 capacity, Greg gives him 8 food (filling Steve to 15), Greg keeps the remaining 2. **Capacity-based claiming** prevents conflicts — nearby haulers "claim" available inventory slots so two carriers can't try to fill the same space. After handing off, the now-lighter hauler walks back toward the frontier for more food. Food hops ant-to-ant through the colony. Toggleable on/off. | More haulers = shorter relay segments = dramatically faster food flow. Solves the late-game distance problem elegantly. Visually adorable (bucket brigade). Makes having lots of haulers feel rewarding — they're all busy, never idle. |
-
-Cannon = active/exciting, Singularity = passive/magical, Relay = team-coordination.
-
-**Relay Chains — How the AI works:**
-Each hauler carrying food scans nearby for haulers with available capacity that are closer to home. Transfer is **instant on contact** — no pause, no animation. Just a number transfer and visual size change. After transferring, the lighter hauler walks back toward the food frontier. The receiving hauler continues toward home (or passes food along to the next relay).
-
-**Self-organizing distribution:** Without explicit zone assignment, haulers naturally settle into "segments" of the route. Haulers near food pick up and pass quickly. Middle haulers shuttle food through relay hops. Haulers near home receive and deposit. The MORE haulers on a route, the SHORTER each segment, and the FASTER food flows. This is the key scaling property — Relay Chains get measurably faster with every additional hauler.
-
-**Interaction with Hauler AI Claiming:** When food is transferred between haulers, the Food Manager's claim transfers to the receiving hauler. Food remains continuously "claimed" — just by a different ant. Clean handoff, no double-targeting.
-
-**All fork options are pure positives.** No drawbacks unique to one option. Differentiation is what they're good AT, not what they cost.
-
-**Base Conveyor (Standard Upgrade, Toggleable):**
-Auto-extends a slow conveyor belt from your food pile toward the furthest active mine. One direction, auto-placed. Not a fork — everyone can buy this. Toggleable on/off. The first taste of "things happen without me building them." Like a proto-Architect Ant for one conveyor highway.
 
 **Endgame Transport — Pick 1 of 2:**
 
@@ -481,43 +625,6 @@ Auto-extends a slow conveyor belt from your food pile toward the furthest active
 **Pneumatic Tubes:** Place entrance + aim exit **any angle** (360 degrees, straight line) through **solid terrain**. No range limit — as long as the path is through solid ground. Haulers dump food at entrance, it shoots out the exit. If someone digs through the tube's path, **the tube breaks** — creates tension between mining expansion and tube network preservation. **Unlimited tube count.** Faint dotted line visual indicator showing tube path through terrain. Food only.
 
 **Neither replaces Tier 1 or Tier 2 transport.** Worker ants can't use tubes for their own movement (teleporters are the exception). These are primarily food shortcuts. Ant Relay Chain was considered but tabled — balance was tricky, though the visual of ants marching in a chain was cool.
-
-### STORAGE
-
-| Upgrade | Type | Effect |
-|---------|------|--------|
-| Food Magnet | Standard (1/10) | Exposed food flies toward queen from increasing distance. Convenience, not game-breaking. |
-| Carry Capacity | Standard (1/10) | Queen carries more food. Visually stacks on ant body. |
-
-Void Storage moved to Rainbow Food endgame. Magnet + Capacity is a clean pair — convenience then volume.
-
-### COLONY
-
-Worker ant upgrades. Miners get their **OWN** dig method pick, independent from the player's choice.
-
-| Upgrade | Type | Effect |
-|---------|------|--------|
-| Unlock Workers | Standard | Unlocks miners and haulers. See Worker Unlock Flow below. |
-| Scaling Miner Strength | Standard (1/50) | Miner dig damage scales with terrain difficulty. Cross-colony persistence after tier 50. |
-| Ant Haul Capacity | Standard (1/10) | Haulers carry more food per trip. Base 5, +1 per tier, max 15. |
-| Miner Dig Range / Speed / Radius | **Pick 2 of 3** (each 1/10) | Same stat types as player but for miners. Independent choice. |
-| Miner Gun / Laser / Butt Acid / Explosion | **Pick 1 of 4** | Same dig methods as player but for miners. Independent choice. |
-
-**Miners get their own build identity.** "My queen has a laser but my miners have guns" is a valid build. This is an idle game — the automation deserves as much creative identity as the player.
-
-**Worker Unlock Flow:**
-1. Buy "Unlock Workers" → miners and haulers both become available
-2. If any unassigned basic gatherers exist, a **slider UI** appears to assign them (Miner ↔ Hauler ratio)
-3. After assignment, two buttons appear permanently: **Buy Miner** and **Buy Hauler** (each costs food)
-4. All assignments are permanent — no swapping roles
-
-**Hauler AI — Claiming System (Blackboard Pattern):**
-Central **Food Manager** runs every ~0.5 seconds, coordinating all haulers:
-- Assigns nearest unclaimed food to idle haulers
-- **Claims** prevent two haulers targeting the same food piece
-- **Proximity-based claim stealing:** If a closer hauler becomes idle and an existing claim is held by a distant hauler, the closer hauler steals the claim. The distant hauler gets reassigned.
-- Food being carried or on transport gets an `in_transport` flag — invisible to hauler targeting
-- This ensures efficient hauler distribution without player micromanagement
 
 ### COSMETICS
 
@@ -540,12 +647,16 @@ Some cosmetics also purchasable with Rainbow Food (see Rainbow Food section).
 
 ### RAINBOW FOOD — Endgame Cheat Menu
 
-Found extremely rarely at distances 16000+. Rainbow food **always exists** at 16000+ — rare spawns, mysterious shimmer. Players encounter them before understanding what they are. Need 10-30 rainbow food per unlock depending on power level. This tab is a wall of absurd power fantasy rewards — like unlocking a cheat menu for playing the game for hundreds of hours. Queen must physically collect rainbow food herself.
+Found extremely rarely at distances 16000+. Rainbow food **always exists** at 16000+ — rare spawns, mysterious shimmer. Players encounter them before understanding what they are. Need 10-30 rainbow food per unlock depending on power level. This is a wall of absurd power fantasy rewards — like unlocking a cheat menu for playing the game for hundreds of hours. Queen must physically collect rainbow food herself.
+
+**How to access:** A **rainbow button** appears at the top or bottom of the Evolve menu after buying "Over the Rainbow." Clicking it **replaces the 3 panels** with one big rainbow menu. Click again (or a back button) to return to the normal 3-panel view.
+
+**Layout:** One big flat grid of circles. No tree structure, no branches, no progression order. Just all the unlocks laid out in rows — buy whatever you want in any order. Same circle style as the upgrade trees but arranged as a simple grid.
 
 **All rainbow food unlocks are TOGGLEABLE.** Turn them on/off at will from the cheat menu. Sometimes you want Giant Queen off to see your colony normally. Sometimes you turn off Hive Mind to go back to miner/hauler specialization. The cheat menu is a menu, not permanent changes.
 
 **"Over the Rainbow" — Endgame Gate:**
-Very expensive standard purchase at the bottom of the upgrade tree (regular food cost). This is the endgame milestone — buying it **unlocks the rainbow food menu.** Before this purchase, rainbow food currency accumulates silently but the menu isn't accessible. This is the "you beat the game" moment.
+Very expensive standard purchase at the bottom of the upgrade tree (regular food cost). This is the endgame milestone — buying it **unlocks the rainbow food menu button.** Before this purchase, rainbow food currency accumulates silently but the button isn't visible and the menu isn't accessible. This is the "you beat the game" moment.
 
 **Rainbow Food Persistence Between Colonies:**
 - **Rainbow food currency:** Persists between colonies (never lost)
@@ -612,7 +723,7 @@ The total possible builds from all forks:
 **Total unique builds: 3 x 4 x 4 x 2 x 4 x 3 x 2 x 3 x 4 = 27,648 combinations.** Each colony is genuinely different.
 
 ### Upgrade Cost Scaling
-Idle game standard: each upgrade tier costs ~3-5x the previous. Creates natural plateaus where the player needs to push further out to afford the next upgrade. 1/10 upgrades have gentler curves. 1/50 upgrades (dig strength) have very gradual curves that become steep near endgame. Exact values need balance tuning through playtesting.
+Idle game standard: each upgrade tier costs ~3-5x the previous. Creates natural plateaus where the player needs to push further out to afford the next upgrade. 0/10 upgrades have gentler curves. 0/50 upgrades (dig strength) have very gradual curves that become steep near endgame. Exact values need balance tuning through playtesting.
 
 ---
 
@@ -682,7 +793,7 @@ IDLE → FIND_NEAREST_DIRT_NEAR_FOOD → TRAVEL → DIG_DIRT → [food exposed?]
 IDLE → FIND_NEAREST_EXPOSED_FOOD → TRAVEL_TO_FOOD → PICK_UP → TRAVEL_TO_PILE_OR_STATION → DEPOSIT → repeat
 ```
 - Target: exposed food sitting in tunnels
-- **Base carry capacity: 5 food.** Haul Capacity upgrade (1/10) adds +1 per tier → max **15 food.**
+- **Base carry capacity: 5 food.** Haul Capacity upgrade (0/10) adds +1 per tier → max **15 food.**
 - **Haulers are SLOW** — significantly slower than miners, especially when carrying food
 - **Graduated speed penalty** based on load: `speed_multiplier = 1.0 - (food_carried / max_capacity) * 0.6`. At max load = 40% speed. Half load = 70%. Carrying 1 food = ~96%. Empty = full speed.
 - This means distance is the natural ratio balancer:
@@ -751,7 +862,7 @@ This is the idle game heart. The player goes from doing everything manually to b
 
 ### Stage 6: Mid-Game Automation (3-5 hours)
 - Architect Ant auto-places transport infrastructure
-- Auto-Upgrade and Auto-Buy Worker handle tedious purchases
+- Auto Evolve and Auto Worker handle tedious purchases
 - Hauling Efficiency fork: Ant Cannon / Food Singularity / Relay Chains (pick 1 of 3)
 
 ### Stage 7: Endgame Transport (5-8 hours)
@@ -954,7 +1065,7 @@ Decisions made during brainstorming, preserved for reference:
 | Time Warp CUT | Just balance better. If the game needs a speed toggle, the pacing is wrong. |
 | Pick 1 of 2 (not 2 of 3) | Simpler decision, easier to balance (only 2 things need to be equal), feels like a fork in the road. With ~6 categories × 1-2 forks = 64-256 build combos. |
 | Build forks within same category | Each fork compares apples to apples (e.g., two mining approaches, not one mining + one transport). Prevents "obvious best" cross-category combos, makes balancing easier. |
-| Logistics merged into Movement | One combined category for all player traversal and transport infrastructure. Simplifies the upgrade menu. |
+| Three panels: Player Ant, Colony, Logistics | Three panels side by side on one page. NOT tabs. No tier locking — can skip rows and save up. Nothing is a requirement. |
 | Miner + Hauler = single unlock | One "Unlock Workers" upgrade opens both roles. Slider UI for existing unassigned workers, then Buy Miner / Buy Hauler buttons. No separate caste unlocks. |
 | Haulers are very slow | Haulers move significantly slower than miners, especially when loaded (~50% speed when carrying). Creates a real miner/hauler ratio decision and makes transport upgrades feel like massive relief. |
 | Manager AI CUT | Redundant. Full automation is achieved through transport infrastructure, not an AI toggle. |
@@ -968,8 +1079,8 @@ Decisions made during brainstorming, preserved for reference:
 | Dig methods replace basic bite | 4 dig methods (Gun, Laser, Butt Acid, Explosion) replace the old bite animation. Pick 1 of 4. Biggest build-defining choice for the queen. |
 | Miners get own dig method | Miners pick their own dig method independently of the queen. "Laser queen with gun miners" is a valid build. More diversity for the automation side. |
 | Dig stats: pick 2 of 3 | Dig Range / Dig Speed / Dig Radius — pick 2, lock out 1. Creates 3 distinct dig profiles. Both player and miners have their own independent 2-of-3 pick. |
-| 1/10 tiers (not 1/5) | All standard upgrades have 10 levels instead of 5. Smoother progression, more room to scale. |
-| 1/50 tiers for dig strength | Dig strength (player + miner) has 50 tiers in regular tree. Extended progression. Cross-colony persistence at tier 50+. |
+| 0/10 tiers | All standard upgrades have 10 purchases. 0/10 = start at 0, buy 10. Each gives the same increment. |
+| 0/50 tiers for dig strength | Dig strength (player + miner) has 50 tiers in regular tree. Extended progression. Cross-colony persistence at tier 50+. |
 | Zip Lines added | 4th Transport Tier 1 option: diagonal, fast going down, slow going up. Fills the diagonal movement gap. |
 | Transport Tier 1: pick 1 of 4 | Elevator/Minecart/Platform/Zip Line. Pick 1 creates real sacrifice — no combo covers all directions. |
 | Conveyor belts on walls | Conveyors work on ANY solid surface (floor, wall, ceiling), not just flat ground. Makes conveyor vs tramway a genuine choice. |
@@ -987,7 +1098,7 @@ Decisions made during brainstorming, preserved for reference:
 | Void Storage → Rainbow Food | Too powerful for regular tree. Endgame reward. |
 | ~~Architect Ant → Rainbow Food~~ | ~~SUPERSEDED~~ — Architect is now mid-game standard upgrade. See "Architect Ant = mid-game" below. |
 | Rainbow Food = cheat menu | Not 1-2 items — a WALL of absurd unlocks. Power fantasy, automation, cosmetics. Like unlocking cheats for playing the game. |
-| Auto-buy system | Auto-Worker (auto-hires) + Auto-Upgrade (auto-buys when food > threshold). Standard idle game convenience in endgame. |
+| Auto-buy system | Auto Worker (auto-hires) + Auto Evolve (auto-buys when food > threshold). Standard idle game convenience in mid-game. |
 | Noita-style pixel terrain | Granular pixel-based dirt, not chunky tiles. Individual dirt pixels destructible. NOT full Noita physics. Needs research — possible hybrid approach (pixel visuals, tile-based logic). |
 | Hats spawn randomly in new layers | Not pre-placed at milestones. Random chance per new layer, max 1 per layer, queen must collect personally. |
 | Cosmetics separate page | Dirt/background customization + ant customization (apply-all or individual). Dedicated cosmetics page, not mixed with skill tree. |
@@ -1004,24 +1115,24 @@ Decisions made during brainstorming, preserved for reference:
 | Hauling Efficiency fork updated | Mid-game pick 1 of 3: Ant Cannon (active/exciting), Food Singularity (passive/magical), Relay Chains (team-coordination). |
 | ~~Endgame transport: pick 1 of 3~~ | ~~SUPERSEDED~~ — now pick 1 of 2 (Teleporters vs Tubes). Ant Relay Chain tabled. See "Endgame transport: pick 1 of 2" below. |
 | Tubes break if dug through | Creates tension between mining expansion and tube network preservation. Real strategic tradeoff. |
-| Auto-buy = mid-game, not rainbow | Fundamental idle game QOL. Auto-Worker (set ratio + threshold) and Auto-Upgrade (checkbox per node). Don't make the player click every 10 minutes — that's Runescape-tier hostile. |
+| Auto-buy = mid-game, not rainbow | Fundamental idle game QOL. Auto Worker (set ratio + threshold) and Auto Evolve (checkbox per node). Don't make the player click every 10 minutes — that's Runescape-tier hostile. |
 | Rainbow food unlocks toggleable | All rainbow unlocks can be turned on/off at will. Cheat menu is a menu, not permanent changes. |
 | ~~Architect Ant = cheapest rainbow~~ | ~~SUPERSEDED~~ — Architect moved to mid-game standard. "Over the Rainbow" is now the endgame gate. |
 | ~~Boogie Bomb interrupts briefly~~ | ~~SUPERSEDED~~ — Boogie Bomb is now a toggle (on/off), not a timed 2-3 second interrupt. See "Boogie Bomb = toggle" below. |
-| Base Conveyor (standard upgrade) | Auto-extends slow conveyor from food pile toward furthest mine. One direction. Everyone can buy. Proto-Architect Ant. |
+| Auto Conveyor (standard upgrade) | Auto-extends slow conveyor from food pile toward furthest mine. One direction. Everyone can buy. Proto-Architect Ant. |
 | Food Singularity moved to mid-game | Too cool for rainbow-only. Competes with Ant Cannon in hauling efficiency fork. Performance concerns with many food pieces. |
 | Food tiers REMOVED | All food is orange. No color/shape tiers. Value = linear distance-band scaling (layer 1 = 1, layer 2 = 2, etc.). Terrain gradient is the visual indicator. Simplifies design, avoids infinite color/shape scaling problem. |
 | All fork options = pure positives | No drawbacks unique to one option. Differentiation is what they're good AT, not what they cost. No positive/negative tradeoffs. |
 | ~~Compression Haulers replace Hauler Rush~~ | ~~SUPERSEDED~~ — Compression Haulers scrapped entirely. Replaced by Relay Chains. See "Relay Chains replace Compression Haulers" below. |
-| Architect Ant = mid-game | NOT rainbow food, NOT endgame. Standard upgrade alongside Auto-Upgrade + Auto-Buy Worker in a row after Transport Tier 1. Competent single-purchase ant that cycles through transport systems. "You will appreciate and love your architect ant." |
+| Architect Ant = mid-game | NOT rainbow food, NOT endgame. Standard upgrade alongside Auto Evolve + Auto Worker in Player Ant panel. Competent single-purchase ant that cycles through transport systems. "You will appreciate and love your architect ant." |
 | Over the Rainbow = endgame gate | Very expensive standard purchase at bottom of upgrade tree. Buying it unlocks the rainbow food menu. Replaces Architect Ant as the endgame milestone. |
 | Endgame transport: pick 1 of 2 | Teleporters (1 pair, player + food + haulers) vs Pneumatic Tubes (unlimited, any-angle, food only). Ant Relay Chain tabled — balance was tricky. |
 | Teleporters: 1 pair only | Player + food + haulers can all use them. Repositionable. No second pair via rainbow food (inconsistent pattern — nothing else works like "buy more of a fork you already picked"). |
 | Tubes: any-angle, unlimited | 360-degree straight line through solid terrain. No range limit. Unlimited count. Break if dug through. Faint dotted line visual indicator. Walls are natural balance — ants can't cross walls anyway. |
 | Hauler AI claiming system | Central Food Manager (blackboard pattern), runs every ~0.5s. Claims prevent two haulers targeting same food. Proximity-based claim stealing: closer idle hauler steals claim from distant hauler. |
-| Upgrades are toggleable | All upgrades with active effects can be toggled on/off. Purchase is permanent (can't un-buy or switch forks), but activation is optional. Base Conveyor, Food Singularity, Ant Cannon, Boogie Bomb all toggleable. |
+| Upgrades are toggleable | All upgrades with active effects can be toggled on/off. Purchase is permanent (can't un-buy or switch forks), but activation is optional. Auto Conveyor, Food Singularity, Ant Cannon, Boogie Bomb all toggleable. |
 | Boogie Bomb = toggle | On/off toggle, not timed 2-3 second interrupt. Player controls when ants dance and when they stop. |
-| Base Conveyor = toggleable | Standard upgrade, toggleable on/off. Auto-extends slow conveyor from food pile toward furthest mine. |
+| Auto Conveyor = toggleable | Standard upgrade, toggleable on/off. Auto-extends slow conveyor from food pile toward furthest mine. |
 | Rainbow food persistence rules | Currency persists always. Cosmetics: immediately available in every colony. Gameplay purchases: persist but only activate after buying Over the Rainbow per colony. |
 | Second teleporter from rainbow CUT | Inconsistent pattern — nothing else gives "more of a fork you already picked." Removed from rainbow menu. |
 | Food Singularity: ground travel | Unclaimed food slides along ground following hauler flow field toward home. Not just nearest station — needs "direction home" awareness. Loading station radius pull as performance fallback. |
@@ -1045,11 +1156,11 @@ Decisions made during brainstorming, preserved for reference:
 | Noita reference = visual only | NOT Noita physics (no falling sand, no cellular automata). Just the granular carve aesthetic — organic craters, sharp irregular edges, not blocky tile removal. Noita was a custom engine for pixel physics; we need shaped masks on a tile grid with pixel-visual overlay. |
 | Engine risk strategy | Godot first, with escape hatch. Phase 1 terrain prototype validates feasibility within a week. If it can't hit 60fps with terrain + 1000 ants, options: optimize, reduce granularity, or evaluate Unity/Unreal. |
 | ~~Compression = trip complete~~ | ~~SUPERSEDED~~ — Compression Haulers scrapped. See "Relay Chains replace Compression Haulers" below. |
-| Hauler carry: 5 base, 15 max | Haul Capacity upgrade (1/10, +1 per tier). Clean numbers. 5 → 15. |
+| Hauler carry: 5 base, 15 max | Haul Capacity upgrade (0/10, +1 per tier). Clean numbers. 5 → 15. |
 | Graduated hauler speed penalty | `speed_mult = 1.0 - (carried / max) * 0.6`. Max load = 40% speed, half = 70%, 1 food = ~96%. Makes Relay Chains efficient — after a partial handoff, lighter hauler walks back fast. |
 | Miner:hauler ratio shifts with distance | Early (near base): 3:1 miners:haulers. Mid (500+): 2:1 or 1:1. Late (2000+): 1:2 — haulers become bottleneck. Transport infrastructure solves the late-game hauler problem. Natural balance, no forced ratio. |
 | Relay Chains replace Compression Haulers | Compression was "haulers walk faster" — a stat buff with extra steps. Relay Chains create a new mechanic (bucket brigade) that scales with hauler count, solves the distance problem elegantly, and is visually adorable. Partial transfers based on capacity, instant on contact, capacity-based claiming prevents conflicts. |
-| Pheromone Highways = core upgrade (not fork) | Too good to limit to one fork option. Applies to ALL ants + player. Standard upgrade in MOVEMENT section. Well-traveled routes glow and give speed boost. Emergent swarm intelligence from individual selfish decisions — real ant behavior. Speed boost needs tuning (20-30% max, not 50%). |
+| Pheromone Highways = core upgrade (not fork) | Too good to limit to one fork option. Applies to ALL ants + player. Standard upgrade in LOGISTICS panel. Well-traveled routes glow and give speed boost. Emergent swarm intelligence from individual selfish decisions — real ant behavior. Speed boost needs tuning (20-30% max, not 50%). |
 
 ---
 
@@ -1091,7 +1202,7 @@ Decisions made during brainstorming, preserved for reference:
 - **Distance indicator** — furthest distance reached from origin
 - **Worker count** — how many active workers, by role
 - **Minimap** (when zoomed in) — shows full colony overview in corner
-- **Upgrade menu** — tabbed overlay
+- **Upgrade menu** — three-panel overlay (Player Ant, Colony, Logistics)
 
 ---
 
@@ -1268,10 +1379,10 @@ Building it right from the start, in the correct order of operations.
 ### Step 6: Upgrade Menu + First Upgrades
 - Skill tree menu (Tab/E to open)
 - Auto Mining (first unlock)
-- Scaling Dig Strength (1/50)
-- Dig Range / Dig Speed / Dig Radius (pick 2 of 3, 1/10 each)
-- Food Magnet + Carry Capacity (1/10 each)
-- Place Dirt + Player Speed (1/10)
+- Scaling Dig Strength (0/50)
+- Dig Range / Dig Speed / Dig Radius (pick 2 of 3, 0/10 each)
+- Food Magnet + Carry Capacity + Player Speed (0/10 each)
+- Place Dirt
 
 ### Step 7: Dig Methods
 - Gun / Laser / Butt Acid / Explosion (pick 1 of 4)
@@ -1288,11 +1399,11 @@ Building it right from the start, in the correct order of operations.
 - Ant marching formation (same direction = single file)
 
 ### Step 9: Miner Upgrades
-- Scaling Miner Strength (1/50)
+- Scaling Miner Strength (0/50)
 - Miner Dig Range / Speed / Radius (pick 2 of 3)
 - Miner Dig Method (pick 1 of 4, independent from player)
-- Ant Haul Capacity (1/10)
-- Ant Move Speed (1/10)
+- Ant Haul Capacity (0/10)
+- Ant Move Speed (0/10)
 
 ### Step 10: Transport Tier 1
 - Elevator / Minecart / Platform / Zip Line (pick 1 of 4, free to place)
@@ -1309,14 +1420,14 @@ Building it right from the start, in the correct order of operations.
 - Each with distinct feel and natural limitations
 
 ### Step 13: Mid-Game Automation Trio
+- Auto Worker (set miner/hauler ratio + food threshold, auto-hires)
 - Architect Ant (auto-places transport infrastructure, competent, cycles through systems)
-- Auto-Upgrade (checkbox per upgrade node — auto-buy when affordable)
-- Auto-Buy Worker (set miner/hauler ratio + food threshold, auto-hires)
-- All three unlock in a row after Transport Tier 1
+- Auto Evolve (checkbox per upgrade node — auto-buy when affordable)
+- All three in the Player Ant panel, mid-game automation trio
 
 ### Step 14: Hauling Efficiency Fork
 - Ant Cannon / Food Singularity / Relay Chains (pick 1 of 3)
-- Base Conveyor (standard, toggleable)
+- Auto Conveyor (standard, toggleable)
 
 ### Step 15: Endgame Transport
 - Teleporters / Pneumatic Tubes (pick 1 of 2)
@@ -1430,13 +1541,13 @@ Systems that require investigation before implementation begins. Each needs prot
 - **Key question:** Snap to pixel surface? Use underlying tile grid? Freeform placement with angle detection?
 
 ### 7. Idle Game Economy Math
-- **What:** Cost curves, scaling formulas, dig strength 1/50 progression, food tier values
+- **What:** Cost curves, scaling formulas, dig strength 0/50 progression, food tier values
 - **Research:** Cookie Clicker cost formulas, Idle Miner Tycoon progression curves
-- **Key question:** How steep should 1/50 dig strength curve be? When does food tier N become the dominant currency?
+- **Key question:** How steep should 0/50 dig strength curve be? When does food tier N become the dominant currency?
 - **Rainbow food rarity:** Spawns per chunk at 16000+ distance, expected time to first find
 
 ### 8. Auto-Buy Systems
-- **What:** Auto-Worker (auto-hire) and Auto-Upgrade (auto-buy when affordable) systems
+- **What:** Auto Worker (auto-hire) and Auto Evolve (auto-buy when affordable) systems
 - **Research:** Cookie Clicker auto-buy, Idle Miner Tycoon managers, Tap Wizard 2 automation
 - **Key question:** How does auto-buy prioritize when multiple upgrades are affordable? Cheapest first? Most efficient? Player-configured priority?
 - **Note:** This is a mid-game regular feature, NOT a rainbow food reward. Fundamental idle game QOL.
