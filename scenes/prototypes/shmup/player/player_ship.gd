@@ -121,12 +121,17 @@ func _handle_input() -> void:
 	if move_direction.length() > 1.0:
 		move_direction = move_direction.normalized()
 
-	# Aim input (Arrow keys + Right stick)
-	var aim_input := Vector2.ZERO
-	aim_input.x = Input.get_axis("shmup_aim_left", "shmup_aim_right")
-	aim_input.y = Input.get_axis("shmup_aim_up", "shmup_aim_down")
-	if aim_input.length() > 0.3:  # Deadzone
-		aim_direction = aim_input.normalized()
+	# Aim: mouse (primary), arrow keys/stick (fallback)
+	var mouse_world := get_global_mouse_position()
+	var to_mouse := mouse_world - global_position
+	if to_mouse.length() > 5.0:
+		aim_direction = to_mouse.normalized()
+	else:
+		var aim_input := Vector2.ZERO
+		aim_input.x = Input.get_axis("shmup_aim_left", "shmup_aim_right")
+		aim_input.y = Input.get_axis("shmup_aim_up", "shmup_aim_down")
+		if aim_input.length() > 0.3:
+			aim_direction = aim_input.normalized()
 
 
 func _update_movement(delta: float) -> void:

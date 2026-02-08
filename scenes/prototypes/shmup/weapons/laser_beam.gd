@@ -3,6 +3,12 @@ extends Node2D
 ## Triple-layer glow via _draw(), point-to-line distance for damage.
 ## Supports spread_count for multiple beams in a fan.
 
+# Colors — cyan core with blue glow
+const CORE_COLOR := Color(0.8, 1.0, 1.0, 0.9)
+const MID_COLOR := Color(0.3, 0.7, 1.0, 0.4)
+const GLOW_COLOR := Color(0.2, 0.4, 1.0, 0.12)
+const SPREAD_FAN_ANGLE := 30.0  # degrees, matches player_ship
+
 var is_active := false
 var beam_length := 400.0  # Covers viewport diagonal
 var base_width := 2.0
@@ -14,22 +20,20 @@ var player: Area2D
 var enemy_container: Node2D
 var spring_grid: Node2D
 
-# Colors — cyan core with blue glow
-const CORE_COLOR := Color(0.8, 1.0, 1.0, 0.9)
-const MID_COLOR := Color(0.3, 0.7, 1.0, 0.4)
-const GLOW_COLOR := Color(0.2, 0.4, 1.0, 0.12)
-
-const SPREAD_FAN_ANGLE := 30.0  # degrees, matches player_ship
-
 # Internal
 var _damage_timer := 0.0
 var _pulse_time := 0.0
+var _spatial_grid: RefCounted
 
 
-func setup(p_player: Area2D, p_enemies: Node2D, p_grid: Node2D) -> void:
+func setup(
+	p_player: Area2D, p_enemies: Node2D,
+	p_grid: Node2D, p_spatial: RefCounted = null,
+) -> void:
 	player = p_player
 	enemy_container = p_enemies
 	spring_grid = p_grid
+	_spatial_grid = p_spatial
 
 
 func activate() -> void:
@@ -98,17 +102,28 @@ func _apply_beam_damage() -> void:
 		var beam_end: Vector2 = beam_start + beam_dir * beam_length
 		beam_ends.append(beam_end)
 
-	for child in enemy_container.get_children():
-		if not child.get("is_active"):
-			continue
-		# Check against all beams — hit if close to ANY beam
+	# Pre-filter with spatial grid (beam_length radius from player)
+	var candidates: Array
+	if _spatial_grid:
+		candidates = _spatial_grid.query_radius(
+			beam_start, beam_length + hit_width,
+		)
+	else:
+		candidates = []
+		for c in enemy_container.get_children():
+			if c.get("is_active"):
+				candidates.append(c)
+
+	for enemy in candidates:
 		for beam_end in beam_ends:
 			var end_vec: Vector2 = beam_end as Vector2
-			var dist := _point_to_segment_distance(child.position, beam_start, end_vec)
+			var dist := _point_to_segment_distance(
+				enemy.position, beam_start, end_vec,
+			)
 			if dist <= hit_width:
-				if child.has_method("take_damage"):
-					child.take_damage(damage_per_tick)
-				break  # Only damage once per tick even if hit by multiple beams
+				if enemy.has_method("take_damage"):
+					enemy.take_damage(damage_per_tick)
+				break
 
 
 func _point_to_segment_distance(point: Vector2, seg_start: Vector2, seg_end: Vector2) -> float:

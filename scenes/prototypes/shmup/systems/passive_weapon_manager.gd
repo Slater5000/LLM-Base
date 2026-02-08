@@ -431,27 +431,21 @@ func _tick_death_spiral(delta: float) -> void:
 		var angle := _spiral_rotation + (TAU / blade_count) * i
 		var blade_pos := player.position + Vector2.from_angle(angle) * orbit_r
 
-		for enemy in _get_active_enemies():
-			if blade_pos.distance_to(enemy.position) < 12.0:
-				var eid: int = enemy.get_instance_id()
-				var last_hit: float = _spiral_hit_cooldowns.get(eid, -999.0)
-				if _time - last_hit >= SPIRAL_HIT_COOLDOWN:
-					_spiral_hit_cooldowns[eid] = _time
-					if enemy.has_method("take_damage"):
-						enemy.take_damage(2)
+		for enemy in _query_nearby(blade_pos, 12.0):
+			var eid: int = enemy.get_instance_id()
+			var last_hit: float = _spiral_hit_cooldowns.get(eid, -999.0)
+			if _time - last_hit >= SPIRAL_HIT_COOLDOWN:
+				_spiral_hit_cooldowns[eid] = _time
+				if enemy.has_method("take_damage"):
+					enemy.take_damage(2)
 
 	# Void Reaper: pull nearby enemies toward player
 	if is_vr:
 		var pull_range := orbit_r * 2.5
-		for enemy in _get_active_enemies():
-			var dist := player.position.distance_to(
-				enemy.position,
-			)
-			if dist < pull_range and dist > 10.0:
-				var to_p: Vector2 = (
-					player.position - enemy.position
-				)
-				var pull: Vector2 = to_p.normalized() * 50.0 * delta
+		for enemy in _query_nearby(player.position, pull_range):
+			var d := player.position.distance_to(enemy.position)
+			if d > 10.0:
+				var pull: Vector2 = (player.position - enemy.position).normalized() * 50.0 * delta
 				enemy.position += pull
 
 	# Purge old cooldown entries periodically
@@ -506,12 +500,11 @@ func _fire_ice_nova(level: int) -> void:
 
 
 func _apply_ice_nova_damage(pos: Vector2, radius: float, freeze_dur: float) -> void:
-	for enemy in _get_active_enemies():
-		if pos.distance_to(enemy.position) <= radius:
-			if enemy.has_method("take_damage"):
-				enemy.take_damage(1)
-			if enemy.has_method("apply_freeze"):
-				enemy.apply_freeze(freeze_dur, 0.5)
+	for enemy in _query_nearby(pos, radius):
+		if enemy.has_method("take_damage"):
+			enemy.take_damage(1)
+		if enemy.has_method("apply_freeze"):
+			enemy.apply_freeze(freeze_dur, 0.5)
 
 
 # ==========================================================================
@@ -536,7 +529,7 @@ func _fire_thunder_strike(level: int) -> void:
 	var idx := clampi(level - 1, 0, THUNDER_STRIKE_DATA.size() - 1)
 	var strikes: int = THUNDER_STRIKE_DATA[idx][1]
 
-	var enemies := _get_active_enemies()
+	var enemies := _query_nearby(player.position, 400.0)
 	if enemies.is_empty():
 		return
 
@@ -713,10 +706,9 @@ func _tick_poison_cloud(delta: float) -> void:
 	var radius: float = POISON_CLOUD_DATA[idx][0]
 	var dps: float = POISON_CLOUD_DATA[idx][1]
 	var duration: float = POISON_CLOUD_TICK + 0.1
-	for enemy in _get_active_enemies():
-		if player.position.distance_to(enemy.position) <= radius:
-			if enemy.has_method("apply_poison"):
-				enemy.apply_poison(duration, dps)
+	for enemy in _query_nearby(player.position, radius):
+		if enemy.has_method("apply_poison"):
+			enemy.apply_poison(duration, dps)
 
 
 # ==========================================================================
@@ -885,18 +877,16 @@ func _update_holy_zones(delta: float) -> void:
 			var style: String = zone.get("style", "holy")
 			if style == "fire":
 				# Inferno: damage + burn
-				for enemy in _get_active_enemies():
-					if pos.distance_to(enemy.position) <= radius:
-						if enemy.has_method("take_damage"):
-							enemy.take_damage(dmg)
-						if enemy.has_method("apply_burn"):
-							enemy.apply_burn(0.6, 2.0)
+				for enemy in _query_nearby(pos, radius):
+					if enemy.has_method("take_damage"):
+						enemy.take_damage(dmg)
+					if enemy.has_method("apply_burn"):
+						enemy.apply_burn(0.6, 2.0)
 			elif style == "plague":
 				# Plague: apply poison instead of raw dmg
-				for enemy in _get_active_enemies():
-					if pos.distance_to(enemy.position) <= radius:
-						if enemy.has_method("apply_poison"):
-							enemy.apply_poison(1.0, float(dmg))
+				for enemy in _query_nearby(pos, radius):
+					if enemy.has_method("apply_poison"):
+						enemy.apply_poison(1.0, float(dmg))
 			else:
 				_damage_enemies_in_radius(pos, radius, dmg)
 		i -= 1
@@ -1186,14 +1176,13 @@ func _rune_check_hits(rune: Dictionary) -> void:
 	var hr := 14.0
 	if is_ps:
 		hr = 10.0 if is_mini else 21.0
-	for enemy in _get_active_enemies():
-		if pos.distance_to(enemy.position) < hr:
-			var eid: int = enemy.get_instance_id()
-			var last: float = cooldowns.get(eid, -999.0)
-			if _time - last >= RUNETRACER_HIT_COOLDOWN:
-				cooldowns[eid] = _time
-				if enemy.has_method("take_damage"):
-					enemy.take_damage(RUNETRACER_DAMAGE)
+	for enemy in _query_nearby(pos, hr):
+		var eid: int = enemy.get_instance_id()
+		var last: float = cooldowns.get(eid, -999.0)
+		if _time - last >= RUNETRACER_HIT_COOLDOWN:
+			cooldowns[eid] = _time
+			if enemy.has_method("take_damage"):
+				enemy.take_damage(RUNETRACER_DAMAGE)
 
 
 # ==========================================================================
@@ -1352,26 +1341,33 @@ func _draw_fireball_projectile(effect: Dictionary) -> void:
 	var start: Vector2 = effect["start_pos"] as Vector2
 	var target: Vector2 = effect["target_pos"] as Vector2
 	var pos: Vector2 = start.lerp(target, t)
-	var ball_size := 5.0
+	var sz := 5.0; var fl := _time * 25.0
+	var md := (target - start).normalized()
+	var perp := Vector2(-md.y, md.x)
 
-	# Outer glow
-	draw_circle(pos, ball_size * 3.0, Color(1.0, 0.2, 0.0, 0.12))
-	# Mid glow
-	draw_circle(pos, ball_size * 1.8, Color(1.0, 0.4, 0.1, 0.35))
-	# Core
-	draw_circle(pos, ball_size * 0.8, Color(1.0, 0.7, 0.3, 0.9))
-	# White-hot center
-	draw_circle(pos, ball_size * 0.3, Color(1.0, 1.0, 0.8, 0.95))
+	# Flame trail — 6 jittering embers
+	for i in 6:
+		var tt := clampf(t - float(i + 1) * 0.04, 0.0, 1.0)
+		var tp: Vector2 = start.lerp(target, tt)
+		tp += perp * sin(fl + i * 1.7) * 3.0
+		var f := float(i) / 6.0
+		draw_circle(tp, sz * (0.7 - i * 0.08), Color(
+			lerpf(1.0, 0.8, f), lerpf(0.5, 0.1, f),
+			0.05, 0.4 - i * 0.06,
+		))
 
-	# Trail — 4 fading dots behind the fireball
-	for trail_i in 4:
-		var trail_t := clampf(t - float(trail_i + 1) * 0.06, 0.0, 1.0)
-		var s_pos: Vector2 = effect["start_pos"] as Vector2
-		var t_pos: Vector2 = effect["target_pos"] as Vector2
-		var trail_pos: Vector2 = s_pos.lerp(t_pos, trail_t)
-		var trail_alpha := 0.25 - trail_i * 0.06
-		var trail_size := ball_size * (0.6 - trail_i * 0.1)
-		draw_circle(trail_pos, trail_size, Color(1.0, 0.3, 0.05, trail_alpha))
+	# Layered glow: heat haze → flame → core → white-hot
+	draw_circle(pos, sz * (2.8 + sin(fl) * 0.5), Color(1.0, 0.15, 0.0, 0.1))
+	draw_circle(pos, sz * (1.6 + sin(fl * 1.3) * 0.3), Color(1.0, 0.45, 0.1, 0.4))
+	draw_circle(pos, sz * 0.9, Color(1.0, 0.7, 0.2, 0.9))
+	draw_circle(pos, sz * 0.35, Color(1.0, 1.0, 0.7, 0.95))
+
+	# Flame tips — 3 flickering tongues
+	for fi in 3:
+		var fa := fl * 1.5 + fi * TAU / 3.0
+		var td := (Vector2.from_angle(fa) * 0.5 - md).normalized()
+		var te := pos + td * sz * (1.2 + sin(fa * 2.0) * 0.4)
+		draw_line(pos, te, Color(1.0, 0.6, 0.1, 0.5), 1.5)
 
 
 # --- Fireball ring ---
@@ -1940,39 +1936,43 @@ func _draw_soul_harvest_ring(effect: Dictionary) -> void:
 		)
 
 
-# ==========================================================================
-# UTILITY
-# ==========================================================================
+func _query_nearby(pos: Vector2, radius: float) -> Array:
+	if _spatial_grid:
+		return _spatial_grid.query_radius(pos, radius)
+	var result: Array = []
+	for e in _get_active_enemies():
+		if pos.distance_to(e.position) <= radius:
+			result.append(e)
+	return result
 
 func _find_nearest_enemy_pos(from: Vector2) -> Vector2:
-	var best_dist := 999999.0
-	var best_pos := Vector2.ZERO
-	for enemy in _get_active_enemies():
-		var d := from.distance_to(enemy.position)
-		if d < best_dist:
-			best_dist = d
-			best_pos = enemy.position
-	return best_pos
+	if _spatial_grid:
+		var n: Area2D = _spatial_grid.get_nearest(from, 400.0)
+		return n.position if n else Vector2.ZERO
+	var best_d := 999999.0; var best_p := Vector2.ZERO
+	for e in _get_active_enemies():
+		var d := from.distance_to(e.position)
+		if d < best_d:
+			best_d = d; best_p = e.position
+	return best_p
 
-
-func _find_enemy_cluster_center(near: Vector2, search_radius: float) -> Vector2:
+func _find_enemy_cluster_center(
+	near: Vector2, radius: float,
+) -> Vector2:
+	var nearby := _query_nearby(near, radius)
+	if nearby.is_empty():
+		return Vector2.ZERO
 	var sum := Vector2.ZERO
-	var count := 0
-	for enemy in _get_active_enemies():
-		if near.distance_to(enemy.position) < search_radius:
-			sum += enemy.position
-			count += 1
-	if count > 0:
-		return sum / float(count)
-	return Vector2.ZERO
+	for e in nearby:
+		sum += e.position
+	return sum / float(nearby.size())
 
-
-func _damage_enemies_in_radius(pos: Vector2, radius: float, damage: int) -> void:
-	for enemy in _get_active_enemies():
-		if pos.distance_to(enemy.position) <= radius:
-			if enemy.has_method("take_damage"):
-				enemy.take_damage(damage)
-
+func _damage_enemies_in_radius(
+	pos: Vector2, radius: float, damage: int,
+) -> void:
+	for e in _query_nearby(pos, radius):
+		if e.has_method("take_damage"):
+			e.take_damage(damage)
 
 func _get_active_enemies() -> Array:
 	var frame := Engine.get_process_frames()
@@ -1980,15 +1980,13 @@ func _get_active_enemies() -> Array:
 		_cached_enemies_frame = frame
 		_cached_enemies.clear()
 		if enemy_container:
-			for child in enemy_container.get_children():
-				if child.get("is_active"):
-					_cached_enemies.append(child)
+			for c in enemy_container.get_children():
+				if c.get("is_active"):
+					_cached_enemies.append(c)
 	return _cached_enemies
 
-
 func _get_camera_rect() -> Rect2:
-	if camera:
-		var half := Vector2(320, 180)
-		var cam_pos: Vector2 = camera.global_position
-		return Rect2(cam_pos - half, Vector2(640, 360))
-	return Rect2(-320, -180, 640, 360)
+	if not camera:
+		return Rect2(-320, -180, 640, 360)
+	var cp: Vector2 = camera.global_position
+	return Rect2(cp - Vector2(320, 180), Vector2(640, 360))

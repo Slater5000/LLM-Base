@@ -32,6 +32,11 @@ var grid_offset := Vector2.ZERO
 var camera_ref: Camera2D
 var viewport_size := Vector2(640, 360)
 
+# Throttling — skip sim when at rest, redraw every N frames
+var _redraw_counter := 0
+var _is_at_rest := true
+var _frames_at_rest := 0
+
 
 func _ready() -> void:
 	_init_grid()
@@ -64,8 +69,13 @@ func _init_grid() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _is_at_rest:
+		return
 	_update_springs(delta)
-	queue_redraw()
+	_redraw_counter += 1
+	if _redraw_counter >= 3:
+		_redraw_counter = 0
+		queue_redraw()
 
 
 func _update_springs(_delta: float) -> void:
@@ -114,6 +124,19 @@ func _update_springs(_delta: float) -> void:
 			if disp.length() > max_displacement:
 				positions[idx] = rest_positions[idx] + disp.normalized() * max_displacement
 
+	# Check if grid has settled to rest
+	var max_vel_sq := 0.0
+	for i in velocities.size():
+		var v_sq := velocities[i].length_squared()
+		if v_sq > max_vel_sq:
+			max_vel_sq = v_sq
+	if max_vel_sq < 0.0001:  # All velocities < 0.01
+		_frames_at_rest += 1
+		if _frames_at_rest >= 10:
+			_is_at_rest = true
+	else:
+		_frames_at_rest = 0
+
 
 func _spring_force(idx_a: int, idx_b: int) -> Vector2:
 	var diff := positions[idx_b] - positions[idx_a]
@@ -151,6 +174,8 @@ func world_to_grid(world_pos: Vector2) -> Vector2:
 
 ## Apply an explosive (outward) force at a world position.
 func apply_explosive_force(world_pos: Vector2, force: float, radius: float) -> void:
+	_is_at_rest = false
+	_frames_at_rest = 0
 	var grid_pos := world_to_grid(world_pos)
 	for i in positions.size():
 		var diff := positions[i] - grid_pos
@@ -163,6 +188,8 @@ func apply_explosive_force(world_pos: Vector2, force: float, radius: float) -> v
 
 ## Apply an implosive (inward) force — for gravity wells / black holes.
 func apply_implosive_force(world_pos: Vector2, force: float, radius: float) -> void:
+	_is_at_rest = false
+	_frames_at_rest = 0
 	var grid_pos := world_to_grid(world_pos)
 	for i in positions.size():
 		var diff := grid_pos - positions[i]
@@ -177,6 +204,8 @@ func apply_directed_force(
 	world_pos: Vector2, direction: Vector2,
 	force: float, radius: float,
 ) -> void:
+	_is_at_rest = false
+	_frames_at_rest = 0
 	var grid_pos := world_to_grid(world_pos)
 	for i in positions.size():
 		var dist := positions[i].distance_to(grid_pos)

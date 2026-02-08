@@ -1,8 +1,64 @@
 extends Node
-## Continuous time-based enemy spawning with difficulty curve peaking at 10 minutes.
-## Replaces wave system. Enemies scale in quantity, variety, HP, and composition.
+## Continuous spawner with horde density focus and scripted surge events.
+## Background layer: weighted random spawning (85%+ fodder).
+## Surge layer: scripted tsunami moments at key minute marks.
 
 signal enemy_spawned(enemy: Area2D)
+
+# gdlint: ignore=constant-name
+const EnemyType = preload(
+	"res://scenes/prototypes/shmup/enemies/enemy_base.gd"
+).EnemyType
+
+const DESPAWN_CHECK_INTERVAL := 1.0
+const DESPAWN_DISTANCE := 600.0
+const LEECH_PACK_SIZE_MIN := 3
+const LEECH_PACK_SIZE_MAX := 5
+
+# Fodder types: stay 1-2 hit kills throughout. No elites/champions.
+const FODDER_TYPES := [
+	EnemyType.GRUNT, EnemyType.WEAVER, EnemyType.LEECH,
+	EnemyType.ROCKET, EnemyType.MINELAYER, EnemyType.BOMBER,
+]
+
+# --- Enemy Introduction Timeline (seconds) ---
+# Spread across 10 min for smooth difficulty curve.
+const TYPE_UNLOCK_TIMES := {
+	EnemyType.GRUNT: 0.0,        # Immediate
+	EnemyType.WEAVER: 60.0,      # 1 min
+	EnemyType.LEECH: 120.0,      # 2 min
+	EnemyType.ROCKET: 180.0,     # 3 min
+	EnemyType.BOMBER: 180.0,     # 3 min
+	EnemyType.SPINNER: 240.0,    # 4 min
+	EnemyType.SNIPER: 240.0,     # 4 min
+	EnemyType.TANK: 300.0,       # 5 min
+	EnemyType.CHARGER: 300.0,    # 5 min
+	EnemyType.GHOST: 360.0,      # 6 min
+	EnemyType.MINELAYER: 360.0,  # 6 min
+	EnemyType.PULSER: 420.0,     # 7 min
+	EnemyType.ORBITER: 420.0,    # 7 min
+	EnemyType.HIVE: 480.0,       # 8 min
+	EnemyType.SERPENT: 540.0,    # 9 min
+}
+
+# Spawn weights: heavily favor fodder (85%+ of composition)
+const TYPE_WEIGHTS := {
+	EnemyType.GRUNT: 50.0,
+	EnemyType.WEAVER: 25.0,
+	EnemyType.LEECH: 20.0,
+	EnemyType.ROCKET: 8.0,
+	EnemyType.BOMBER: 6.0,
+	EnemyType.SPINNER: 4.0,
+	EnemyType.SNIPER: 3.0,
+	EnemyType.TANK: 3.0,
+	EnemyType.CHARGER: 3.0,
+	EnemyType.GHOST: 3.0,
+	EnemyType.MINELAYER: 3.0,
+	EnemyType.PULSER: 2.0,
+	EnemyType.ORBITER: 2.0,
+	EnemyType.HIVE: 2.0,
+	EnemyType.SERPENT: 2.0,
+}
 
 var enemies_alive := 0
 var elapsed_time := 0.0
@@ -12,60 +68,28 @@ var enemy_scene: PackedScene
 var game_main: Node2D  # For get_camera_rect()
 var is_running := false
 
-# Spawn timing
 var _spawn_timer := 0.0
 var _despawn_timer := 0.0
-const DESPAWN_CHECK_INTERVAL := 1.0
-const DESPAWN_DISTANCE := 600.0
+var _surge_index := 0
+var _insano_surge_timer := 0.0
 
-# Enemy type reference
-const EnemyType = preload("res://scenes/prototypes/shmup/enemies/enemy_base.gd").EnemyType
-
-# --- Enemy Introduction Timeline (seconds) ---
-# TESTING: Compressed to ~3 min. Original times in comments.
-const TYPE_UNLOCK_TIMES := {
-	EnemyType.GRUNT: 0.0,       # 0s
-	EnemyType.WEAVER: 10.0,     # was 30
-	EnemyType.LEECH: 10.0,      # was 30
-	EnemyType.ROCKET: 30.0,     # was 90
-	EnemyType.BOMBER: 30.0,     # was 90
-	EnemyType.SPINNER: 60.0,    # was 180
-	EnemyType.SNIPER: 60.0,     # was 180
-	EnemyType.TANK: 90.0,       # was 300
-	EnemyType.CHARGER: 90.0,    # was 300
-	EnemyType.GHOST: 120.0,     # was 420
-	EnemyType.MINELAYER: 120.0,  # was 420
-	EnemyType.PULSER: 150.0,    # was 480
-	EnemyType.ORBITER: 150.0,   # was 480
-	EnemyType.HIVE: 170.0,      # was 540
-	EnemyType.SERPENT: 170.0,    # was 540
-}
-
-# Base spawn weights per type (how likely to be picked once unlocked)
-const TYPE_WEIGHTS := {
-	EnemyType.GRUNT: 30.0,
-	EnemyType.WEAVER: 15.0,
-	EnemyType.LEECH: 12.0,
-	EnemyType.ROCKET: 10.0,
-	EnemyType.BOMBER: 8.0,
-	EnemyType.SPINNER: 10.0,
-	EnemyType.SNIPER: 7.0,
-	EnemyType.TANK: 6.0,
-	EnemyType.CHARGER: 7.0,
-	EnemyType.GHOST: 6.0,
-	EnemyType.MINELAYER: 5.0,
-	EnemyType.PULSER: 4.0,
-	EnemyType.ORBITER: 5.0,
-	EnemyType.HIVE: 3.0,
-	EnemyType.SERPENT: 3.0,
-}
-
-# Leech always spawns in packs
-const LEECH_PACK_SIZE_MIN := 3
-const LEECH_PACK_SIZE_MAX := 5
+# Scripted surge events — bypass alive cap for tsunami moments
+var _surge_events := [
+	{time = 90.0, type = EnemyType.GRUNT, count = 40},
+	{time = 180.0, type = EnemyType.LEECH, count = 60},
+	{time = 270.0, type = EnemyType.WEAVER, count = 50},
+	{time = 360.0, type = EnemyType.GRUNT, count = 150},
+	{time = 450.0, type = EnemyType.GRUNT, count = 100},
+	{time = 540.0, type = EnemyType.GRUNT, count = 300},
+]
 
 
-func setup(p_world_rect: Rect2, p_player: Node2D, p_enemy_scene: PackedScene, p_game_main: Node2D = null) -> void:
+func setup(
+	p_world_rect: Rect2,
+	p_player: Node2D,
+	p_enemy_scene: PackedScene,
+	p_game_main: Node2D = null,
+) -> void:
 	world_rect = p_world_rect
 	player = p_player
 	enemy_scene = p_enemy_scene
@@ -76,7 +100,9 @@ func start() -> void:
 	elapsed_time = 0.0
 	enemies_alive = 0
 	is_running = true
-	_spawn_timer = 1.5  # Brief warmup before first spawn
+	_spawn_timer = 1.5
+	_surge_index = 0
+	_insano_surge_timer = 0.0
 
 
 func _process(delta: float) -> void:
@@ -90,7 +116,8 @@ func _process(delta: float) -> void:
 		_do_spawn_tick()
 		_spawn_timer = _get_spawn_interval()
 
-	# Despawn enemies too far from camera
+	_check_surges(delta)
+
 	_despawn_timer -= delta
 	if _despawn_timer <= 0.0:
 		_despawn_timer = DESPAWN_CHECK_INTERVAL
@@ -99,55 +126,61 @@ func _process(delta: float) -> void:
 
 ## --- Difficulty Curve Functions ---
 
-## Spawn interval decreases over time (more frequent spawns)
 func _get_spawn_interval() -> float:
+	if elapsed_time >= 600.0:
+		return maxf(0.2, 0.25 - (elapsed_time - 600.0) / 6000.0)
+	# Stepped decrease: 0.8s at start → 0.3s at 7 min
+	var result := 0.3
+	if elapsed_time < 420.0:
+		result = 0.4
+	if elapsed_time < 300.0:
+		result = 0.5
+	if elapsed_time < 180.0:
+		result = 0.6
+	if elapsed_time < 90.0:
+		result = 0.7
 	if elapsed_time < 30.0:
-		return 2.0
-	elif elapsed_time < 90.0:
-		return 1.5
-	elif elapsed_time < 180.0:
-		return 1.2
-	elif elapsed_time < 300.0:
-		return 1.0
-	elif elapsed_time < 420.0:
-		return 0.8
-	elif elapsed_time < 600.0:
-		return 0.6
-	else:
-		# INSANO MODE: 10+ min, ramps from 0.5 to 0.3
-		return maxf(0.3, 0.5 - (elapsed_time - 600.0) / 3000.0)
+		result = 0.8
+	return result
 
 
-## Batch size increases over time (more enemies per tick)
 func _get_batch_size() -> int:
-	if elapsed_time < 30.0:
-		return 1
-	elif elapsed_time < 90.0:
-		return randi_range(1, 2)
-	elif elapsed_time < 180.0:
-		return randi_range(2, 3)
-	elif elapsed_time < 300.0:
-		return randi_range(3, 5)
-	elif elapsed_time < 420.0:
-		return randi_range(5, 7)
-	elif elapsed_time < 600.0:
-		return randi_range(7, 10)
-	else:
-		# INSANO MODE
-		return randi_range(10, 15)
+	if elapsed_time >= 600.0:
+		return randi_range(20, 30)
+	# Ascending overrides: each bracket replaces previous
+	var lo := 3
+	var hi := 3
+	if elapsed_time >= 30.0:
+		lo = 3; hi = 5
+	if elapsed_time >= 90.0:
+		lo = 5; hi = 7
+	if elapsed_time >= 180.0:
+		lo = 7; hi = 10
+	if elapsed_time >= 300.0:
+		lo = 10; hi = 14
+	if elapsed_time >= 420.0:
+		lo = 14; hi = 20
+	return randi_range(lo, hi)
 
 
-## Max enemies alive — scales with time, hard cap 1000
+## Max enemies alive — scales aggressively, hard cap 800
 func _get_max_enemies() -> int:
-	var cap := int(40.0 + elapsed_time / 3.0)
-	return mini(cap, 1000)
+	var cap := int(60.0 + elapsed_time * 1.1)
+	return mini(cap, 800)
 
 
-## HP scaling: enemies get tougher over time
-func _get_hp_scale() -> float:
-	var base := 1.0 + elapsed_time / 300.0  # 3x at 10 min, 5x at 20 min
+## HP scaling for fodder: stays 1-2 hit kills (1.6x at 10 min)
+func _get_fodder_hp_scale() -> float:
+	var base := 1.0 + elapsed_time / 1000.0
 	if elapsed_time > 600.0:
-		# Exponential kick after 10 min
+		base *= pow(1.0 + (elapsed_time - 600.0) / 900.0, 1.2)
+	return base
+
+
+## HP scaling for threats: full scaling (3x at 10 min)
+func _get_threat_hp_scale() -> float:
+	var base := 1.0 + elapsed_time / 300.0
+	if elapsed_time > 600.0:
 		base *= pow(1.0 + (elapsed_time - 600.0) / 300.0, 1.3)
 	return base
 
@@ -162,18 +195,67 @@ func _get_shoot_cooldown_scale() -> float:
 	return 1.0 - clampf(elapsed_time / 600.0, 0.0, 0.4)
 
 
-## Elite chance: TESTING — starts at 1.5 min (was 5 min)
+## Elite chance: starts at 4 min, only threat-tier enemies
 func _get_elite_chance() -> float:
-	if elapsed_time < 90.0:
+	if elapsed_time < 240.0:
 		return 0.0
-	return clampf(0.05 + (elapsed_time - 90.0) / 60.0 * 0.04, 0.0, 0.25)
+	return clampf(
+		0.05 + (elapsed_time - 240.0) / 60.0 * 0.03, 0.0, 0.20
+	)
 
 
-## Champion chance: TESTING — starts at 2.5 min (was 8 min)
+## Champion chance: starts at 7 min, only threat-tier enemies
 func _get_champion_chance() -> float:
-	if elapsed_time < 150.0:
+	if elapsed_time < 420.0:
 		return 0.0
-	return clampf(0.02 + (elapsed_time - 150.0) / 60.0 * 0.02, 0.0, 0.08)
+	return clampf(
+		0.02 + (elapsed_time - 420.0) / 60.0 * 0.02, 0.0, 0.08
+	)
+
+
+## --- Surge Event System ---
+
+func _check_surges(delta: float) -> void:
+	if _surge_index < _surge_events.size():
+		var surge: Dictionary = _surge_events[_surge_index]
+		if elapsed_time >= float(surge.time):
+			_spawn_surge(surge)
+			_surge_index += 1
+
+	if elapsed_time > 600.0:
+		_insano_surge_timer -= delta
+		if _insano_surge_timer <= 0.0:
+			_spawn_surge({
+				type = EnemyType.GRUNT,
+				count = 100 + randi() % 100,
+			})
+			_insano_surge_timer = 30.0
+
+
+func _spawn_surge(surge: Dictionary) -> void:
+	var count: int = int(surge.count)
+	var surge_type: EnemyType = surge.type as EnemyType
+	var hp_scale := _get_fodder_hp_scale()
+	var spd_scale := _get_speed_scale()
+	var cam_center := player.position if player else Vector2.ZERO
+
+	for i in count:
+		var angle := TAU * float(i) / float(count)
+		var spawn_dist := 340.0 + randf() * 60.0
+		var pos := cam_center + Vector2(
+			cos(angle), sin(angle)
+		) * spawn_dist
+		pos = _clamp_to_world(pos)
+
+		var enemy := enemy_scene.instantiate() as Area2D
+		enemy.configure(
+			surge_type, player, world_rect,
+			1.0, hp_scale, spd_scale
+		)
+		enemy.position = pos
+		enemy.killed.connect(_on_enemy_killed)
+		enemies_alive += 1
+		enemy_spawned.emit(enemy)
 
 
 ## --- Spawn Logic ---
@@ -181,26 +263,28 @@ func _get_champion_chance() -> float:
 func _do_spawn_tick() -> void:
 	var max_enemies := _get_max_enemies()
 	if enemies_alive >= max_enemies:
-		return  # At cap, skip this tick
+		return
 
 	var batch := _get_batch_size()
-	# Don't exceed cap
 	batch = mini(batch, max_enemies - enemies_alive)
-
-	var hp_scale := _get_hp_scale()
 	var spd_scale := _get_speed_scale()
 
 	for i in batch:
 		var type := _pick_enemy_type()
+		var hp_scale := _get_fodder_hp_scale() if type in FODDER_TYPES \
+			else _get_threat_hp_scale()
 
-		# Leech spawns in packs
 		if type == EnemyType.LEECH:
-			var pack_size := randi_range(LEECH_PACK_SIZE_MIN, LEECH_PACK_SIZE_MAX)
+			var pack_size := randi_range(
+				LEECH_PACK_SIZE_MIN, LEECH_PACK_SIZE_MAX
+			)
 			var pack_center := _get_spawn_position()
 			for j in pack_size:
 				if enemies_alive >= max_enemies:
 					break
-				var offset := Vector2(randf_range(-15, 15), randf_range(-15, 15))
+				var offset := Vector2(
+					randf_range(-15, 15), randf_range(-15, 15)
+				)
 				var pos := _clamp_to_world(pack_center + offset)
 				_spawn_enemy(type, pos, hp_scale, spd_scale)
 		else:
@@ -208,19 +292,24 @@ func _do_spawn_tick() -> void:
 			_spawn_enemy(type, pos, hp_scale, spd_scale)
 
 
-func _spawn_enemy(type: EnemyType, pos: Vector2, hp_scale: float, spd_scale: float) -> void:
+func _spawn_enemy(
+	type: EnemyType,
+	pos: Vector2,
+	hp_scale: float,
+	spd_scale: float,
+) -> void:
 	var enemy := enemy_scene.instantiate() as Area2D
 	enemy.configure(type, player, world_rect, 1.0, hp_scale, spd_scale)
 	enemy.position = pos
 
-	# Roll for elite/champion
-	var champion_roll := randf()
-	var elite_roll := randf()
-
-	if champion_roll < _get_champion_chance():
-		enemy.make_champion()
-	elif elite_roll < _get_elite_chance():
-		enemy.make_elite()
+	# Elite/Champion only for threat-tier enemies (never fodder)
+	if not (type in FODDER_TYPES):
+		var champion_roll := randf()
+		var elite_roll := randf()
+		if champion_roll < _get_champion_chance():
+			enemy.make_champion()
+		elif elite_roll < _get_elite_chance():
+			enemy.make_elite()
 
 	enemy.killed.connect(_on_enemy_killed)
 	enemies_alive += 1
@@ -228,7 +317,6 @@ func _spawn_enemy(type: EnemyType, pos: Vector2, hp_scale: float, spd_scale: flo
 
 
 func _pick_enemy_type() -> EnemyType:
-	# Build pool of unlocked types with weights
 	var pool: Array[Dictionary] = []
 	var total_weight := 0.0
 
@@ -236,15 +324,10 @@ func _pick_enemy_type() -> EnemyType:
 		if elapsed_time >= TYPE_UNLOCK_TIMES[type]:
 			var weight: float = TYPE_WEIGHTS[type]
 
-			# Reduce Grunt weight as more types unlock (variety increases)
-			if type == EnemyType.GRUNT and elapsed_time > 300.0:
-				weight *= 0.6  # Grunts become less common after 5 min
-
-			# Boost recently unlocked types briefly (novelty)
 			var unlock_time: float = TYPE_UNLOCK_TIMES[type]
 			var since_unlock := elapsed_time - unlock_time
 			if since_unlock < 30.0 and unlock_time > 0.0:
-				weight *= 1.5  # 50% boost for first 30s after unlock
+				weight *= 1.5
 
 			pool.append({"type": type, "weight": weight})
 			total_weight += weight
@@ -252,7 +335,6 @@ func _pick_enemy_type() -> EnemyType:
 	if pool.is_empty():
 		return EnemyType.GRUNT
 
-	# Weighted random pick
 	var roll := randf() * total_weight
 	var cumulative := 0.0
 	for entry in pool:
@@ -263,33 +345,43 @@ func _pick_enemy_type() -> EnemyType:
 	return pool[-1].type as EnemyType
 
 
-## --- Spawn Position (radial around camera viewport) ---
+## --- Spawn Position ---
 
 func _get_spawn_position() -> Vector2:
 	if not player:
 		return world_rect.get_center()
 
-	# Spawn just outside the camera viewport
-	var cam_rect: Rect2 = game_main.get_camera_rect() if game_main else Rect2(player.position - Vector2(320, 180), Vector2(640, 360))
+	var cam_rect: Rect2 = game_main.get_camera_rect() if game_main \
+		else Rect2(
+			player.position - Vector2(320, 180), Vector2(640, 360)
+		)
 	var viewport_half_diag := cam_rect.size.length() / 2.0
-	var spawn_dist := viewport_half_diag + 40.0  # Just offscreen
+	var spawn_dist := viewport_half_diag + 40.0
 
 	var angle := randf() * TAU
-	var spawn_pos := player.position + Vector2.from_angle(angle) * spawn_dist
+	var spawn_pos := player.position + Vector2(
+		cos(angle), sin(angle)
+	) * spawn_dist
 
-	# Clamp to world bounds
-	spawn_pos = spawn_pos.clamp(
+	return spawn_pos.clamp(
 		world_rect.position + Vector2(10, 10),
 		world_rect.end - Vector2(10, 10)
 	)
-	return spawn_pos
 
 
 func _clamp_to_world(pos: Vector2) -> Vector2:
 	var margin := 10.0
 	return Vector2(
-		clampf(pos.x, world_rect.position.x + margin, world_rect.end.x - margin),
-		clampf(pos.y, world_rect.position.y + margin, world_rect.end.y - margin)
+		clampf(
+			pos.x,
+			world_rect.position.x + margin,
+			world_rect.end.x - margin,
+		),
+		clampf(
+			pos.y,
+			world_rect.position.y + margin,
+			world_rect.end.y - margin,
+		),
 	)
 
 
@@ -313,7 +405,9 @@ func _despawn_far_enemies() -> void:
 
 ## --- Enemy Tracking ---
 
-func _on_enemy_killed(_pos: Vector2, _type: String, _points: int) -> void:
+func _on_enemy_killed(
+	_pos: Vector2, _type: String, _points: int
+) -> void:
 	enemies_alive = maxi(enemies_alive - 1, 0)
 
 
@@ -330,3 +424,5 @@ func reset() -> void:
 	enemies_alive = 0
 	is_running = false
 	_spawn_timer = 0.0
+	_surge_index = 0
+	_insano_surge_timer = 0.0

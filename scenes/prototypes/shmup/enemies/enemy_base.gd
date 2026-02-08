@@ -901,7 +901,7 @@ func _update_visual(delta: float) -> void:
 	if burn_timer > 0.0:
 		base_color = base_color.lerp(Color(1.0, 0.4, 0.1), 0.4)
 	if freeze_timer > 0.0:
-		base_color = base_color.lerp(Color(0.7, 0.85, 1.0), 0.5)
+		base_color = base_color.lerp(Color(0.6, 0.8, 1.0), 0.65)
 	if poison_timer > 0.0:
 		base_color = base_color.lerp(Color(0.3, 0.9, 0.2), 0.3)
 
@@ -927,6 +927,15 @@ func _rescale_shape() -> void:
 
 
 func _draw() -> void:
+	# Skip custom drawing when off-screen (> 400px from camera)
+	var cam := get_viewport().get_camera_2d()
+	if cam:
+		var d_sq := position.distance_squared_to(
+			cam.global_position,
+		)
+		if d_sq > 160000.0:
+			return
+
 	# Elite outline
 	if is_elite and not is_champion:
 		var pulse := 0.3 + absf(sin(Time.get_ticks_msec() * 0.005)) * 0.4
@@ -983,18 +992,38 @@ func _draw() -> void:
 			draw_line(Vector2(fx - 1.5, fy - flame_h * 0.3), Vector2(fx, fy - flame_h),
 				Color(1.0, 0.3, 0.0, flame_alpha * 0.6), 1.0)
 
-	# Freeze: ice crystal lines radiating from center
+	# Freeze: ice crystals + frost ring
 	if freeze_timer > 0.0:
-		var ice_alpha := 0.4 + sin(Time.get_ticks_msec() * 0.004) * 0.2
-		var ice_r := _base_size * 0.8
-		for c_i in 4:
-			var c_angle := (TAU / 4.0) * c_i + PI / 4.0
-			var c_end := Vector2.from_angle(c_angle) * ice_r
-			draw_line(Vector2.ZERO, c_end, Color(0.7, 0.9, 1.0, ice_alpha), 0.8)
-			# Small perpendicular ticks at midpoint
-			var mid := c_end * 0.6
-			var perp := Vector2.from_angle(c_angle + PI / 2.0) * ice_r * 0.25
-			draw_line(mid - perp, mid + perp, Color(0.8, 0.95, 1.0, ice_alpha * 0.6), 0.5)
+		var ia := 0.5 + sin(Time.get_ticks_msec() * 0.004) * 0.2
+		var ir := _base_size * 1.1
+		# Frost ring around enemy
+		draw_arc(
+			Vector2.ZERO, ir + 2.0, 0, TAU, 12,
+			Color(0.5, 0.75, 1.0, ia * 0.3), 2.0,
+		)
+		# 6 crystal branches radiating outward
+		for ci in 6:
+			var ca := (TAU / 6.0) * ci + PI / 6.0
+			var ce := Vector2.from_angle(ca) * ir
+			draw_line(
+				Vector2.ZERO, ce,
+				Color(0.7, 0.9, 1.0, ia), 1.2,
+			)
+			# Branch ticks at 60% and tip
+			var mid := ce * 0.6
+			var perp := Vector2.from_angle(ca + PI / 2.0)
+			var tk := ir * 0.3
+			draw_line(
+				mid - perp * tk, mid + perp * tk,
+				Color(0.85, 0.95, 1.0, ia * 0.7), 0.8,
+			)
+			# Small diamond shard at tip
+			var tip := ce * 0.95
+			var sh := 2.5 * ia
+			draw_line(
+				tip, tip + Vector2.from_angle(ca) * sh,
+				Color(1.0, 1.0, 1.0, ia * 0.8), 1.0,
+			)
 
 	# Poison: green drip dots below enemy
 	if poison_timer > 0.0:

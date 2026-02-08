@@ -69,6 +69,9 @@ const PASSIVE_WEAPON_MANAGER_SCRIPT := preload(
 const LASER_BEAM_SCRIPT := preload(
 	"res://scenes/prototypes/shmup/weapons/laser_beam.gd"
 )
+const CROSSHAIR_SCRIPT := preload(
+	"res://scenes/prototypes/shmup/ui/crosshair.gd"
+)
 const CHROMATIC_SHADER := preload(
 	"res://scenes/prototypes/shmup/shaders/chromatic_aberration.gdshader"
 )
@@ -288,6 +291,13 @@ func _build_scene_tree() -> void:
 	laser_beam.set_script(LASER_BEAM_SCRIPT)
 	add_child(laser_beam)
 
+	# Crosshair (world-space, follows mouse)
+	var crosshair := Node2D.new()
+	crosshair.name = "Crosshair"
+	crosshair.set_script(CROSSHAIR_SCRIPT)
+	crosshair.z_index = 100
+	add_child(crosshair)
+
 	# Performance Tracker (in its own CanvasLayer so it stays on screen)
 	var perf_layer := CanvasLayer.new()
 	perf_layer.layer = 4
@@ -368,7 +378,9 @@ func _build_scene_tree() -> void:
 	)
 
 	# Setup laser beam (inactive until upgrade)
-	laser_beam.setup(player, enemy_container, spring_grid)
+	laser_beam.setup(
+		player, enemy_container, spring_grid, spatial_grid,
+	)
 	laser_beam.deactivate()
 
 	# Connect upgrade_applied to route passive weapon upgrades
@@ -586,7 +598,7 @@ func _start_game() -> void:
 	is_game_over = false
 	is_paused = false
 	game_over_label.visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 
 	xp_level_system.reset()
 	upgrade_manager.reset()
@@ -663,55 +675,44 @@ func get_camera_rect() -> Rect2:
 ## --- Enemy Separation ---
 
 func _apply_enemy_separation(delta: float) -> void:
+	# Reuse existing spatial_grid instead of building a separate one
+	if not spatial_grid:
+		return
 	var enemies := enemy_container.get_children()
 	var count := enemies.size()
 	if count < 2:
 		return
 
-	# Build spatial grid for O(n) neighbor lookups
-	# Cell size = 2x separation radius so we only check adjacent cells
-	var cell_size := SEPARATION_RADIUS * 2.0
-	var grid: Dictionary = {}
+	# Batch: process 200 enemies per frame, cycling through
+	var batch := 200
+	var frame := Engine.get_process_frames()
+	var start_idx := (frame * batch) % count
+	var processed := 0
 
-	for node in enemies:
-		var e: Node2D = node as Node2D
-		if not e.get("is_active"):
-			continue
-		var cx := int(e.position.x / cell_size)
-		var cy := int(e.position.y / cell_size)
-		var key := cx * 10000 + cy
-		if not grid.has(key):
-			grid[key] = []
-		grid[key].append(e)
-
-	# Check each enemy against neighbors in same + adjacent cells
-	var sep_radius_sq := SEPARATION_RADIUS * SEPARATION_RADIUS
-	for node in enemies:
-		var enemy: Node2D = node as Node2D
+	var sep_r_sq := SEPARATION_RADIUS * SEPARATION_RADIUS
+	for i in count:
+		if processed >= batch:
+			break
+		var idx := (start_idx + i) % count
+		var enemy: Node2D = enemies[idx] as Node2D
 		if not enemy.get("is_active"):
 			continue
-		var cx := int(enemy.position.x / cell_size)
-		var cy := int(enemy.position.y / cell_size)
-		var push := Vector2.ZERO
+		processed += 1
 
-		for dx in range(-1, 2):
-			for dy in range(-1, 2):
-				var key := (cx + dx) * 10000 + (cy + dy)
-				if not grid.has(key):
-					continue
-				for other_node in grid[key]:
-					var other: Node2D = other_node as Node2D
-					if other == enemy or not other.get("is_active"):
-						continue
-					var diff: Vector2 = enemy.position - other.position
-					var dist_sq := diff.length_squared()
-					if dist_sq < sep_radius_sq and dist_sq > 0.01:
-						var dist := sqrt(dist_sq)
-						var overlap := SEPARATION_RADIUS - dist
-						push += diff.normalized() * overlap
-					elif dist_sq <= 0.01:
-						# Exactly overlapping — push in random direction
-						push += Vector2.from_angle(randf() * TAU) * SEPARATION_RADIUS
+		var nearby: Array = spatial_grid.query_radius(
+			enemy.position, SEPARATION_RADIUS,
+		)
+		var push := Vector2.ZERO
+		for other in nearby:
+			if other == enemy:
+				continue
+			var diff: Vector2 = enemy.position - other.position
+			var d_sq := diff.length_squared()
+			if d_sq < sep_r_sq and d_sq > 0.01:
+				var dist := sqrt(d_sq)
+				push += diff.normalized() * (SEPARATION_RADIUS - dist)
+			elif d_sq <= 0.01:
+				push += Vector2.from_angle(randf() * TAU) * SEPARATION_RADIUS
 
 		if push.length_squared() > 0.01:
 			enemy.position += push.normalized() * SEPARATION_FORCE * delta
@@ -829,25 +830,29 @@ func _on_enemy_killed(pos: Vector2, enemy_type: String, points: int) -> void:
 		color = type_colors[enemy_type]
 
 	# Scale VFX by enemy importance
+	var is_fodder := false
 	match enemy_type:
 		"grunt", "weaver", "leech", "drone":
-			particle_count = 12; force = 2.0; trauma = 0.1; fragment_count = 2
+			particle_count = 8; force = 1.5; trauma = 0.05
+			fragment_count = 0; is_fodder = true
 		"spinner", "spinner_child", "rocket", "minelayer", "ghost", "sniper":
-			particle_count = 18; force = 2.5; trauma = 0.15; fragment_count = 3
+			particle_count = 14; force = 2.5; trauma = 0.15; fragment_count = 2
 		"charger", "orbiter", "pulser", "bomber":
-			particle_count = 25; force = 3.5; trauma = 0.25; fragment_count = 4
+			particle_count = 20; force = 3.5; trauma = 0.25; fragment_count = 3
 		"tank", "hive", "serpent":
-			particle_count = 40; force = 6.0; trauma = 0.5; fragment_count = 8
+			particle_count = 30; force = 5.0; trauma = 0.4; fragment_count = 6
 
 	# Handle spinner splitting
 	if enemy_type == "spinner" and not is_game_over:
 		_spawn_split_spinners(pos)
 
 	vfx_manager.spawn_explosion(pos, color, particle_count, force)
-	vfx_manager.spawn_fragments(pos, color, fragment_count)
-	vfx_manager.apply_hit_stop(0.03)
+	if fragment_count > 0:
+		vfx_manager.spawn_fragments(pos, color, fragment_count)
+	if not is_fodder:
+		vfx_manager.apply_hit_stop(0.03)
+		vfx_manager.spawn_score_popup(pos, str(points), color)
 	camera.add_trauma(trauma)
-	vfx_manager.spawn_score_popup(pos, str(points), color)
 
 	# Drop geoms (XP)
 	_spawn_geoms(pos, enemy_type)

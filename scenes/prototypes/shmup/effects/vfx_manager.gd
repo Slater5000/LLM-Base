@@ -4,6 +4,9 @@ extends Node2D
 signal hit_stop_started
 signal hit_stop_ended
 
+# Particle throttle — max concurrent GPU particle systems
+const MAX_ACTIVE_PARTICLES := 20
+
 var spring_grid: Node2D
 var camera: Camera2D
 var arena_border: Node2D
@@ -14,6 +17,7 @@ var _pre_hit_stop_timescale := 1.0
 
 # Expanding rings (bomber explosions, etc.)
 var _active_rings: Array = []
+var _active_particle_count := 0
 
 
 func setup(grid: Node2D, cam: Camera2D, border: Node2D) -> void:
@@ -46,7 +50,18 @@ func _process(delta: float) -> void:
 
 
 ## Spawn a particle explosion at a position with a given color.
-func spawn_explosion(pos: Vector2, color: Color, particle_count: int = 20, force: float = 3.0) -> void:
+func spawn_explosion(
+	pos: Vector2, color: Color,
+	particle_count: int = 20, force: float = 3.0,
+) -> void:
+	if _active_particle_count >= MAX_ACTIVE_PARTICLES:
+		# Still do grid warp even when skipping particles
+		if spring_grid:
+			spring_grid.apply_explosive_force(
+				pos, force * 0.15, 50.0,
+			)
+		return
+	_active_particle_count += 1
 	var particles := GPUParticles2D.new()
 	particles.position = pos
 	particles.emitting = true
@@ -84,7 +99,10 @@ func spawn_explosion(pos: Vector2, color: Color, particle_count: int = 20, force
 	mat.scale_curve = scale_texture
 
 	particles.process_material = mat
-	particles.finished.connect(particles.queue_free)
+	particles.finished.connect(func() -> void:
+		_active_particle_count -= 1
+		particles.queue_free()
+	)
 	add_child(particles)
 
 	# Grid warp (subtle — force is scaled down from VFX force)
@@ -119,7 +137,9 @@ func spawn_fragments(pos: Vector2, color: Color, count: int = 4, size: float = 3
 		var duration := randf_range(0.4, 0.8)
 
 		var tween := create_tween().set_parallel(true)
-		tween.tween_property(frag, "position", target, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(
+			frag, "position", target, duration,
+		).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(frag, "rotation", frag.rotation + randf_range(-3.0, 3.0), duration)
 		tween.tween_property(frag, "modulate:a", 0.0, duration).set_ease(Tween.EASE_IN)
 		tween.chain().tween_callback(frag.queue_free)
@@ -136,7 +156,9 @@ func spawn_score_popup(pos: Vector2, text: String, color: Color = Color.WHITE) -
 	add_child(label)
 
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(label, "position:y", pos.y - 30, 0.8).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(
+		label, "position:y", pos.y - 30, 0.8,
+	).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_delay(0.3)
 	tween.chain().tween_callback(label.queue_free)
 
@@ -195,7 +217,10 @@ func _draw() -> void:
 
 
 ## Spawn an expanding ring to show explosion radius.
-func spawn_explosion_ring(pos: Vector2, max_radius: float, color: Color, duration: float = 0.4) -> void:
+func spawn_explosion_ring(
+	pos: Vector2, max_radius: float,
+	color: Color, duration: float = 0.4,
+) -> void:
 	_active_rings.append({
 		"pos": pos,
 		"radius": 3.0,
