@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Theme" path="res://scenes/prototypes/ant_colony/ui/shared/ant_colony_theme.tres" id="0_theme"]
+[ext_resource type="Script" uid="uid://ybxv3ys053tq" path="res://scenes/prototypes/ant_colony/ui/build_menu/build_menu_test.gd" id="1"]
+
+[node name="BuildMenuTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("0_theme")
+script = ExtResource("1")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.08, 0.05, 1)
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 58.0
+offset_bottom = 24.0
+text = "< Back"
+theme_override_font_sizes/font_size = 6

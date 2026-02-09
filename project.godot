@@ -13,7 +13,7 @@ config_version=5
 config/name="Creature RPG"
 config/description="Creature collection RPG with real-time tactical 3v3 combat"
 config/version="0.1.0"
-run/main_scene="uid://b7mm2xo3pbr5p"
+run/main_scene="uid://bcha24fwip02h"
 config/features=PackedStringArray("4.6")
 
 [autoload]

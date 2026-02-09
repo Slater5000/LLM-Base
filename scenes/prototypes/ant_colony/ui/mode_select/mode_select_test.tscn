@@ -1,0 +1,805 @@
+[gd_scene format=3 uid="uid://bcha24fwip02h"]
+
+[ext_resource type="Theme" uid="uid://c74j45afdc8a4" path="res://scenes/prototypes/ant_colony/ui/shared/ant_colony_theme.tres" id="0_theme"]
+[ext_resource type="Script" uid="uid://dfop7xsn0kkwx" path="res://scenes/prototypes/ant_colony/ui/mode_select/mode_select_test.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://duny5ap18itss" path="res://assets/sprites/ui/kenney/large/tile_0000.png" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://rulgdu6xtry3" path="res://assets/sprites/ui/kenney/large/tile_0043.png" id="3_banner_l"]
+[ext_resource type="Texture2D" uid="uid://cetuql6nwvbaq" path="res://assets/sprites/ui/kenney/large/tile_0044.png" id="4_banner_m"]
+[ext_resource type="Texture2D" uid="uid://c34i6hhrs1563" path="res://assets/sprites/ui/kenney/large/tile_0045.png" id="5_banner_r"]
+[ext_resource type="Texture2D" uid="uid://bsokn1a0lyx21" path="res://assets/sprites/ui/kenney/small/tile_0093.png" id="6_x_btn"]
+
+[node name="ModeSelectTest" type="Control" unique_id=1427553030]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("0_theme")
+script = ExtResource("1")
+
+[node name="BG" type="ColorRect" parent="." unique_id=902348497]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.08, 0.05, 1)
+
+[node name="PanelContainer" type="HBoxContainer" parent="." unique_id=1739875679]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -140.0
+offset_right = 280.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="NormalPanel" type="NinePatchRect" parent="PanelContainer" unique_id=1177617450]
+custom_minimum_size = Vector2(270, 280)
+layout_mode = 2
+texture = ExtResource("2_panel")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/NormalPanel" unique_id=1304164659]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 24.0
+offset_right = -12.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="Spacer" type="Control" parent="PanelContainer/NormalPanel/Content" unique_id=1743772550]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ColonyInfo" type="Label" parent="PanelContainer/NormalPanel/Content" unique_id=1114576533]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "Colony: Deeprock
+Food: 8,240
+Ants: 12
+Dist: 847"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="PanelContainer/NormalPanel/Content" unique_id=1004325233]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayContainer" type="Control" parent="PanelContainer/NormalPanel/Content" unique_id=1014452191]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="PanelContainer/NormalPanel/Content/PlayContainer" unique_id=437082624]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "Play"
+
+[node name="DeleteX" type="TextureButton" parent="PanelContainer/NormalPanel/Content/PlayContainer" unique_id=969459561]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -16.0
+offset_bottom = 16.0
+grow_horizontal = 0
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="LegacyButton" type="Button" parent="PanelContainer/NormalPanel/Content" unique_id=1088731226]
+visible = false
+modulate = Color(1, 1, 1, 0.5)
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Legacy Colonies"
+
+[node name="BannerLeft" type="TextureRect" parent="PanelContainer/NormalPanel" unique_id=291505692]
+layout_mode = 1
+offset_left = 56.1511
+offset_top = -0.8489075
+offset_right = 88.1511
+offset_bottom = 31.151093
+texture = ExtResource("3_banner_l")
+stretch_mode = 4
+
+[node name="BannerRight" type="TextureRect" parent="PanelContainer/NormalPanel/BannerLeft" unique_id=1303101882]
+layout_mode = 1
+offset_left = 125.44355
+offset_top = -0.070049286
+offset_right = 157.44354
+offset_bottom = 31.92995
+texture = ExtResource("5_banner_r")
+stretch_mode = 4
+
+[node name="BannerMid3" type="TextureRect" parent="PanelContainer/NormalPanel/BannerLeft" unique_id=10257617]
+layout_mode = 1
+offset_left = 94.30306
+offset_top = -1.0072098
+offset_right = 190.30305
+offset_bottom = 30.99279
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid2" type="TextureRect" parent="PanelContainer/NormalPanel/BannerLeft" unique_id=144009483]
+layout_mode = 1
+offset_left = 62.216255
+offset_top = -1.2949829
+offset_right = 158.21625
+offset_bottom = 30.705017
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="PanelContainer/NormalPanel/BannerLeft" unique_id=1696986029]
+layout_mode = 1
+offset_left = 30.8489
+offset_top = -1.1510925
+offset_right = 126.8489
+offset_bottom = 30.848907
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="PanelContainer/NormalPanel/BannerLeft/BannerMid" unique_id=441225813]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -30.672
+offset_top = 3.363
+offset_right = 33.328003
+offset_bottom = 3.362999
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "NORMAL MODE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EducationPanel" type="NinePatchRect" parent="PanelContainer" unique_id=1086357419]
+custom_minimum_size = Vector2(270, 280)
+layout_mode = 2
+texture = ExtResource("2_panel")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="PanelContainer/EducationPanel" unique_id=1293458298]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 24.0
+offset_right = -12.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="Spacer" type="Control" parent="PanelContainer/EducationPanel/Content" unique_id=1995495949]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NewColonyButton" type="Button" parent="PanelContainer/EducationPanel/Content" unique_id=1240606441]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "New Colony"
+
+[node name="LoadButton" type="Button" parent="PanelContainer/EducationPanel/Content" unique_id=402922899]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Load Colony"
+
+[node name="BannerLeft" type="TextureRect" parent="PanelContainer/EducationPanel" unique_id=1172500457]
+layout_mode = 1
+offset_left = 59.0
+offset_top = -2.0
+offset_right = 91.0
+offset_bottom = 30.0
+texture = ExtResource("3_banner_l")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="PanelContainer/EducationPanel" unique_id=1256566639]
+layout_mode = 1
+offset_left = 91.0
+offset_top = -2.0
+offset_right = 179.0
+offset_bottom = 30.0
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="PanelContainer/EducationPanel/BannerMid" unique_id=914513090]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "EDUCATION MODE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BannerRight" type="TextureRect" parent="PanelContainer/EducationPanel" unique_id=649742232]
+layout_mode = 1
+offset_left = 179.0
+offset_top = -2.0
+offset_right = 211.0
+offset_bottom = 30.0
+texture = ExtResource("5_banner_r")
+stretch_mode = 4
+
+[node name="LoadOverlay" type="ColorRect" parent="." unique_id=1717103204]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="NinePatchRect" parent="LoadOverlay" unique_id=795208078]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -130.0
+offset_right = 240.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_panel")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Content" type="MarginContainer" parent="LoadOverlay/Panel" unique_id=762748446]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 24.0
+offset_right = -10.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBox" type="VBoxContainer" parent="LoadOverlay/Panel/Content" unique_id=1930770062]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SaveScroll" type="ScrollContainer" parent="LoadOverlay/Panel/Content/VBox" unique_id=1312798551]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SaveList" type="VBoxContainer" parent="LoadOverlay/Panel/Content/VBox/SaveScroll" unique_id=576656050]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Slot1" type="Control" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList" unique_id=114827556]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SlotBG" type="ColorRect" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=1963616185]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.78, 0.65, 0.3)
+
+[node name="NameLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=1169054778]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Antopia"
+
+[node name="StatsLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=922773638]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.4, 0.35, 0.25, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Food: 3,200  Ants: 8  Day 12"
+
+[node name="TrashBtn" type="TextureButton" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=1587945854]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="Slot2" type="Control" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList" unique_id=386967254]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SlotBG" type="ColorRect" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1899778283]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.78, 0.65, 0.3)
+
+[node name="NameLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=36851806]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Test Colony"
+
+[node name="StatsLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1755338397]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.4, 0.35, 0.25, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Food: 450  Ants: 4  Day 3"
+
+[node name="TrashBtn" type="TextureButton" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1600568996]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="Slot3" type="Control" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList" unique_id=563016658]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SlotBG" type="ColorRect" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot3" unique_id=823793152]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.78, 0.65, 0.3)
+
+[node name="NameLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot3" unique_id=1176247449]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Deeprock B"
+
+[node name="StatsLabel" type="Label" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot3" unique_id=501172938]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.4, 0.35, 0.25, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Food: 15,800  Ants: 24  Day 47"
+
+[node name="TrashBtn" type="TextureButton" parent="LoadOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot3" unique_id=1881836204]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="CloseBtn" type="Button" parent="LoadOverlay/Panel/Content/VBox" unique_id=545985907]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "< Back"
+
+[node name="BannerLeft" type="TextureRect" parent="LoadOverlay/Panel" unique_id=1438531215]
+layout_mode = 1
+offset_left = 154.0
+offset_top = -2.0
+offset_right = 186.0
+offset_bottom = 30.0
+texture = ExtResource("3_banner_l")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="LoadOverlay/Panel" unique_id=421685532]
+layout_mode = 1
+offset_left = 186.0
+offset_top = -2.0
+offset_right = 294.0
+offset_bottom = 30.0
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="LoadOverlay/Panel/BannerMid" unique_id=2054731427]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "LOAD COLONY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BannerRight" type="TextureRect" parent="LoadOverlay/Panel" unique_id=437244194]
+layout_mode = 1
+offset_left = 294.0
+offset_top = -2.0
+offset_right = 326.0
+offset_bottom = 30.0
+texture = ExtResource("5_banner_r")
+stretch_mode = 4
+
+[node name="LegacyOverlay" type="ColorRect" parent="." unique_id=802329825]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="NinePatchRect" parent="LegacyOverlay" unique_id=1090476700]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -130.0
+offset_right = 240.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_panel")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Content" type="MarginContainer" parent="LegacyOverlay/Panel" unique_id=543573561]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 24.0
+offset_right = -10.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBox" type="VBoxContainer" parent="LegacyOverlay/Panel/Content" unique_id=1105834015]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SaveScroll" type="ScrollContainer" parent="LegacyOverlay/Panel/Content/VBox" unique_id=671571741]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SaveList" type="VBoxContainer" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll" unique_id=1258933166]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Slot1" type="Control" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList" unique_id=873859938]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SlotBG" type="ColorRect" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=620969626]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.78, 0.65, 0.3)
+
+[node name="NameLabel" type="Label" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=1906933354]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Old Colony Alpha"
+
+[node name="StatsLabel" type="Label" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=175549038]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.4, 0.35, 0.25, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Food: 42,100  Ants: 36  Day 180"
+
+[node name="TrashBtn" type="TextureButton" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot1" unique_id=1624042222]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="Slot2" type="Control" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList" unique_id=703480444]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SlotBG" type="ColorRect" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1247488918]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.78, 0.65, 0.3)
+
+[node name="NameLabel" type="Label" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1730854763]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Forgotten Hive"
+
+[node name="StatsLabel" type="Label" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=1499960877]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 400.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.4, 0.35, 0.25, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Food: 8,750  Ants: 15  Day 64"
+
+[node name="TrashBtn" type="TextureButton" parent="LegacyOverlay/Panel/Content/VBox/SaveScroll/SaveList/Slot2" unique_id=469126611]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -8.0
+offset_right = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("6_x_btn")
+stretch_mode = 0
+
+[node name="CloseBtn" type="Button" parent="LegacyOverlay/Panel/Content/VBox" unique_id=511981639]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "< Back"
+
+[node name="BannerLeft" type="TextureRect" parent="LegacyOverlay/Panel" unique_id=1287548788]
+layout_mode = 1
+offset_left = 130.0
+offset_top = -2.0
+offset_right = 162.0
+offset_bottom = 30.0
+texture = ExtResource("3_banner_l")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="LegacyOverlay/Panel" unique_id=1603624543]
+layout_mode = 1
+offset_left = 162.0
+offset_top = -2.0
+offset_right = 318.0
+offset_bottom = 30.0
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="LegacyOverlay/Panel/BannerMid" unique_id=1075001945]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "LEGACY COLONIES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BannerRight" type="TextureRect" parent="LegacyOverlay/Panel" unique_id=1091801681]
+layout_mode = 1
+offset_left = 318.0
+offset_top = -2.0
+offset_right = 350.0
+offset_bottom = 30.0
+texture = ExtResource("5_banner_r")
+stretch_mode = 4
+
+[node name="ConfirmOverlay" type="ColorRect" parent="." unique_id=691578018]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="ConfirmPanel" type="NinePatchRect" parent="ConfirmOverlay" unique_id=2012559335]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -45.0
+offset_right = 90.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_panel")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="ConfirmOverlay/ConfirmPanel" unique_id=1316389507]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="ConfirmText" type="Label" parent="ConfirmOverlay/ConfirmPanel/Content" unique_id=595873579]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Delete this
+colony?"
+horizontal_alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="ConfirmOverlay/ConfirmPanel/Content" unique_id=1931845323]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="YesButton" type="Button" parent="ConfirmOverlay/ConfirmPanel/Content/ButtonRow" unique_id=812920617]
+modulate = Color(0.9, 0.35, 0.3, 1)
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="ConfirmOverlay/ConfirmPanel/Content/ButtonRow" unique_id=1101686784]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "No"
+
+[node name="BackButton" type="Button" parent="." unique_id=1495030370]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 58.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 6
+text = "< Back"
+
+[node name="ToggleStateBtn" type="Button" parent="." unique_id=1072827204]
+modulate = Color(1, 1, 1, 0.4)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 22.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 5
+text = "Toggle: Has Save"

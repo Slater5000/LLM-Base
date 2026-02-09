@@ -89,7 +89,7 @@ The colony grows itself. All of this is invisible to the player — no numbers, 
 
 **Performance-Regulated Soft Cap:** The auto-spawner monitors FPS internally. If FPS drops below a threshold (e.g., 30), spawning pauses. If FPS recovers (player zoomed out, ants spread out, etc.), spawning resumes. The colony finds its natural size based on hardware. Target: 1000+ ants before performance becomes a concern.
 
-**Optional colony size slider:** Minimal settings menu with a "Colony Size" option (Small / Medium / Large / Unlimited). Sets a soft cap target. Default is **Unlimited** (performance-regulated only). For players who want a chill 50-ant colony on a weak laptop.
+**Colony Size** lives in the Gameplay settings tab (accessible from all modes). Sets a soft cap target: Small / Medium / Large / Unlimited (default **Unlimited**, performance-regulated only). For players who want a chill 50-ant colony on a weak laptop.
 
 **The appeal:** Put it on your second monitor. Minimize everything else. Watch ants dig tunnels and haul food. Name them. Give Greg a cowboy hat. That's it. That's the game.
 
@@ -146,17 +146,16 @@ Settings save **separately from game saves** — persist across all colonies and
 |----------|----------|
 | **Audio** | Master volume, Music volume, SFX volume |
 | **Display** | Window Mode (borderless default), Resolution, Max FPS (30/60/120/144/Unlimited), UI Scale, Screen Shake (slider) |
-| **Gameplay** | Number Format (Standard 1500 / Short 1.5K / Scientific 1.5e3), Auto-Save Interval |
+| **Gameplay** | Game Speed (0.25x / 0.5x / 1x — no faster than realtime), Auto-Save (toggle), Auto-Save Interval checkboxes (1m / 5m / 10m), Number Format (Standard 1500 / Short 1.5K / Scientific 1.5e3), Colony Size (Small / Medium / Large / Unlimited — default Unlimited) |
 | **Performance** | Quality Preset (Low/Medium/High), Max Visible Ants (slider, ants beyond cap still simulated but not drawn), Show FPS Counter |
 | **Controls** | Key Rebinding |
-| **Data** | Manual Save, Delete Save (with confirmation) |
 
 **Phase 2 (as systems come online):**
 
 | Category | Settings |
 |----------|----------|
 | **Visuals** | Pheromone Trail Visibility (slider) + Quality (Simple/Normal/Detailed), Ant Detail Level (dots/normal/full), Show Ant Names |
-| **Accessibility** | Colorblind Mode (Deuteranopia/Protanopia/Tritanopia), Reduced Motion |
+| **Accessibility** | Colorblind Mode (Deuteranopia/Protanopia/Tritanopia) |
 | **Gameplay** | Zoom Speed, Edge Scrolling |
 
 **Phase 3 (polish):**
@@ -165,7 +164,6 @@ Settings save **separately from game saves** — persist across all colonies and
 |----------|----------|
 | **Accessibility** | High Contrast Mode, Font Size, Large Cursor |
 | **Controls** | Controller Support (future), Controller Deadzone |
-| **Data** | Cloud Save, Export/Import Save |
 
 **Architecture notes:**
 - Settings persist across save slots (separate save file)
@@ -1168,7 +1166,7 @@ Decisions made during brainstorming, preserved for reference:
 | Performance warning system | FPS < 45 = yellow indicator, FPS < 30 = red warning. Informational only, no hard block. Toggleable off in options menu. Player's colony, player's choice. |
 | Education Mode: auto-spawner formula | `cost_for_ant_N = floor(8 + N * 4)`. Deliberately slow — time to name and appreciate each ant. 5-second minimum gap between spawns. First 6 ants fixed pattern (M,H,M,M,H,M), then ratio AI. |
 | Education Mode: ratio AI | Simple rules: idle_haulers >= 2 → spawn miner. Exposed food >= hauler_count * 3 → spawn hauler. Otherwise maintain 2:1 miner:hauler. Self-correcting, looks smart, actually just 3 checks. |
-| Education Mode: performance soft cap | Auto-spawner monitors FPS. Below threshold → pause spawning. Recovers → resume. Colony finds natural size based on hardware. Optional "Colony Size" slider (Small/Medium/Large/Unlimited). |
+| Education Mode: performance soft cap | Auto-spawner monitors FPS. Below threshold → pause spawning. Recovers → resume. Colony finds natural size based on hardware. Colony Size setting in Gameplay tab (Small/Medium/Large/Unlimited). |
 | Education Mode: cosmetics = viewer not unlocker | Can name ants (free), use hats/cosmetics from normal mode. Cannot earn new cosmetics or achievements. Cosmetics are the bridge between modes. |
 | Education Mode: multiple save slots | Same save system as normal mode. Each Education Mode colony is its own save. Start new ones, return to old ones. |
 | 1000 ants = minimum target | If the game can't handle 1000 ants, something is wrong. This is the performance bar for the engine/architecture. Phase 1 prototype must validate this. |
