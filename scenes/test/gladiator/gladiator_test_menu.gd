@@ -59,7 +59,7 @@ func _setup_ui() -> void:
 		var btn := Button.new()
 		btn.text = scene_name
 		btn.custom_minimum_size = Vector2(350, 50)
-		btn.add_theme_font_size_override("font_size", 18)
+		btn.add_theme_font_size_override("font_size", 16)
 
 		var scene_path: String = SCENES[scene_name]
 		btn.pressed.connect(func(): _load_scene(scene_path))
@@ -78,7 +78,7 @@ func _setup_ui() -> void:
 	var instructions := Label.new()
 	instructions.text = "Arrow Keys: Navigate | Enter: Select | ESC: Return to menu"
 	instructions.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	instructions.add_theme_font_size_override("font_size", 14)
+	instructions.add_theme_font_size_override("font_size", 16)
 	instructions.add_theme_color_override("font_color", Color(0.5, 0.5, 0.6))
 	container.add_child(instructions)
 
@@ -94,7 +94,7 @@ func _setup_ui() -> void:
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.set_anchors_preset(Control.PRESET_FULL_RECT)
-	desc_label.add_theme_font_size_override("font_size", 12)
+	desc_label.add_theme_font_size_override("font_size", 16)
 	desc_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
 	desc_panel.add_child(desc_label)
 
@@ -123,13 +123,29 @@ func _on_button_focused(idx: int) -> void:
 func _get_description(idx: int) -> String:
 	match idx:
 		0:
-			return "Line2D nodes for limbs, procedural tween animation.\nSide-view camera (Street Fighter style).\nGood for: Classic 2D fighting game look."
+			return (
+				"Line2D nodes for limbs, procedural tween animation.\n"
+				+ "Side-view camera (Street Fighter style).\n"
+				+ "Good for: Classic 2D fighting game look."
+			)
 		1:
-			return "Pure _draw() method, circles and lines.\nTop-down arena camera.\nGood for: Minimal overhead, full control."
+			return (
+				"Pure _draw() method, circles and lines.\n"
+				+ "Top-down arena camera.\n"
+				+ "Good for: Minimal overhead, full control."
+			)
 		2:
-			return "CSG primitives (spheres, cylinders).\n3D with orthogonal side camera.\nGood for: Quick 3D prototyping."
+			return (
+				"CSG primitives (spheres, cylinders).\n"
+				+ "3D with orthogonal side camera.\n"
+				+ "Good for: Quick 3D prototyping."
+			)
 		3:
-			return "ImmediateMesh wireframe lines only.\nPure Geometry Wars neon aesthetic.\nGood for: Maximum visual style, minimal art."
+			return (
+				"ImmediateMesh wireframe lines only.\n"
+				+ "Pure Geometry Wars neon aesthetic.\n"
+				+ "Good for: Maximum visual style, minimal art."
+			)
 		_:
 			return ""
 

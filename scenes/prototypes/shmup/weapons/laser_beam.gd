@@ -59,10 +59,11 @@ func _process(delta: float) -> void:
 	global_position = player.position
 	rotation = player.aim_direction.angle() + PI / 2.0
 
-	# Damage tick
+	# Damage tick — scales with player fire_rate
 	_damage_timer -= delta
 	if _damage_timer <= 0.0:
-		_damage_timer = damage_tick_rate
+		var rate_mult: float = player.fire_rate / 5.0 if player else 1.0
+		_damage_timer = damage_tick_rate / rate_mult
 		_apply_beam_damage()
 
 	# Grid warp — continuous directed force along beam
@@ -93,7 +94,8 @@ func _apply_beam_damage() -> void:
 
 	var beam_start: Vector2 = player.position
 	var base_dir: Vector2 = player.aim_direction
-	var hit_width := base_width * 4.0 + _get_pulse_width() * 2.0
+	var ew := _get_effective_width()
+	var hit_width := ew * 4.0 + _get_pulse_width() * 2.0
 
 	# Build beam endpoints for all beams in the fan
 	var beam_ends: Array = []
@@ -123,7 +125,19 @@ func _apply_beam_damage() -> void:
 			if dist <= hit_width:
 				if enemy.has_method("take_damage"):
 					enemy.take_damage(damage_per_tick)
+					_apply_status_effects(enemy)
 				break
+
+
+func _apply_status_effects(enemy: Area2D) -> void:
+	if not player:
+		return
+	if player.burn_chance > 0.0 and randf() < player.burn_chance:
+		if enemy.has_method("apply_burn"):
+			enemy.apply_burn()
+	if player.freeze_chance > 0.0 and randf() < player.freeze_chance:
+		if enemy.has_method("apply_freeze"):
+			enemy.apply_freeze()
 
 
 func _point_to_segment_distance(point: Vector2, seg_start: Vector2, seg_end: Vector2) -> float:
@@ -138,8 +152,13 @@ func _point_to_segment_distance(point: Vector2, seg_start: Vector2, seg_end: Vec
 	return point.distance_to(proj)
 
 
+func _get_effective_width() -> float:
+	var scale: float = player.bullet_size_scale if player else 1.0
+	return base_width * scale
+
+
 func _get_pulse_width() -> float:
-	return sin(_pulse_time * 5.0) * base_width * 0.2
+	return sin(_pulse_time * 5.0) * _get_effective_width() * 0.2
 
 
 func _draw() -> void:
@@ -147,7 +166,7 @@ func _draw() -> void:
 		return
 
 	var pulse := _get_pulse_width()
-	var w := base_width + pulse
+	var w := _get_effective_width() + pulse
 	var length := beam_length
 
 	# Draw each beam in the spread fan

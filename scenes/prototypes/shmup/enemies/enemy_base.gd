@@ -111,6 +111,7 @@ var freeze_timer := 0.0
 var freeze_slow := 0.0
 var poison_timer := 0.0
 var poison_dps := 0.0
+var is_converted := false
 
 # Elite/Champion
 var is_elite := false
@@ -175,6 +176,8 @@ func configure(
 	speed_scale = p_speed_scale
 	enemy_polygon = get_node("EnemyPolygon")
 	collision_shape = get_node("CollisionShape")
+
+	is_converted = false
 
 	# Reset status effects
 	burn_timer = 0.0; burn_dps = 0.0
@@ -463,6 +466,10 @@ func _process(delta: float) -> void:
 func _update_behavior(delta: float) -> void:
 	var effective_speed := speed * (1.0 - freeze_slow)
 
+	if is_converted:
+		_behavior_converted(delta, effective_speed)
+		return
+
 	match enemy_type:
 		EnemyType.GRUNT:
 			_behavior_grunt(delta, effective_speed)
@@ -494,6 +501,38 @@ func _update_behavior(delta: float) -> void:
 			_behavior_bomber(delta, effective_speed)
 		EnemyType.SERPENT:
 			_behavior_serpent(delta, effective_speed)
+
+
+# --- Converted enemy behavior ---
+
+func _behavior_converted(delta: float, spd: float) -> void:
+	var nearest: Node2D = null
+	var nearest_dist := 99999.0
+	var parent := get_parent()
+	if not parent:
+		return
+	var checked := 0
+	for child in parent.get_children():
+		if child == self or not child.get("is_active"):
+			continue
+		if child.get("is_converted"):
+			continue
+		var d := position.distance_squared_to(child.position)
+		if d < nearest_dist:
+			nearest_dist = d
+			nearest = child
+		checked += 1
+		if checked >= 30:
+			break
+	if nearest:
+		var to_target := (
+			nearest.position - position
+		).normalized()
+		velocity = to_target * spd * 1.5
+		position += velocity * delta
+		if nearest_dist < 144.0 and nearest.has_method("take_damage"):
+			nearest.take_damage(1)
+	rotation += delta * 4.0
 
 
 # --- Original behaviors ---
@@ -534,19 +573,28 @@ func _behavior_spinner(delta: float, spd: float) -> void:
 
 func _behavior_rocket(delta: float, spd: float) -> void:
 	position += _rocket_direction * spd * delta
-	# Bounce off camera viewport edges (like Runetracer)
+	# Bounce off camera viewport edges (runetracer-style: absf + clamp)
 	var cam := get_viewport().get_camera_2d()
 	var cp: Vector2 = cam.global_position if cam else target.position
+	var margin := 10.0
 	var half := Vector2(320, 180)
-	var bounds := Rect2(cp - half, Vector2(640, 360))
-	if position.x <= bounds.position.x and _rocket_direction.x < 0:
-		_rocket_direction.x = -_rocket_direction.x
-	elif position.x >= bounds.end.x and _rocket_direction.x > 0:
-		_rocket_direction.x = -_rocket_direction.x
-	if position.y <= bounds.position.y and _rocket_direction.y < 0:
-		_rocket_direction.y = -_rocket_direction.y
-	elif position.y >= bounds.end.y and _rocket_direction.y > 0:
-		_rocket_direction.y = -_rocket_direction.y
+	var br := Rect2(
+		cp - half + Vector2(margin, margin),
+		Vector2(640, 360) - Vector2(margin * 2, margin * 2),
+	)
+	if position.x < br.position.x:
+		position.x = br.position.x
+		_rocket_direction.x = absf(_rocket_direction.x)
+	elif position.x > br.end.x:
+		position.x = br.end.x
+		_rocket_direction.x = -absf(_rocket_direction.x)
+	if position.y < br.position.y:
+		position.y = br.position.y
+		_rocket_direction.y = absf(_rocket_direction.y)
+	elif position.y > br.end.y:
+		position.y = br.end.y
+		_rocket_direction.y = -absf(_rocket_direction.y)
+	position = position.clamp(br.position, br.end)
 	rotation = _rocket_direction.angle() + PI / 2.0
 
 
@@ -897,6 +945,16 @@ func _update_visual(delta: float) -> void:
 
 	var base_color: Color = TYPE_COLORS[enemy_type]
 
+	# Converted ally override
+	if is_converted:
+		var pulse := 0.7 + 0.3 * sin(
+			Time.get_ticks_msec() * 0.005,
+		)
+		enemy_polygon.color = Color(
+			0.2, 1.0, 0.8, pulse,
+		)
+		return
+
 	# Status effect tints
 	if burn_timer > 0.0:
 		base_color = base_color.lerp(Color(1.0, 0.4, 0.1), 0.4)
@@ -1076,6 +1134,7 @@ func die() -> void:
 	if not is_active:
 		return
 	is_active = false
+	is_converted = false
 	visible = false
 	set_deferred("monitoring", false)
 	set_deferred("monitorable", false)

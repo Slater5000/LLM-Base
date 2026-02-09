@@ -5,10 +5,10 @@
 [ext_resource type="Script" uid="uid://box81h2psjai" path="res://scenes/components/spawn_point.gd" id="3_spawn"]
 [ext_resource type="Script" uid="uid://dj7ygm4t8iwvv" path="res://scenes/components/area_transition.gd" id="4_transition"]
 [ext_resource type="PackedScene" uid="uid://25au2m6x8q7j" path="res://scenes/npcs/professor.tscn" id="5_professor"]
-[ext_resource type="PackedScene" uid="uid://dhealing_station1" path="res://scenes/world/objects/healing_station.tscn" id="8_healing"]
-[ext_resource type="PackedScene" uid="uid://dstorage_terminal1" path="res://scenes/world/objects/storage_terminal.tscn" id="9_storage"]
 [ext_resource type="PackedScene" uid="uid://dnpb7agyxkm3y" path="res://scenes/world/objects/tall_grass.tscn" id="6_tallgrass"]
 [ext_resource type="Script" uid="uid://c37nn3xdapj4c" path="res://scenes/world/objects/grass_encounter_zone.gd" id="7_encounterzone"]
+[ext_resource type="PackedScene" path="res://scenes/world/objects/healing_station.tscn" id="8_healing"]
+[ext_resource type="PackedScene" path="res://scenes/world/objects/storage_terminal.tscn" id="9_storage"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary"]
 size = Vector2(700, 32)
@@ -93,13 +93,13 @@ y_sort_enabled = true
 [node name="Professor" parent="NPCs" unique_id=1885674516 instance=ExtResource("5_professor")]
 position = Vector2(340, 380)
 
-[node name="Stations" type="Node2D" parent="."]
+[node name="Stations" type="Node2D" parent="." unique_id=1597189079]
 y_sort_enabled = true
 
-[node name="HealingStation" parent="Stations" instance=ExtResource("8_healing")]
+[node name="HealingStation" parent="Stations" unique_id=689529235 instance=ExtResource("8_healing")]
 position = Vector2(180, 260)
 
-[node name="StorageTerminal" parent="Stations" instance=ExtResource("9_storage")]
+[node name="StorageTerminal" parent="Stations" unique_id=852447811 instance=ExtResource("9_storage")]
 position = Vector2(180, 380)
 
 [node name="GrassPatch" type="Node2D" parent="." unique_id=1718765377]

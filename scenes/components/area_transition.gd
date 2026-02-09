@@ -58,7 +58,7 @@ func _create_interact_prompt() -> void:
 	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_prompt_label.position = Vector2(-8, -50)
 	_prompt_label.z_index = 100
-	_prompt_label.add_theme_font_size_override("font_size", 14)
+	_prompt_label.add_theme_font_size_override("font_size", 16)
 	_prompt_label.add_theme_color_override("font_color", Color.BLACK)
 	_prompt_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	_prompt_label.add_theme_constant_override("outline_size", 3)
@@ -131,4 +131,4 @@ func _draw() -> void:
 		# Draw label
 		var mode_text := "AUTO" if trigger_mode == TriggerMode.AUTOMATIC else "INTERACT"
 		var label_text := "%s\n→ %s" % [mode_text, target_spawn_id]
-		draw_string(ThemeDB.fallback_font, Vector2(-30, -20), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 10, Color.WHITE)
+		draw_string(ThemeDB.fallback_font, Vector2(-30, -20), label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, 8, Color.WHITE)

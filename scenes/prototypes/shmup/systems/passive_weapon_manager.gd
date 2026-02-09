@@ -30,26 +30,28 @@ const ICE_NOVA_DATA := [
 ]
 # --- Thunder Strike: [timer, strikes_per_cast] per level ---
 const THUNDER_STRIKE_DATA := [
-	[3.0, 1], [2.5, 1], [2.0, 1], [1.5, 2], [1.0, 2],
+	[3.0, 1], [2.5, 1], [2.0, 2], [1.5, 2], [1.0, 3],
 ]
-const THUNDER_DAMAGE := 3
+const THUNDER_DAMAGE := 5
 # --- Gravity Well: [timer, radius, collapse_damage] per level ---
 const GRAVITY_WELL_DATA := [
-	[7.0, 50.0, 2], [6.0, 60.0, 3],
-	[4.5, 70.0, 4], [3.0, 80.0, 6], [2.0, 100.0, 8],
+	[7.0, 70.0, 8], [6.0, 85.0, 12],
+	[4.5, 100.0, 16], [3.0, 115.0, 22], [2.0, 135.0, 30],
 ]
-const GRAVITY_WELL_PULL_DURATION := 2.0
+const GRAVITY_WELL_LIFETIME := 3.0
+const GRAVITY_WELL_SPEED := 80.0
 
 # --- Thorn Aura: [radius, damage] per level ---
 const THORN_AURA_DATA := [
-	[30.0, 1], [45.0, 2], [60.0, 3], [80.0, 4], [100.0, 6],
+	[35.0, 2], [50.0, 3], [65.0, 4], [85.0, 6], [110.0, 8],
 ]
-const THORN_AURA_TICK := 0.5
+const THORN_AURA_TICK := 0.3
 # --- Poison Cloud: [radius, dps] per level ---
 const POISON_CLOUD_DATA := [
-	[40.0, 1.0], [60.0, 2.0], [90.0, 3.0],
+	[70.0, 3.0], [95.0, 5.0], [120.0, 7.0],
+	[150.0, 10.0], [185.0, 14.0],
 ]
-const POISON_CLOUD_TICK := 0.5
+const POISON_CLOUD_TICK := 0.4
 # --- Shockwave: [cooldown, max_radius, damage] per level ---
 const SHOCKWAVE_DATA := [
 	[4.0, 60.0, 2], [3.5, 80.0, 2],
@@ -94,7 +96,8 @@ const RUNETRACER_DAMAGE := 2
 const RUNETRACER_HIT_COOLDOWN := 0.3
 # --- Soul Harvest: [chance, radius, damage] per level ---
 const SOUL_HARVEST_DATA := [
-	[0.15, 35.0, 2], [0.25, 50.0, 3], [0.40, 70.0, 4],
+	[0.15, 35.0, 2], [0.25, 50.0, 3], [0.35, 65.0, 4],
+	[0.50, 85.0, 5], [0.65, 110.0, 7],
 ]
 
 # ==========================================================================
@@ -123,7 +126,9 @@ var _active_wells: Array = []
 
 # Phase E weapon state
 var _thorn_aura_timer := 0.0
+var _thorn_pulse := 0.0  # Fades 1→0 on damage tick
 var _poison_cloud_timer := 0.0
+var _poison_pulse := 0.0  # Fades 1→0 on damage tick
 var _active_holy_zones: Array = []
 var _active_missiles: Array = []
 var _active_runes: Array = []
@@ -165,7 +170,9 @@ func reset() -> void:
 	_spiral_hit_cooldowns.clear()
 	_active_wells.clear()
 	_thorn_aura_timer = 0.0
+	_thorn_pulse = 0.0
 	_poison_cloud_timer = 0.0
+	_poison_pulse = 0.0
 	_active_holy_zones.clear()
 	_active_missiles.clear()
 	_active_runes.clear()
@@ -596,79 +603,67 @@ func _fire_gravity_well(level: int) -> void:
 	var idx := clampi(level - 1, 0, GRAVITY_WELL_DATA.size() - 1)
 	var radius: float = GRAVITY_WELL_DATA[idx][1]
 	var collapse_damage: int = GRAVITY_WELL_DATA[idx][2]
-
-	# Place well at densest enemy cluster near player
-	var well_pos := _find_enemy_cluster_center(player.position, 120.0)
-	if well_pos == Vector2.ZERO:
-		well_pos = player.position + Vector2.from_angle(randf() * TAU) * 60.0
-
+	# Launch from player toward nearest enemy
+	var target_pos := _find_nearest_enemy_pos(player.position)
+	var dir := Vector2.RIGHT.rotated(randf() * TAU)
+	if target_pos != Vector2.ZERO:
+		dir = (target_pos - player.position).normalized()
 	_active_wells.append({
-		"pos": well_pos,
+		"pos": player.position,
+		"vel": dir * GRAVITY_WELL_SPEED,
 		"timer": 0.0,
-		"duration": GRAVITY_WELL_PULL_DURATION,
 		"radius": radius,
-		"pull_strength": 80.0 + level * 20.0,
+		"pull_strength": 120.0 + level * 30.0,
 		"collapse_damage": collapse_damage,
-		"phase": "pulling",  # "pulling" → "collapsing"
+		"phase": "traveling",
 	})
 
 
 func _update_gravity_wells(delta: float) -> void:
+	var is_sing := has_evolution("singularity")
 	var i := _active_wells.size() - 1
 	while i >= 0:
 		var well: Dictionary = _active_wells[i]
 		well["timer"] += delta
-
-		if well["phase"] == "pulling":
-			# Pull enemies toward well center
+		if well["phase"] == "traveling":
+			# Move the well along its velocity (decelerating)
+			var vel: Vector2 = well["vel"]
+			var spd_mult := maxf(1.0 - well["timer"] / GRAVITY_WELL_LIFETIME, 0.2)
+			well["pos"] = Vector2(well["pos"]) + vel * spd_mult * delta
+			# Pull nearby enemies toward well center
+			var wpos: Vector2 = well["pos"]
 			var radius: float = well["radius"]
 			var strength: float = well["pull_strength"]
-			var is_sing := has_evolution("singularity")
-			var well_pos: Vector2 = well["pos"]
-			var nearby: Array = _spatial_grid.query_radius(well_pos, radius) if _spatial_grid else []
-			for enemy in nearby:
-				var dist := well_pos.distance_to(enemy.position)
+			for enemy in _query_nearby(wpos, radius):
+				var dist := wpos.distance_to(enemy.position)
 				if dist > 5.0:
-					var pull_dir: Vector2 = (well_pos - enemy.position).normalized()
-					enemy.position += pull_dir * strength * (1.0 - dist / radius) * delta
-					# Singularity: freeze while pulling
+					var f := (1.0 - dist / radius)
+					var pull: Vector2 = (wpos - enemy.position).normalized()
+					enemy.position += pull * strength * f * f * delta
 					if is_sing and enemy.has_method("apply_freeze"):
 						enemy.apply_freeze(0.3, 0.8)
-
-			# Grid implosion effect (continuous)
+			# Grid implosion
 			if spring_grid and Engine.get_process_frames() % 3 == 0:
-				spring_grid.apply_implosive_force(well["pos"], 0.3, radius * 0.8)
-
-			# Transition to collapse
-			if well["timer"] >= well["duration"]:
+				spring_grid.apply_implosive_force(wpos, 0.4, radius * 0.8)
+			# Collapse when lifetime expires
+			if well["timer"] >= GRAVITY_WELL_LIFETIME:
 				well["phase"] = "collapsing"
 				well["timer"] = 0.0
-				# Collapse damage (Singularity: 3x)
 				var c_dmg: int = well["collapse_damage"]
 				if is_sing:
 					c_dmg *= 3
-				_damage_enemies_in_radius(
-					well["pos"], well["radius"] * 0.6, c_dmg,
-				)
-				# Collapse VFX
-				var c_color := Color(0.7, 0.4, 1.0)
-				if is_sing:
-					c_color = Color(0.3, 0.5, 1.0)
-				vfx_manager.spawn_explosion(
-					well["pos"], c_color, 30, 5.0,
-				)
+				_damage_enemies_in_radius(wpos, radius * 0.7, c_dmg)
+				var c_col := Color(0.3, 0.5, 1.0) if is_sing else Color(0.7, 0.4, 1.0)
+				vfx_manager.spawn_explosion(wpos, c_col, 30, 5.0)
 				if spring_grid:
-					spring_grid.apply_explosive_force(well["pos"], 1.5, well["radius"])
+					spring_grid.apply_explosive_force(wpos, 1.5, radius)
 				if camera:
 					camera.add_trauma(0.3)
-
 		elif well["phase"] == "collapsing":
-			# Brief collapse visual (0.3s)
 			if well["timer"] >= 0.3:
 				_active_wells.remove_at(i)
 				i -= 1
 				continue
-
 		i -= 1
 
 
@@ -680,10 +675,12 @@ func _tick_thorn_aura(delta: float) -> void:
 	var level := get_weapon_level("thorn_aura")
 	if level <= 0:
 		return
+	_thorn_pulse = maxf(_thorn_pulse - delta * 5.0, 0.0)
 	_thorn_aura_timer -= delta
 	if _thorn_aura_timer > 0.0:
 		return
 	_thorn_aura_timer = THORN_AURA_TICK
+	_thorn_pulse = 1.0
 	var idx := clampi(level - 1, 0, THORN_AURA_DATA.size() - 1)
 	var radius: float = THORN_AURA_DATA[idx][0]
 	var damage: int = THORN_AURA_DATA[idx][1]
@@ -698,10 +695,12 @@ func _tick_poison_cloud(delta: float) -> void:
 	var level := get_weapon_level("poison_cloud")
 	if level <= 0:
 		return
+	_poison_pulse = maxf(_poison_pulse - delta * 4.0, 0.0)
 	_poison_cloud_timer -= delta
 	if _poison_cloud_timer > 0.0:
 		return
 	_poison_cloud_timer = POISON_CLOUD_TICK
+	_poison_pulse = 1.0
 	var idx := clampi(level - 1, 0, POISON_CLOUD_DATA.size() - 1)
 	var radius: float = POISON_CLOUD_DATA[idx][0]
 	var dps: float = POISON_CLOUD_DATA[idx][1]
@@ -1462,11 +1461,11 @@ func _draw_ice_nova_ring(effect: Dictionary) -> void:
 	# Crystalline ring — use fewer segments for geometric look
 	var seg_count := 14
 	# Outer dim glow
-	draw_arc(pos, r + 3.0, 0, TAU, seg_count, Color(0.4, 0.6, 1.0, alpha * 0.15), 5.0)
+	draw_arc(pos, r + 3.0, 0, TAU, seg_count, Color(0.4, 0.6, 1.0, alpha * 0.07), 3.0)
 	# Mid blue
-	draw_arc(pos, r, 0, TAU, seg_count, Color(0.6, 0.85, 1.0, alpha * 0.5), 2.5)
+	draw_arc(pos, r, 0, TAU, seg_count, Color(0.6, 0.85, 1.0, alpha * 0.2), 2.0)
 	# Core white
-	draw_arc(pos, r - 1.0, 0, TAU, seg_count, Color(1.0, 1.0, 1.0, alpha * 0.7), 1.0)
+	draw_arc(pos, r - 1.0, 0, TAU, seg_count, Color(1.0, 1.0, 1.0, alpha * 0.35), 1.0)
 
 	# Ice shard particles along the ring edge
 	var shard_count := 8
@@ -1476,9 +1475,9 @@ func _draw_ice_nova_ring(effect: Dictionary) -> void:
 		var shard_size := 3.0 * alpha
 		# Small diamond shard
 		draw_line(shard_pos + Vector2(0, -shard_size), shard_pos + Vector2(0, shard_size),
-			Color(0.8, 0.9, 1.0, alpha * 0.6), 1.5)
+			Color(0.8, 0.9, 1.0, alpha * 0.3), 1.0)
 		draw_line(shard_pos + Vector2(-shard_size * 0.5, 0), shard_pos + Vector2(shard_size * 0.5, 0),
-			Color(0.8, 0.9, 1.0, alpha * 0.6), 1.5)
+			Color(0.8, 0.9, 1.0, alpha * 0.3), 1.0)
 
 
 # --- Thunder Bolt ---
@@ -1529,34 +1528,29 @@ func _draw_gravity_wells() -> void:
 		var pos: Vector2 = well["pos"]
 		var radius: float = well["radius"]
 		var t: float = well["timer"]
-
-		if well["phase"] == "pulling":
-			var pull_frac: float = t / well["duration"]
-			# Dark core
-			draw_circle(pos, 8.0, Color(0.15, 0.0, 0.2, 0.8))
-			# Swirling particle ring — 8 dots orbiting inward
-			for p_idx in 8:
-				var orbit_angle := (TAU / 8) * p_idx + t * 3.0
-				var orbit_r := radius * (1.0 - pull_frac * 0.5) * (0.4 + 0.6 * sin(orbit_angle * 2.0 + t))
-				orbit_r = maxf(orbit_r, 10.0)
-				var dot_pos := pos + Vector2.from_angle(orbit_angle) * orbit_r
-				draw_circle(dot_pos, 2.0, Color(0.6, 0.3, 1.0, 0.6))
-			# Distortion ring at edge
-			var ring_alpha := 0.2 + sin(t * 5.0) * 0.1
-			draw_arc(pos, radius, 0, TAU, 20, Color(0.5, 0.2, 0.8, ring_alpha), 1.5)
-
+		if well["phase"] == "traveling":
+			var life_frac := t / GRAVITY_WELL_LIFETIME
+			var core_r := 6.0 + sin(t * 6.0) * 2.0
+			# Dark vortex core
+			draw_circle(pos, core_r, Color(0.1, 0.0, 0.15, 0.5))
+			draw_circle(pos, core_r * 0.5, Color(0.3, 0.1, 0.5, 0.35))
+			# Swirling dots (6 orbiting inward, spin faster over time)
+			for p in 6:
+				var a := (TAU / 6) * p + t * (3.0 + life_frac * 4.0)
+				var r := radius * (0.3 + 0.5 * sin(a * 2.0 + t * 2.0))
+				r = maxf(r, 8.0) * (1.0 - life_frac * 0.3)
+				var dp := pos + Vector2.from_angle(a) * r
+				draw_circle(dp, 2.0, Color(0.6, 0.3, 1.0, 0.3))
+			# Pull radius ring (pulsing)
+			var ra := 0.08 + sin(t * 5.0) * 0.04
+			draw_arc(pos, radius, 0, TAU, 16, Color(0.5, 0.2, 0.8, ra), 1.5)
+			# Inner distortion ring
+			draw_arc(pos, radius * 0.4, 0, TAU, 12, Color(0.7, 0.4, 1.0, 0.1), 1.5)
 		elif well["phase"] == "collapsing":
-			# Expanding bright collapse ring
 			var ct: float = well["timer"] / 0.3
 			var cr := radius * 0.3 * ct
-			var ca := (1.0 - ct)
-			draw_arc(
-				pos, cr, 0, TAU, 20,
-				Color(0.8, 0.5, 1.0, ca), 3.0,
-			)
-			draw_circle(
-				pos, 6.0 * (1.0 - ct), Color(1.0, 0.9, 1.0, ca),
-			)
+			draw_arc(pos, cr, 0, TAU, 20, Color(0.8, 0.5, 1.0, 1.0 - ct), 3.0)
+			draw_circle(pos, 6.0 * (1.0 - ct), Color(1.0, 0.9, 1.0, 1.0 - ct))
 
 
 # --- Thorn Aura ---
@@ -1568,35 +1562,24 @@ func _draw_thorn_aura() -> void:
 	var idx := clampi(level - 1, 0, THORN_AURA_DATA.size() - 1)
 	var radius: float = THORN_AURA_DATA[idx][0]
 	var pos := player.position
-	var pulse := sin(_time * 4.0) * 0.05 + 1.0
-	var r := radius * pulse
+	var r := radius * (sin(_time * 4.0) * 0.05 + 1.0)
 	var seg := 12
-	# Outer dim
-	draw_arc(pos, r, 0, TAU, seg, Color(0.6, 0.9, 0.2, 0.08), 5.0)
-	# Mid green
-	draw_arc(
-		pos, r * 0.9, 0, TAU, seg,
-		Color(0.6, 0.9, 0.2, 0.2), 2.5,
-	)
-	# Inner bright
-	draw_arc(
-		pos, r * 0.85, 0, TAU, seg,
-		Color(0.8, 1.0, 0.4, 0.3), 1.0,
-	)
-	# Thorn spikes
+	var p := _thorn_pulse
+	# Pulse flash ring on damage tick
+	if p > 0.0:
+		var fr := r * (1.0 + (1.0 - p) * 0.15)
+		draw_arc(pos, fr, 0, TAU, seg, Color(0.8, 1.0, 0.3, 0.25 * p), 2.0 + p * 3.0)
+	draw_arc(pos, r, 0, TAU, seg, Color(0.6, 0.9, 0.2, 0.04 + p * 0.08), 3.0)
+	draw_arc(pos, r * 0.9, 0, TAU, seg, Color(0.6, 0.9, 0.2, 0.06 + p * 0.08), 1.5)
+	draw_arc(pos, r * 0.85, 0, TAU, seg, Color(0.8, 1.0, 0.4, 0.1 + p * 0.12), 1.0)
+	var sa := 0.2 + p * 0.25
 	for i in seg:
-		var spike_angle := (TAU / seg) * i + _time * 0.5
-		var base_pt := pos + Vector2.from_angle(spike_angle) * r
-		var tip := pos + Vector2.from_angle(spike_angle) * (r + 6.0)
-		var perp := Vector2.from_angle(spike_angle + PI / 2.0) * 2.0
-		draw_line(
-			base_pt - perp, tip,
-			Color(0.7, 1.0, 0.3, 0.4), 1.0,
-		)
-		draw_line(
-			base_pt + perp, tip,
-			Color(0.7, 1.0, 0.3, 0.4), 1.0,
-		)
+		var a := (TAU / seg) * i + _time * 0.5
+		var bp := pos + Vector2.from_angle(a) * r
+		var tip := pos + Vector2.from_angle(a) * (r + 6.0 + p * 4.0)
+		var perp := Vector2.from_angle(a + PI / 2.0) * 2.0
+		draw_line(bp - perp, tip, Color(0.7, 1.0, 0.3, sa), 1.0)
+		draw_line(bp + perp, tip, Color(0.7, 1.0, 0.3, sa), 1.0)
 
 
 # --- Poison Cloud ---
@@ -1608,28 +1591,21 @@ func _draw_poison_cloud() -> void:
 	var idx := clampi(level - 1, 0, POISON_CLOUD_DATA.size() - 1)
 	var radius: float = POISON_CLOUD_DATA[idx][0]
 	var pos := player.position
-	var pulse := sin(_time * 3.0) * 0.05 + 1.0
-	var r := radius * pulse
-	# Outer dim green
-	draw_arc(
-		pos, r, 0, TAU, 20, Color(0.3, 0.9, 0.2, 0.08), 6.0,
-	)
-	# Mid green
-	draw_arc(
-		pos, r * 0.75, 0, TAU, 16,
-		Color(0.3, 0.9, 0.2, 0.12), 3.0,
-	)
-	# Inner fill
-	draw_arc(
-		pos, r * 0.5, 0, TAU, 12,
-		Color(0.4, 1.0, 0.3, 0.06), 8.0,
-	)
-	# Floating poison dots (4 rotating)
-	for i in 4:
-		var angle := _time * 1.5 + (TAU / 4.0) * i
-		var dot_r := r * (0.5 + sin(_time * 2.0 + i) * 0.3)
-		var dot_pos := pos + Vector2.from_angle(angle) * dot_r
-		draw_circle(dot_pos, 2.0, Color(0.3, 1.0, 0.2, 0.3))
+	var r := radius * (sin(_time * 3.0) * 0.06 + 1.0)
+	var p := _poison_pulse
+	# Pulse flash on damage tick
+	if p > 0.0:
+		var fr := r * (1.0 + (1.0 - p) * 0.12)
+		draw_arc(pos, fr, 0, TAU, 24, Color(0.3, 1.0, 0.2, 0.2 * p), 2.5 + p * 3.0)
+	draw_arc(pos, r, 0, TAU, 24, Color(0.3, 0.9, 0.2, 0.06 + p * 0.06), 4.0)
+	draw_arc(pos, r * 0.75, 0, TAU, 20, Color(0.3, 0.9, 0.2, 0.08 + p * 0.08), 2.0)
+	draw_arc(pos, r * 0.45, 0, TAU, 16, Color(0.4, 1.0, 0.3, 0.05 + p * 0.05), 5.0)
+	for i in 6:
+		var a := _time * (1.2 + i * 0.3) + (TAU / 6.0) * i
+		var bd := r * (0.4 + sin(_time * 2.0 + i) * 0.35)
+		var bp := pos + Vector2.from_angle(a) * bd
+		draw_circle(bp, 3.0, Color(0.3, 1.0, 0.2, 0.15 + p * 0.15))
+		draw_circle(bp, 5.0, Color(0.3, 0.9, 0.2, 0.05 + p * 0.05))
 
 
 # --- Shockwave Ring ---
@@ -1649,15 +1625,15 @@ func _draw_shockwave_ring(effect: Dictionary) -> void:
 	# Triple-layer white/silver ring
 	draw_arc(
 		pos, r + 2.0, 0, TAU, 24,
-		Color(0.8, 0.85, 1.0, alpha * 0.12), 5.0,
+		Color(0.8, 0.85, 1.0, alpha * 0.06), 3.0,
 	)
 	draw_arc(
 		pos, r, 0, TAU, 24,
-		Color(0.9, 0.95, 1.0, alpha * 0.4), 2.5,
+		Color(0.9, 0.95, 1.0, alpha * 0.18), 2.0,
 	)
 	draw_arc(
 		pos, r - 1.0, 0, TAU, 24,
-		Color(1.0, 1.0, 1.0, alpha * 0.7), 1.0,
+		Color(1.0, 1.0, 1.0, alpha * 0.35), 1.0,
 	)
 
 
@@ -1741,10 +1717,10 @@ func _draw_holy_zones() -> void:
 		else:
 			pal = [Color(.4, .5, 1), Color(.5, .6, 1), Color(.8, .9, 1)]
 		var ripple := sin(_time * 4.0 + zone.hash()) * 0.1
-		draw_circle(pos, r, Color(pal[0].r, pal[0].g, pal[0].b, a * 0.06))
-		draw_arc(pos, r * (1.0 + ripple), 0, TAU, 20, Color(pal[1].r, pal[1].g, pal[1].b, a * 0.25), 2.0)
-		draw_arc(pos, r * 0.6, 0, TAU, 16, Color(pal[1].r, pal[1].g, pal[1].b, a * 0.15), 3.0)
-		draw_circle(pos, r * 0.15, Color(pal[2].r, pal[2].g, pal[2].b, a * 0.2))
+		draw_circle(pos, r, Color(pal[0].r, pal[0].g, pal[0].b, a * 0.03))
+		draw_arc(pos, r * (1.0 + ripple), 0, TAU, 20, Color(pal[1].r, pal[1].g, pal[1].b, a * 0.1), 1.5)
+		draw_arc(pos, r * 0.6, 0, TAU, 16, Color(pal[1].r, pal[1].g, pal[1].b, a * 0.06), 2.0)
+		draw_circle(pos, r * 0.15, Color(pal[2].r, pal[2].g, pal[2].b, a * 0.1))
 
 
 # --- Drone Swarm ---
@@ -1914,15 +1890,15 @@ func _draw_soul_harvest_ring(effect: Dictionary) -> void:
 	# Purple expanding ring
 	draw_arc(
 		pos, r + 2.0, 0, TAU, 20,
-		Color(0.5, 0.1, 0.6, alpha * 0.15), 5.0,
+		Color(0.5, 0.1, 0.6, alpha * 0.07), 3.0,
 	)
 	draw_arc(
 		pos, r, 0, TAU, 20,
-		Color(0.8, 0.3, 0.9, alpha * 0.45), 2.5,
+		Color(0.8, 0.3, 0.9, alpha * 0.2), 2.0,
 	)
 	draw_arc(
 		pos, r - 1.0, 0, TAU, 20,
-		Color(1.0, 0.7, 1.0, alpha * 0.6), 1.0,
+		Color(1.0, 0.7, 1.0, alpha * 0.3), 1.0,
 	)
 	# Soul wisps floating upward
 	for w in 4:
@@ -1932,7 +1908,7 @@ func _draw_soul_harvest_ring(effect: Dictionary) -> void:
 		wp.y -= t * 15.0
 		draw_circle(
 			wp, 2.0 * (1.0 - t),
-			Color(0.9, 0.6, 1.0, alpha * 0.5),
+			Color(0.9, 0.6, 1.0, alpha * 0.25),
 		)
 
 

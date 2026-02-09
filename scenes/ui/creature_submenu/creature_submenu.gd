@@ -96,7 +96,7 @@ func _create_menu_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(54, 14)
-	btn.add_theme_font_size_override("font_size", 8)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color.BLACK)
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn

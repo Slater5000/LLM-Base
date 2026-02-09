@@ -15,10 +15,14 @@ const VIEWPORT_SIZE := Vector2(640, 360)
 const PLAYER_BULLET_POOL_SIZE := 200
 const ENEMY_BULLET_POOL_SIZE := 80
 const GEOM_POOL_SIZE := 200
+const PICKUP_POOL_SIZE := 30
 
 # Enemy separation
 const SEPARATION_RADIUS := 14.0
 const SEPARATION_FORCE := 120.0
+
+# Bomb economy
+const BOMB_CAP := 10
 
 # Preloaded scripts
 const SPRING_GRID_SCRIPT := preload(
@@ -29,6 +33,9 @@ const SCREEN_SHAKE_SCRIPT := preload(
 )
 const ARENA_BORDER_SCRIPT := preload(
 	"res://scenes/prototypes/shmup/arena/arena_border.gd"
+)
+const WORLD_BORDER_SCRIPT := preload(
+	"res://scenes/prototypes/shmup/arena/world_border.gd"
 )
 const VFX_MANAGER_SCRIPT := preload(
 	"res://scenes/prototypes/shmup/effects/vfx_manager.gd"
@@ -72,12 +79,28 @@ const LASER_BEAM_SCRIPT := preload(
 const CROSSHAIR_SCRIPT := preload(
 	"res://scenes/prototypes/shmup/ui/crosshair.gd"
 )
+const PICKUP_SCRIPT := preload(
+	"res://scenes/prototypes/shmup/collectibles/pickup.gd"
+)
+const PICKUP_MANAGER_SCRIPT := preload(
+	"res://scenes/prototypes/shmup/systems/pickup_manager.gd"
+)
 const CHROMATIC_SHADER := preload(
 	"res://scenes/prototypes/shmup/shaders/chromatic_aberration.gdshader"
 )
 const SpatialGrid := preload(
 	"res://scenes/prototypes/shmup/systems/spatial_grid.gd"
 )
+# Buff indicator colors for HUD
+const BUFF_COLORS := {
+	"chronofreeze": Color(0.5, 0.85, 1.0),
+	"angelic_boon": Color(1.0, 1.0, 0.85),
+	"berserks_rage": Color(0.9, 0.15, 0.1),
+	"rapid_fire": Color(0.8, 1.0, 0.2),
+	"conversion": Color(0.7, 0.2, 1.0),
+	"challenge": Color(0.9, 0.9, 1.0),
+}
+
 # Enemy type reference for geom drops
 const ENEMY_TYPE_REF = ENEMY_BASE_SCRIPT.EnemyType
 
@@ -111,7 +134,7 @@ var camera_rect := Rect2(-320, -180, 640, 360)
 
 # Game state
 var score := 0
-var lives := 20
+var lives := 10
 var bombs := 3
 var is_game_over := false
 var is_paused := false
@@ -133,11 +156,13 @@ var perf_tracker: Node2D
 var ui_layer: CanvasLayer
 var post_process_layer: CanvasLayer
 var spatial_grid: RefCounted
+var pickup_manager: Node
 
 # Object pools
 var player_bullet_pool: Array[Area2D] = []
 var enemy_bullet_pool: Array[Area2D] = []
 var geom_pool: Array[Area2D] = []
+var pickup_pool: Array[Area2D] = []
 var enemy_container: Node2D
 
 # UI Labels
@@ -154,6 +179,12 @@ var xp_bar_fill: ColorRect
 var _enemy_packed_scene: PackedScene
 var _separation_batch_idx := 0
 var _railgun_active := false
+var _quit_bg: ColorRect
+var _quit_label: Label
+var _current_magnet_range := 35.0
+var _current_pickup_magnet_range := 50.0
+var _buff_indicators: Dictionary = {}
+var _turbo_labels: Array[Label] = []
 
 
 func _ready() -> void:
@@ -184,6 +215,11 @@ func _setup_input_actions() -> void:
 	_add_key_action("shmup_bomb", KEY_E)
 	_add_key_action("shmup_restart", KEY_ENTER)
 	_add_key_action("shmup_pause", KEY_ESCAPE)
+	_add_key_action("shmup_reroll", KEY_R)
+	_add_key_action("shmup_skip", KEY_TAB)
+	_add_key_action("shmup_lock", KEY_L)
+	_add_key_action("shmup_banish", KEY_X)
+	_add_mouse_action("shmup_click", MOUSE_BUTTON_LEFT)
 
 	# Controller mappings
 	_add_joy_axis_action("shmup_move_left", JOY_AXIS_LEFT_X, -1.0)
@@ -226,6 +262,14 @@ func _add_joy_axis_action(action_name: String, axis: int, axis_value: float) -> 
 	InputMap.action_add_event(action_name, event)
 
 
+func _add_mouse_action(action_name: String, button: int) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name, 0.2)
+	var event := InputEventMouseButton.new()
+	event.button_index = button
+	InputMap.action_add_event(action_name, event)
+
+
 func _build_scene_tree() -> void:
 	# --- Background layer (CanvasLayer -1) ---
 	var bg_layer := CanvasLayer.new()
@@ -240,7 +284,12 @@ func _build_scene_tree() -> void:
 	spring_grid.setup(VIEWPORT_SIZE, Vector2.ZERO)
 
 	# --- Game layer (default, layer 0) ---
-	# Arena border removed — open scrolling world
+	# World boundary border — visible neon edge
+	var world_border := Node2D.new()
+	world_border.set_script(WORLD_BORDER_SCRIPT)
+	world_border.name = "WorldBorder"
+	add_child(world_border)
+	world_border.setup(WORLD_RECT)
 	arena_border = null
 
 	# Enemy container
@@ -361,12 +410,14 @@ func _build_scene_tree() -> void:
 	xp_level_system.leveled_up.connect(_on_leveled_up)
 	xp_level_system.xp_changed.connect(_on_xp_changed)
 	level_up_ui.upgrade_chosen.connect(_on_upgrade_chosen)
+	level_up_ui.upgrade_skipped.connect(_on_upgrade_skipped)
 
 	# Setup upgrade manager references
 	upgrade_manager.player = player
 	upgrade_manager.xp_level_system = xp_level_system
 	upgrade_manager.game_main = self
 	level_up_ui.upgrade_manager = upgrade_manager
+	level_up_ui.game_main = self
 
 	# Setup spring grid camera ref for world→screen coordinate conversion
 	spring_grid.camera_ref = camera
@@ -388,6 +439,19 @@ func _build_scene_tree() -> void:
 	upgrade_manager.evolution_unlocked.connect(
 		_on_evolution_unlocked,
 	)
+
+	# Setup pickup manager
+	pickup_manager = Node.new()
+	pickup_manager.name = "PickupManager"
+	pickup_manager.set_script(PICKUP_MANAGER_SCRIPT)
+	add_child(pickup_manager)
+	pickup_manager.setup(player, enemy_container, vfx_manager, self)
+	pickup_manager.buff_started.connect(_on_buff_started)
+	pickup_manager.buff_ended.connect(_on_buff_ended)
+	pickup_manager.turbo_letter_collected.connect(
+		_on_turbo_letter_collected,
+	)
+	pickup_manager.turbo_activated.connect(_on_turbo_activated)
 
 	# Setup perf tracker references
 	perf_tracker.setup(enemy_container, geom_pool, player_bullet_pool, enemy_bullet_pool)
@@ -454,79 +518,143 @@ func _create_enemy_packed_scene() -> PackedScene:
 
 
 func _build_ui() -> void:
-	# Score (top-left)
+	# Score (top-left, below FPS tracker)
 	score_label = Label.new()
 	score_label.name = "ScoreLabel"
-	score_label.position = Vector2(45, 4)
+	score_label.position = Vector2(5, 14)
 	score_label.text = "SCORE: 0"
-	score_label.add_theme_font_size_override("font_size", 10)
-	score_label.add_theme_color_override("font_color", Color(0.7, 0.85, 1.0, 0.9))
+	score_label.add_theme_font_size_override("font_size", 16)
+	score_label.add_theme_color_override(
+		"font_color", Color(0.8, 0.9, 1.0, 0.95),
+	)
 	ui_layer.add_child(score_label)
 
 	# Elapsed time (top-center)
 	time_label = Label.new()
 	time_label.name = "TimeLabel"
-	time_label.position = Vector2(290, 4)
+	time_label.position = Vector2(280, 4)
+	time_label.size = Vector2(80, 20)
+	time_label.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
 	time_label.text = "0:00"
-	time_label.add_theme_font_size_override("font_size", 10)
-	time_label.add_theme_color_override("font_color", Color(0.7, 0.85, 1.0, 0.7))
+	time_label.add_theme_font_size_override("font_size", 16)
+	time_label.add_theme_color_override(
+		"font_color", Color(0.8, 0.9, 1.0, 0.9),
+	)
 	ui_layer.add_child(time_label)
 
 	# Level (top-right)
 	level_label = Label.new()
 	level_label.name = "LevelLabel"
-	level_label.position = Vector2(530, 4)
+	level_label.position = Vector2(560, 4)
+	level_label.size = Vector2(75, 20)
+	level_label.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_RIGHT
+	)
 	level_label.text = "LV 1"
-	level_label.add_theme_font_size_override("font_size", 10)
-	level_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.7, 0.9))
+	level_label.add_theme_font_size_override("font_size", 16)
+	level_label.add_theme_color_override(
+		"font_color", Color(0.5, 1.0, 0.7, 0.95),
+	)
 	ui_layer.add_child(level_label)
 
 	# XP bar background (below level label)
 	xp_bar_bg = ColorRect.new()
 	xp_bar_bg.name = "XpBarBg"
-	xp_bar_bg.position = Vector2(525, 18)
-	xp_bar_bg.size = Vector2(60, 3)
+	xp_bar_bg.position = Vector2(560, 22)
+	xp_bar_bg.size = Vector2(75, 4)
 	xp_bar_bg.color = Color(0.15, 0.15, 0.2, 0.8)
 	ui_layer.add_child(xp_bar_bg)
 
 	# XP bar fill
 	xp_bar_fill = ColorRect.new()
 	xp_bar_fill.name = "XpBarFill"
-	xp_bar_fill.position = Vector2(525, 18)
-	xp_bar_fill.size = Vector2(0, 3)
+	xp_bar_fill.position = Vector2(560, 22)
+	xp_bar_fill.size = Vector2(0, 4)
 	xp_bar_fill.color = Color(0.3, 1.0, 0.5, 0.9)
 	ui_layer.add_child(xp_bar_fill)
 
 	# Lives (bottom-left)
 	lives_label = Label.new()
 	lives_label.name = "LivesLabel"
-	lives_label.position = Vector2(220, 338)
+	lives_label.position = Vector2(200, 336)
 	lives_label.text = "LIVES: 3"
 	lives_label.add_theme_font_size_override("font_size", 8)
-	lives_label.add_theme_color_override("font_color", Color(0.2, 0.8, 1.0, 0.8))
+	lives_label.add_theme_color_override(
+		"font_color", Color(0.3, 0.9, 1.0, 0.9),
+	)
 	ui_layer.add_child(lives_label)
 
 	# Bombs (bottom-right)
 	bombs_label = Label.new()
 	bombs_label.name = "BombsLabel"
-	bombs_label.position = Vector2(360, 338)
+	bombs_label.position = Vector2(360, 336)
 	bombs_label.text = "BOMBS: 3"
 	bombs_label.add_theme_font_size_override("font_size", 8)
-	bombs_label.add_theme_color_override("font_color", Color(0.2, 0.8, 1.0, 0.8))
+	bombs_label.add_theme_color_override(
+		"font_color", Color(0.3, 0.9, 1.0, 0.9),
+	)
 	ui_layer.add_child(bombs_label)
+
+	# TURBO letter display (bottom-center)
+	var turbo_letters := ["T", "U", "R", "B", "O"]
+	for i in turbo_letters.size():
+		var lbl := Label.new()
+		lbl.name = "Turbo_%s" % turbo_letters[i]
+		lbl.text = turbo_letters[i]
+		lbl.position = Vector2(280 + i * 16, 348)
+		lbl.add_theme_font_size_override("font_size", 8)
+		lbl.add_theme_color_override(
+			"font_color", Color(0.3, 0.3, 0.3),
+		)
+		ui_layer.add_child(lbl)
+		_turbo_labels.append(lbl)
 
 	# Game over / pause overlay (center, hidden)
 	game_over_label = Label.new()
 	game_over_label.name = "GameOverLabel"
-	game_over_label.position = Vector2(60, 50)
-	game_over_label.size = Vector2(520, 260)
+	game_over_label.position = Vector2(40, 40)
+	game_over_label.size = Vector2(560, 280)
 	game_over_label.text = "GAME OVER"
-	game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	game_over_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	game_over_label.add_theme_font_size_override("font_size", 14)
-	game_over_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3, 1.0))
+	game_over_label.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+	game_over_label.autowrap_mode = (
+		TextServer.AUTOWRAP_WORD_SMART
+	)
+	game_over_label.add_theme_font_size_override(
+		"font_size", 16,
+	)
+	game_over_label.add_theme_color_override(
+		"font_color", Color(1.0, 0.3, 0.3, 1.0),
+	)
 	game_over_label.visible = false
 	ui_layer.add_child(game_over_label)
+
+	# Quit button (visible only during pause)
+	_quit_bg = ColorRect.new()
+	_quit_bg.name = "QuitBg"
+	_quit_bg.position = Vector2(260, 280)
+	_quit_bg.size = Vector2(120, 26)
+	_quit_bg.color = Color(0.5, 0.12, 0.12, 0.85)
+	_quit_bg.visible = false
+	_quit_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui_layer.add_child(_quit_bg)
+
+	_quit_label = Label.new()
+	_quit_label.name = "QuitLabel"
+	_quit_label.position = Vector2(260, 280)
+	_quit_label.size = Vector2(120, 26)
+	_quit_label.text = "QUIT GAME"
+	_quit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_quit_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_quit_label.add_theme_font_size_override("font_size", 8)
+	_quit_label.add_theme_color_override(
+		"font_color", Color(1.0, 0.7, 0.7, 0.9),
+	)
+	_quit_label.visible = false
+	ui_layer.add_child(_quit_label)
 
 
 func _create_object_pools() -> void:
@@ -589,20 +717,38 @@ func _create_object_pools() -> void:
 		geom.collected.connect(_on_geom_collected)
 		geom_pool.append(geom)
 
+	# Pickups (temporary power-ups)
+	for i in PICKUP_POOL_SIZE:
+		var pickup := Area2D.new()
+		pickup.set_script(PICKUP_SCRIPT)
+		pickup.name = "Pickup_%d" % i
+
+		var polygon := Polygon2D.new()
+		polygon.name = "PickupPolygon"
+		pickup.add_child(polygon)
+
+		add_child(pickup)
+		pickup.deactivate()
+		pickup.collected.connect(_on_pickup_collected)
+		pickup_pool.append(pickup)
+
 
 func _start_game() -> void:
 	score = 0
-	lives = 20
+	lives = 10
 	bombs = 3
 	elapsed_time = 0.0
 	is_game_over = false
 	is_paused = false
 	game_over_label.visible = false
+	_quit_bg.visible = false
+	_quit_label.visible = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 
 	xp_level_system.reset()
 	upgrade_manager.reset()
 	passive_weapon_manager.reset()
+	pickup_manager.reset()
 	laser_beam.deactivate()
 	level_up_ui._hide_immediate()
 	perf_tracker.reset()
@@ -617,6 +763,16 @@ func _start_game() -> void:
 	player.burn_chance = 0.0
 	player.freeze_chance = 0.0
 	player.has_laser = false
+	_current_magnet_range = 35.0
+	_current_pickup_magnet_range = 50.0
+	_update_turbo_display(0)
+
+	# Clear buff indicators
+	for buff_id in _buff_indicators:
+		var lbl: Label = _buff_indicators[buff_id]
+		if is_instance_valid(lbl):
+			lbl.queue_free()
+	_buff_indicators.clear()
 
 	_update_ui()
 	_update_xp_bar()
@@ -637,11 +793,22 @@ func _process(delta: float) -> void:
 		return
 
 	if is_paused:
+		# Click quit button
+		if Input.is_action_just_pressed("shmup_click"):
+			var mpos := get_viewport().get_mouse_position()
+			var qrect := Rect2(260, 280, 120, 26)
+			if qrect.has_point(mpos):
+				get_tree().quit()
 		return
 
-	# Camera follows player
+	# Camera follows player, clamped so viewport stays inside world
 	if player and player.is_alive:
 		camera.global_position = player.global_position
+	var half_vp := VIEWPORT_SIZE / 2.0
+	camera.global_position = camera.global_position.clamp(
+		WORLD_RECT.position + half_vp,
+		WORLD_RECT.end - half_vp,
+	)
 	camera_rect = get_camera_rect()
 
 	# Update spatial grid for weapon queries
@@ -725,16 +892,34 @@ func _toggle_pause() -> void:
 	get_tree().paused = is_paused
 
 	if is_paused:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 		game_over_label.visible = true
+		_quit_bg.visible = true
+		_quit_label.visible = true
 		var mins := int(elapsed_time) / 60
 		var secs := int(elapsed_time) % 60
-		var upgrades_text: String = upgrade_manager.get_upgrade_summary()
-		game_over_label.text = "PAUSED\n\nSCORE: %s\nTIME: %d:%02d\nLEVEL: %d\n\n%s\n\nPress ESC" % [
-			_format_score(score), mins, secs, xp_level_system.level, upgrades_text]
-		game_over_label.add_theme_color_override("font_color", Color(0.7, 0.85, 1.0, 1.0))
+		var upgrades_text: String = (
+			upgrade_manager.get_upgrade_summary()
+		)
+		var fmt := "PAUSED\n\nSCORE: %s\nTIME: %d:%02d\n"
+		fmt += "LEVEL: %d\n\n%s\n\nESC Resume"
+		game_over_label.text = fmt % [
+			_format_score(score), mins, secs,
+			xp_level_system.level, upgrades_text,
+		]
+		game_over_label.add_theme_color_override(
+			"font_color", Color(0.7, 0.85, 1.0, 1.0),
+		)
 	else:
+		Input.set_mouse_mode(
+			Input.MOUSE_MODE_CONFINED_HIDDEN,
+		)
 		game_over_label.visible = false
-		game_over_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3, 1.0))
+		_quit_bg.visible = false
+		_quit_label.visible = false
+		game_over_label.add_theme_color_override(
+			"font_color", Color(1.0, 0.3, 0.3, 1.0),
+		)
 
 
 # --- Signal handlers ---
@@ -857,6 +1042,13 @@ func _on_enemy_killed(pos: Vector2, enemy_type: String, points: int) -> void:
 	# Drop geoms (XP)
 	_spawn_geoms(pos, enemy_type)
 
+	# Drop pickups (rare temporary power-ups)
+	var pickup_type: int = pickup_manager.try_drop_pickup(
+		pos, enemy_type,
+	)
+	if pickup_type >= 0:
+		_spawn_pickup(pos, pickup_type)
+
 	# Soul Harvest — chance to chain-explode on kill
 	passive_weapon_manager.on_enemy_killed(pos)
 
@@ -873,15 +1065,34 @@ func _on_geom_collected(xp: int) -> void:
 	xp_level_system.add_xp(xp)
 
 
+func _on_pickup_collected(pickup_type: int) -> void:
+	pickup_manager.apply_pickup_effect(pickup_type)
+	var color: Color = pickup_manager.get_pickup_color(pickup_type)
+	vfx_manager.spawn_explosion(
+		player.position, color, 15, 3.0,
+	)
+	vfx_manager.spawn_fragments(player.position, color, 4)
+	camera.add_trauma(0.15)
+
+	# Positional challenge: keep pickup alive as zone
+	var pickup_script := PICKUP_SCRIPT
+	if pickup_type == pickup_script.PickupType.POSITIONAL_CHALLENGE:
+		# Find the pickup that just collected — it entered zone mode
+		for pickup in pickup_pool:
+			if pickup.is_active and pickup.is_zone_mode:
+				pickup_manager.set_challenge_pickup(pickup)
+				break
+
+
 func _on_leveled_up(level: int) -> void:
 	level_label.text = "LV %d" % level
 	# Flash the level label
 	var tween := create_tween()
 	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	level_label.add_theme_font_size_override("font_size", 14)
+	level_label.add_theme_font_size_override("font_size", 16)
 	level_label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.5, 1.0))
 	tween.tween_callback(func():
-		level_label.add_theme_font_size_override("font_size", 10)
+		level_label.add_theme_font_size_override("font_size", 8)
 		level_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.7, 0.9))
 	).set_delay(0.3)
 
@@ -908,12 +1119,22 @@ func _show_level_up_ui() -> void:
 func _on_upgrade_chosen(id: String) -> void:
 	# Apply the chosen upgrade
 	upgrade_manager.apply_upgrade(id)
+	_finish_level_up()
+
+
+func _on_upgrade_skipped() -> void:
+	# Bomb reward already applied by level_up_ui
+	_finish_level_up()
+
+
+func _finish_level_up() -> void:
 	xp_level_system.consume_pending_level()
 
 	# Check for queued level-ups
 	if xp_level_system.has_pending_levels():
-		# Brief delay then show next choices (create_timer process_always=true by default)
-		get_tree().create_timer(0.1).timeout.connect(_show_level_up_ui, CONNECT_ONE_SHOT)
+		get_tree().create_timer(0.1).timeout.connect(
+			_show_level_up_ui, CONNECT_ONE_SHOT,
+		)
 	else:
 		# Unpause
 		is_paused = false
@@ -933,6 +1154,27 @@ func _on_upgrade_applied(id: String, new_level: int) -> void:
 	]
 	if id in passive_weapons:
 		passive_weapon_manager.set_weapon_level(id, new_level)
+
+	# Magnet range — fix: actually apply the upgrade
+	if id == "magnet":
+		_current_magnet_range = 35.0 * (1.0 + new_level * 0.30)
+		_current_pickup_magnet_range = 50.0 * (
+			1.0 + new_level * 0.30
+		)
+		for geom in geom_pool:
+			geom.magnetic_range = _current_magnet_range
+		for pickup in pickup_pool:
+			pickup.magnetic_range = _current_pickup_magnet_range
+
+	# Update pickup_manager base stats when relevant upgrades change
+	if id == "move_speed":
+		pickup_manager.update_base_stats(
+			player.fire_rate, player.max_speed,
+		)
+	if id == "fire_rate":
+		pickup_manager.update_base_stats(
+			player.fire_rate, player.max_speed,
+		)
 
 	# Laser beam activation
 	if id == "laser":
@@ -957,6 +1199,52 @@ func _on_evolution_unlocked(id: String) -> void:
 	print(
 		"[EVOLUTION] %s unlocked" % id,
 	)
+
+
+# --- Pickup buff HUD handlers ---
+
+
+func _on_buff_started(buff_id: String, _duration: float) -> void:
+	if _buff_indicators.has(buff_id):
+		return
+	var lbl := Label.new()
+	lbl.text = buff_id.substr(0, 4).to_upper()
+	lbl.add_theme_font_size_override("font_size", 8)
+	var c: Color = BUFF_COLORS.get(buff_id, Color.WHITE)
+	lbl.add_theme_color_override("font_color", c)
+	lbl.position = Vector2(
+		220 + _buff_indicators.size() * 40, 340,
+	)
+	ui_layer.add_child(lbl)
+	_buff_indicators[buff_id] = lbl
+
+
+func _on_buff_ended(buff_id: String) -> void:
+	if _buff_indicators.has(buff_id):
+		var lbl: Label = _buff_indicators[buff_id]
+		lbl.queue_free()
+		_buff_indicators.erase(buff_id)
+
+
+func _on_turbo_letter_collected(
+	_letter: String, total: int,
+) -> void:
+	_update_turbo_display(total)
+
+
+func _on_turbo_activated() -> void:
+	_update_turbo_display(5)
+
+
+func _update_turbo_display(total: int) -> void:
+	var letters := ["T", "U", "R", "B", "O"]
+	for i in _turbo_labels.size():
+		var c := Color(0.3, 0.3, 0.3) if i >= total else Color(
+			1.0, 0.8 - i * 0.15, 0.2 + i * 0.2,
+		)
+		_turbo_labels[i].add_theme_color_override(
+			"font_color", c,
+		)
 
 
 ## --- New enemy signal handlers ---
@@ -1126,11 +1414,22 @@ func _game_over() -> void:
 	var secs := int(elapsed_time) % 60
 	get_tree().create_timer(0.5).timeout.connect(func():
 		game_over_label.visible = true
-		game_over_label.add_theme_font_size_override("font_size", 14)
-		game_over_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3, 1.0))
-		var go_upgrades: String = upgrade_manager.get_upgrade_summary()
-		game_over_label.text = "GAME OVER\n\nSCORE: %s\nTIME: %d:%02d\nLEVEL: %d\n\n%s\n\nPress ENTER" % [
-			_format_score(score), mins, secs, xp_level_system.level, go_upgrades]
+		game_over_label.add_theme_font_size_override(
+			"font_size", 16,
+		)
+		game_over_label.add_theme_color_override(
+			"font_color", Color(1.0, 0.3, 0.3, 1.0),
+		)
+		var go_upg: String = (
+			upgrade_manager.get_upgrade_summary()
+		)
+		var go_fmt := "GAME OVER\n\nSCORE: %s\n"
+		go_fmt += "TIME: %d:%02d\nLEVEL: %d\n\n"
+		go_fmt += "%s\n\nPress ENTER"
+		game_over_label.text = go_fmt % [
+			_format_score(score), mins, secs,
+			xp_level_system.level, go_upg,
+		]
 	, CONNECT_ONE_SHOT)
 
 
@@ -1151,6 +1450,9 @@ func _restart_game() -> void:
 		bullet.deactivate()
 	for geom in geom_pool:
 		geom.deactivate()
+	for pickup in pickup_pool:
+		pickup.deactivate()
+	pickup_manager.reset()
 
 	Engine.time_scale = 1.0
 	get_tree().paused = false
@@ -1195,6 +1497,19 @@ func _spawn_geoms(pos: Vector2, enemy_type: String) -> void:
 			var is_large := spawn_large and i == 0
 			var value := 5 if is_large else 1
 			geom.call_deferred("activate", pos + offset, player, is_large, value)
+			geom.magnetic_range = _current_magnet_range
+
+
+func _spawn_pickup(pos: Vector2, pickup_type: int) -> void:
+	var pickup := _get_pooled_pickup()
+	if pickup:
+		var offset := Vector2.from_angle(
+			randf() * TAU
+		) * 5.0
+		pickup.magnetic_range = _current_pickup_magnet_range
+		pickup.call_deferred(
+			"activate", pos + offset, player, pickup_type,
+		)
 
 
 # --- Object pool helpers ---
@@ -1217,6 +1532,13 @@ func _get_pooled_geom() -> Area2D:
 	for geom in geom_pool:
 		if not geom.is_active:
 			return geom
+	return null
+
+
+func _get_pooled_pickup() -> Area2D:
+	for pickup in pickup_pool:
+		if not pickup.is_active:
+			return pickup
 	return null
 
 
@@ -1245,7 +1567,7 @@ func _update_time_display() -> void:
 
 func _update_xp_bar() -> void:
 	var progress: float = xp_level_system.get_progress()
-	xp_bar_fill.size.x = 60.0 * progress
+	xp_bar_fill.size.x = 75.0 * progress
 
 	# Color shift based on progress
 	xp_bar_fill.color = Color(0.3, 1.0, 0.5, 0.9).lerp(Color(1.0, 1.0, 0.5, 1.0), progress)

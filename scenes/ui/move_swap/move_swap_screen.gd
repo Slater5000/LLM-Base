@@ -103,7 +103,7 @@ func _create_ui() -> void:
 	# "MOVES - " in black with white outline
 	var prefix_label := Label.new()
 	prefix_label.text = "MOVES - "
-	prefix_label.add_theme_font_size_override("font_size", 10)
+	prefix_label.add_theme_font_size_override("font_size", 16)
 	prefix_label.add_theme_color_override("font_color", Color.BLACK)
 	prefix_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	prefix_label.add_theme_constant_override("outline_size", 4)
@@ -112,7 +112,7 @@ func _create_ui() -> void:
 	# Creature name in element color with black outline
 	var name_label := Label.new()
 	name_label.text = _creature.get_display_name()
-	name_label.add_theme_font_size_override("font_size", 10)
+	name_label.add_theme_font_size_override("font_size", 16)
 	var element_color: Color = ELEMENT_COLORS.get(_species.element, Color.BLACK)
 	name_label.add_theme_color_override("font_color", element_color)
 	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -122,7 +122,7 @@ func _create_ui() -> void:
 	# " Lv. X" in black with white outline
 	var level_label := Label.new()
 	level_label.text = " Lv. %d" % _creature.level
-	level_label.add_theme_font_size_override("font_size", 10)
+	level_label.add_theme_font_size_override("font_size", 16)
 	level_label.add_theme_color_override("font_color", Color.BLACK)
 	level_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	level_label.add_theme_constant_override("outline_size", 4)
@@ -167,13 +167,13 @@ func _create_ui() -> void:
 
 	_description_name = Label.new()
 	_description_name.text = ""
-	_description_name.add_theme_font_size_override("font_size", 9)
+	_description_name.add_theme_font_size_override("font_size", 16)
 	_description_name.add_theme_color_override("font_color", Color.BLACK)
 	desc_vbox.add_child(_description_name)
 
 	_description_text = Label.new()
 	_description_text.text = ""
-	_description_text.add_theme_font_size_override("font_size", 8)
+	_description_text.add_theme_font_size_override("font_size", 16)
 	_description_text.add_theme_color_override("font_color", Color.BLACK)
 	_description_text.autowrap_mode = TextServer.AUTOWRAP_WORD
 	_description_text.custom_minimum_size = Vector2(0, 30)
@@ -187,7 +187,7 @@ func _create_ui() -> void:
 	# Selection header
 	var sel_label := Label.new()
 	sel_label.text = "Active Moves:"
-	sel_label.add_theme_font_size_override("font_size", 9)
+	sel_label.add_theme_font_size_override("font_size", 16)
 	sel_label.add_theme_color_override("font_color", Color.BLACK)
 	sel_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_selection_container.add_child(sel_label)
@@ -196,7 +196,7 @@ func _create_ui() -> void:
 	for i in MAX_ACTIVE_MOVES:
 		var slot_label := Label.new()
 		slot_label.text = "[Empty]"
-		slot_label.add_theme_font_size_override("font_size", 9)
+		slot_label.add_theme_font_size_override("font_size", 16)
 		slot_label.add_theme_color_override("font_color", Color.BLACK)
 		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_selection_container.add_child(slot_label)
@@ -221,7 +221,7 @@ func _create_styled_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(64, 20)
-	btn.add_theme_font_size_override("font_size", 9)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color.BLACK)
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn

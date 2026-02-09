@@ -118,7 +118,7 @@ func _create_ui() -> void:
 	# Feedback label
 	_feedback_label = Label.new()
 	_feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_feedback_label.add_theme_font_size_override("font_size", 10)
+	_feedback_label.add_theme_font_size_override("font_size", 16)
 	_feedback_label.add_theme_color_override("font_color", Color.WHITE)
 	_feedback_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	_feedback_label.add_theme_constant_override("outline_size", 2)
@@ -136,7 +136,7 @@ func _create_prompt_ui() -> void:
 	_engage_button = Button.new()
 	_engage_button.text = "ENGAGE"
 	_engage_button.custom_minimum_size = Vector2(60, 18)
-	_engage_button.add_theme_font_size_override("font_size", 8)
+	_engage_button.add_theme_font_size_override("font_size", 16)
 	var engage_style := StyleBoxFlat.new()
 	engage_style.bg_color = Color(0.25, 0.5, 0.35, 1.0)
 	engage_style.border_color = Color.BLACK
@@ -156,7 +156,7 @@ func _create_prompt_ui() -> void:
 	_ignore_button = Button.new()
 	_ignore_button.text = "IGNORE"
 	_ignore_button.custom_minimum_size = Vector2(60, 18)
-	_ignore_button.add_theme_font_size_override("font_size", 8)
+	_ignore_button.add_theme_font_size_override("font_size", 16)
 	var ignore_style := StyleBoxFlat.new()
 	ignore_style.bg_color = Color(0.55, 0.3, 0.25, 1.0)
 	ignore_style.border_color = Color.BLACK

@@ -2,18 +2,18 @@ extends Node2D
 ## Test scene for Shapes gladiator approach (top-down view)
 ## Uses pure _draw() method for all rendering
 
-@onready var fighter_a: GladiatorShapes = $FighterA
-@onready var fighter_b: GladiatorShapes = $FighterB
-@onready var combat_system: RNGCombat = $RNGCombat
-@onready var camera: Camera2D = $Camera2D
-@onready var ui_layer: CanvasLayer = $UILayer
+const ARENA_RADIUS := 200.0
 
 var hp_bar_a: ColorRect
 var hp_bar_b: ColorRect
 var combat_log: RichTextLabel
 var is_auto_battling: bool = false
 
-const ARENA_RADIUS := 200.0
+@onready var fighter_a: GladiatorShapes = $FighterA
+@onready var fighter_b: GladiatorShapes = $FighterB
+@onready var combat_system: RNGCombat = $RNGCombat
+@onready var camera: Camera2D = $Camera2D
+@onready var ui_layer: CanvasLayer = $UILayer
 
 
 func _ready() -> void:
@@ -66,7 +66,7 @@ func _setup_ui() -> void:
 	var label_a := Label.new()
 	label_a.text = "BLUE"
 	label_a.position = Vector2(30, 50)
-	label_a.add_theme_font_size_override("font_size", 14)
+	label_a.add_theme_font_size_override("font_size", 16)
 	label_a.add_theme_color_override("font_color", Color(0.2, 0.8, 1.0))
 	ui_layer.add_child(label_a)
 
@@ -86,7 +86,7 @@ func _setup_ui() -> void:
 	var label_b := Label.new()
 	label_b.text = "ORANGE"
 	label_b.position = Vector2(1280 - bar_width - 30, 50)
-	label_b.add_theme_font_size_override("font_size", 14)
+	label_b.add_theme_font_size_override("font_size", 16)
 	label_b.add_theme_color_override("font_color", Color(1.0, 0.4, 0.2))
 	ui_layer.add_child(label_b)
 

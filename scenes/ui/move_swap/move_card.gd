@@ -80,7 +80,7 @@ func _build_ui() -> void:
 	var name_text: String = _move_data.display_name if _move_data else "???"
 	# Stack words vertically by replacing spaces with newlines
 	_name_label.text = name_text.replace(" ", "\n")
-	_name_label.add_theme_font_size_override("font_size", 11)
+	_name_label.add_theme_font_size_override("font_size", 16)
 	_name_label.add_theme_color_override("font_color", Color.BLACK)
 	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -105,7 +105,7 @@ func _build_ui() -> void:
 		_locked_label = Label.new()
 		_locked_label.text = "Lv. %d" % _learn_level
 		_locked_label.set_anchors_preset(Control.PRESET_FULL_RECT)
-		_locked_label.add_theme_font_size_override("font_size", 10)
+		_locked_label.add_theme_font_size_override("font_size", 16)
 		_locked_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))  # Light gray on dark bg
 		_locked_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_locked_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

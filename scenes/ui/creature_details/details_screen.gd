@@ -164,14 +164,14 @@ func _create_header(parent: VBoxContainer) -> void:
 	parent.add_child(name_row)
 
 	_name_label = Label.new()
-	_name_label.add_theme_font_size_override("font_size", 14)
+	_name_label.add_theme_font_size_override("font_size", 16)
 	_name_label.add_theme_constant_override("outline_size", 4)
 	_name_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	name_row.add_child(_name_label)
 
 	# Level and XP on same line
 	_level_xp_label = Label.new()
-	_level_xp_label.add_theme_font_size_override("font_size", 10)
+	_level_xp_label.add_theme_font_size_override("font_size", 16)
 	_level_xp_label.add_theme_color_override("font_color", Color.BLACK)
 	_level_xp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(_level_xp_label)
@@ -199,7 +199,7 @@ func _create_left_column(parent: HBoxContainer) -> void:
 	_sprite_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_sprite_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sprite_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_sprite_label.add_theme_font_size_override("font_size", 36)
+	_sprite_label.add_theme_font_size_override("font_size", 32)
 	_sprite_label.add_theme_color_override("font_color", Color.BLACK)
 	sprite_container.add_child(_sprite_label)
 
@@ -212,13 +212,13 @@ func _create_left_column(parent: HBoxContainer) -> void:
 	_form_left_btn = Button.new()
 	_form_left_btn.text = "<"
 	_form_left_btn.custom_minimum_size = Vector2(20, 16)
-	_form_left_btn.add_theme_font_size_override("font_size", 8)
+	_form_left_btn.add_theme_font_size_override("font_size", 16)
 	_form_left_btn.pressed.connect(_on_form_left)
 	form_row.add_child(_form_left_btn)
 
 	_form_label = Label.new()
 	_form_label.text = "Base"
-	_form_label.add_theme_font_size_override("font_size", 9)
+	_form_label.add_theme_font_size_override("font_size", 16)
 	_form_label.add_theme_color_override("font_color", Color.BLACK)
 	_form_label.custom_minimum_size = Vector2(50, 0)
 	_form_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -227,7 +227,7 @@ func _create_left_column(parent: HBoxContainer) -> void:
 	_form_right_btn = Button.new()
 	_form_right_btn.text = ">"
 	_form_right_btn.custom_minimum_size = Vector2(20, 16)
-	_form_right_btn.add_theme_font_size_override("font_size", 8)
+	_form_right_btn.add_theme_font_size_override("font_size", 16)
 	_form_right_btn.pressed.connect(_on_form_right)
 	form_row.add_child(_form_right_btn)
 
@@ -246,7 +246,7 @@ func _create_right_column(parent: HBoxContainer) -> void:
 	# Stats header
 	var stats_header := Label.new()
 	stats_header.text = "STATS"
-	stats_header.add_theme_font_size_override("font_size", 10)
+	stats_header.add_theme_font_size_override("font_size", 16)
 	stats_header.add_theme_color_override("font_color", Color.BLACK)
 	_stats_container.add_child(stats_header)
 
@@ -257,17 +257,17 @@ func _create_info_section(parent: VBoxContainer) -> void:
 	parent.add_child(info_vbox)
 
 	_caught_label = Label.new()
-	_caught_label.add_theme_font_size_override("font_size", 9)
+	_caught_label.add_theme_font_size_override("font_size", 16)
 	_caught_label.add_theme_color_override("font_color", Color.BLACK)
 	info_vbox.add_child(_caught_label)
 
 	_date_label = Label.new()
-	_date_label.add_theme_font_size_override("font_size", 9)
+	_date_label.add_theme_font_size_override("font_size", 16)
 	_date_label.add_theme_color_override("font_color", Color.BLACK)
 	info_vbox.add_child(_date_label)
 
 	_moves_learned_label = Label.new()
-	_moves_learned_label.add_theme_font_size_override("font_size", 9)
+	_moves_learned_label.add_theme_font_size_override("font_size", 16)
 	_moves_learned_label.add_theme_color_override("font_color", Color.BLACK)
 	info_vbox.add_child(_moves_learned_label)
 
@@ -275,7 +275,7 @@ func _create_info_section(parent: VBoxContainer) -> void:
 func _create_moves_section(parent: VBoxContainer) -> void:
 	var moves_header := Label.new()
 	moves_header.text = "ACTIVE MOVES:"
-	moves_header.add_theme_font_size_override("font_size", 10)
+	moves_header.add_theme_font_size_override("font_size", 16)
 	moves_header.add_theme_color_override("font_color", Color.BLACK)
 	moves_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(moves_header)
@@ -289,7 +289,7 @@ func _create_styled_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(64, 20)
-	btn.add_theme_font_size_override("font_size", 9)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color.BLACK)
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn
@@ -344,7 +344,7 @@ func _populate_data() -> void:
 			move_label.text = move_data.display_name
 		else:
 			move_label.text = move_id
-		move_label.add_theme_font_size_override("font_size", 9)
+		move_label.add_theme_font_size_override("font_size", 16)
 		move_label.add_theme_color_override("font_color", Color.BLACK)
 		move_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_active_moves_container.add_child(move_label)
@@ -357,14 +357,14 @@ func _add_stat_row(stat_name: String, base_value: int, current_value: int) -> vo
 
 	var name_label := Label.new()
 	name_label.text = "%s:" % stat_name
-	name_label.add_theme_font_size_override("font_size", 10)
+	name_label.add_theme_font_size_override("font_size", 16)
 	name_label.add_theme_color_override("font_color", Color.BLACK)
 	name_label.custom_minimum_size = Vector2(40, 0)
 	row.add_child(name_label)
 
 	var value_label := Label.new()
 	value_label.text = "%d (%d)" % [base_value, current_value]
-	value_label.add_theme_font_size_override("font_size", 10)
+	value_label.add_theme_font_size_override("font_size", 16)
 	value_label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(value_label)
 

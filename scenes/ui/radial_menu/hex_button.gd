@@ -81,7 +81,7 @@ func _draw() -> void:
 	# Draw label text
 	if label_text != "":
 		var font := ThemeDB.fallback_font
-		var font_size := 10
+		var font_size := 16
 		var text_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
 		var text_pos := center - text_size / 2.0 + Vector2(0, font_size * 0.35)
 

@@ -58,7 +58,7 @@ Selectable from the main menu as an alternative to the normal game. A **pure ant
 - **No food counter visible.** Food is tracked internally for auto-spawning but the player never sees a number or a menu. Pure visual experience.
 - **Player CAN name ants.** Click any ant to name it. This is Education Mode's main interaction — watch Greg haul food, watch Steve dig tunnels.
 - **Cosmetics from normal mode available.** Any hats, trails, or cosmetics unlocked in normal mode can be used in Education Mode. Education Mode is a **viewer, not an unlocker** — you can't earn new cosmetics here.
-- **One save slot.** Education Mode has a single save slot. One colony at a time. Reset to start fresh.
+- **Multiple save slots.** Education Mode has no endgame barrier, so you can create as many colonies as you want — works like a normal save system. Start new colonies freely, return to old ones anytime.
 - **Infinite, gentle scaling.** Colony grows slowly over time, expanding outward. No endgame, no goals. Just watch it go.
 - **Also powers the main menu background.** See Main Menu section.
 
@@ -299,6 +299,25 @@ All regular food is **orange** regardless of distance. Value = band number (line
 - **B** — Open Build menu (transport placement)
 - **Click on any ant** — Name/rename dialog
 
+### Build Menu & Transport Placement
+
+**B key** opens the Build Menu — a bottom-anchored panel showing available transport types. Each type is an icon button with name and cost.
+
+**Two-click placement system:**
+1. Select a transport type from the Build Menu
+2. Click **start position** in the world
+3. Click **end position** in the world
+4. **Green highlight** = valid placement, **Red highlight** = invalid
+5. **Escape or right-click** to cancel placement
+
+**Per-type placement behavior:**
+- **Conveyor Belt:** Click start tile, click end tile. Belt auto-routes between them along surfaces.
+- **Pylon / Aerial Tramway:** Must connect back to the base transport network (no isolated pylons). If two pylons have line-of-sight, wire is drawn automatically. Wires can't go through walls.
+- **Elevator:** Vertical only. Click top position, then bottom position.
+- **Zip Line:** Two-click like conveyor. Needs a surface attachment point at both ends.
+- **Teleporters:** Place entrance pad, then exit pad. 1 pair only. Repositionable.
+- **Pneumatic Tubes:** Place entrance, aim exit at any angle (360 degrees). Straight line through solid terrain.
+
 ### Movement Rules
 - **Wall climbing** — Ants stick to any surface (floor, walls, ceiling)
 - **No jumping at start** — unlockable via Jump+Dash or other Player Traversal pick
@@ -335,7 +354,7 @@ All regular food is **orange** regardless of distance. Value = band number (line
 
 ### Carrying
 - Touch exposed food → it attaches to top of Queen's body
-- **Carry capacity** starts at 3-5 pieces
+- **Carry capacity** starts at 5 pieces (same base as haulers)
 - Food visually stacks on the ant
 - **No speed penalty.** Queen always moves at full speed regardless of how much food she's carrying.
 - **Food auto-deposits** when entering the Larder (starting chamber glow zone). Just walk in.
@@ -458,7 +477,7 @@ The queen's personal abilities, stats, and automation tools. This is your "chara
 | Carry Capacity | Standard (0/10) | Queen carries more food. Visually stacks on ant body. |
 | Dig Range / Dig Speed / Dig Radius | **Pick 2 of 3** (each 0/10) | Range = dig from further away. Speed = faster cooldown. Radius = bigger bite. Can't have all three. |
 | Auto Worker | Standard | Set miner/hauler ratio + food threshold. When food exceeds threshold, auto-hires at the set ratio. Idle game QOL. |
-| Architect Ant | Standard | Special ant that auto-places and upgrades logistics infrastructure. Cycles between transport systems. Competent, not weak — decent auto-placement. Single purchase. |
+| Architect Ant | Standard | Special ant that auto-places and upgrades logistics infrastructure. "Follow the frontier" — prioritizes extending transport toward active mining areas. Only moves/adjusts endpoints of existing transport, doesn't build new routes from scratch. Physically walks to the position before making changes (visible on screen). Per-transport toggle: player can enable/disable architect for each transport type. Competent, not weak. Single purchase. |
 | Auto Evolve | Standard | UI feature: checkbox on each upgrade node — "auto-buy when affordable." Player decides WHAT to auto-buy, system handles the clicking. |
 | Gun / Laser / Butt Acid / Explosion | **Pick 1 of 4** | Transforms HOW the queen digs. Biggest build-defining choice. See Dig Methods below. |
 
@@ -576,7 +595,7 @@ Unlocks pheromone trails for **all ants AND the player.** Every ant that walks a
 - Late game: clear, bright highways visible through the colony. You can SEE your colony's circulatory system.
 - When you dig a new shortcut: traffic naturally shifts as pheromone builds on the new route and decays on the old one.
 
-**Visual:** Faint yellow-green glow on tunnel floors. Stronger pheromone = brighter/wider glow. Major highways clearly visible at a glance. Dead/unused tunnels are dark — instant visual feedback on colony efficiency. At zoom-out, highways look like glowing veins through the colony.
+**Visual:** Faint pink-purple glow on tunnel floors. Stronger pheromone = brighter/wider glow. Major highways clearly visible at a glance. Dead/unused tunnels are dark — instant visual feedback on colony efficiency. At zoom-out, highways look like glowing veins through the colony.
 
 **Note:** Pheromone values and speed formulas need playtesting. The core mechanic is solid but the numbers (deposit rate, decay rate, max speed boost) must be tuned to feel right without being overpowered.
 
@@ -595,7 +614,7 @@ Pick 1 creates real sacrifice. "I have elevators, so I dig horizontally myself o
 
 | Option | Routing | Speed | Limitation |
 |--------|---------|-------|------------|
-| **Aerial Tramway** | Crosses open air between pylons | Medium-slow | Needs line-of-sight between pylons, wires can't go through walls |
+| **Aerial Tramway** | Crosses open air between pylons | Medium-slow | Needs line-of-sight between pylons, wires can't go through walls. Pylons must connect back to base network (no isolated pylons). Auto-wire: if two pylons have line-of-sight, wire is drawn automatically. |
 | **Conveyor Belt** | Follows any solid surface (floor, wall, ceiling) | Fast | Needs unbroken surface, can't cross gaps |
 
 Tramway rewards big open chambers. Conveyor rewards clean connected tunnel networks.
@@ -848,9 +867,9 @@ This is the idle game heart. The player goes from doing everything manually to b
 - Haulers carry exposed food back efficiently
 - You start thinking about how many of each to hatch, and tunnel layout
 
-### Stage 4: Minecarts + Trains (1-2 hours)
-- Place tracks in your main tunnels (free after unlock)
-- Carts/trains automatically ferry food along rails
+### Stage 4: Transport Tier 1 (1-2 hours)
+- Place transport infrastructure in your main tunnels (free after unlock)
+- Elevator / Minecart / Platform / Zip Line (pick 1 of 4) automatically ferry food
 - Workers dump food at loading stations instead of walking all the way back
 - **VISUAL PAYOFF** — watching little trains zip through your tunnels
 
@@ -1027,7 +1046,7 @@ Decisions made during brainstorming, preserved for reference:
 | No offline progression | Game only runs when open. Simpler, more honest. |
 | No random tunnel events | Golden cookie mechanic = forced screen watching = psycho behavior. None of the events make you engage with gameplay or are balanced early vs late. CUT. |
 | No enemies/hazards/combat | Pure mining/idle. No damage, no death, no soldier ants. Maybe future expansion. |
-| No pheromone trail system | Worker AI should be smart by default (go to closest untargeted thing). Don't need player-drawn paths. |
+| ~~No pheromone trail system~~ | ~~SUPERSEDED~~ — Pheromone Highways is now a core upgrade in LOGISTICS. See "Pheromone Highways = core upgrade" decision below. |
 | Transport is free to place | Once you unlock minecarts, place unlimited track for free. The upgrade IS the cost. |
 | Dig has cooldown (not click speed) | Prevents auto-clicker cheese. Upgrades reduce cooldown. |
 | Distance gradient, not hard layers | Smooth color/difficulty transitions. No shape problem (circles vs rectangles). Milestone discoveries at certain distances. |
@@ -1052,18 +1071,18 @@ Decisions made during brainstorming, preserved for reference:
 | Game speed as meta-reward CUT | 3x+ simulation speed would cause performance issues (3x pathfinding, 3x physics). Also less thematic than starting workers. |
 | Two upgrade tiers | Build Choice forks (pick 1 of 2, gameplay-defining, percentage-based) + Standard upgrades (available to all, includes infinite scalers). Build choices create identity; standard upgrades create progression. |
 | Percentage-based Build Choices | All Build Choice upgrades are percentage-based (not flat additive). Prevents starting worker count from warping which branch is "best." Worker-count choices only compete with other worker-count choices, placed late in tree. |
-| Endgame = infinite scaling on 3 bottlenecks | After all Build Choices made, endgame is pumping three infinite scalers: dig speed, transport speed, worker efficiency. How you REACH endgame is the build; what you DO at endgame is the same for everyone. |
+| ~~Endgame = infinite scaling on 3 bottlenecks~~ | ~~SUPERSEDED~~ — Only dig power scaling persists between colonies now. Transport Speed ∞ and Worker Efficiency ∞ were CUT. See "Transport Speed ∞ CUT" and "Worker Efficiency ∞ CUT" decisions. |
 | Unassigned workers can be assigned | Workers hatched before caste unlock are basic gatherers. When castes unlock, slider UI lets you assign them to Miner or Hauler. Still permanent once assigned. |
 | Build completion achievements | Achievements tied to completing the game with specific builds. Encourages trying all combinations. Each achievement unlocks a cosmetic reward. |
 | Colony themes = background OR ant skins | Two cosmetic layers: background themes (replace black void) and ant themes (visual skins on all ants). Unlocked via achievements, mix and match per colony. |
 | Camera: free pan + zoom | Player can freely zoom in/out and pan across discovered areas. Not locked to queen. See your full colony from above. |
 | No worker cap | No hard limit on worker count. Performance is the natural cap. Add a limit later if performance demands it. |
 | No tutorial | Controls should be self-explanatory. No guided tutorial, no popup tips. Learn by doing. |
-| Tunnel background: black | Black void for empty space. Simple, clean contrast against brown dirt. Revisit if needed. |
+| Tunnel background: very dark brown | Very dark brown `~Color(0.12, 0.08, 0.05)`, NOT pure black. Reads as deep earth shadow, not void. |
 | Dev menu required | Can't playtest a multi-hour idle game without shortcuts. Need give-food, hatch-workers, unlock-upgrades, teleport, speed-multiplier, etc. F12 or backtick, stripped from release. |
 | Balance through playtesting | Upgrade costs, hatching curves, and all numbers determined through actual play, not spreadsheet theory. Dev menu enables rapid iteration. |
 | Time Warp CUT | Just balance better. If the game needs a speed toggle, the pacing is wrong. |
-| Pick 1 of 2 (not 2 of 3) | Simpler decision, easier to balance (only 2 things need to be equal), feels like a fork in the road. With ~6 categories × 1-2 forks = 64-256 build combos. |
+| ~~Pick 1 of 2 (not 2 of 3)~~ | ~~SUPERSEDED~~ — Fork sizes now vary by context. See "Fork sizes vary" decision below. |
 | Build forks within same category | Each fork compares apples to apples (e.g., two mining approaches, not one mining + one transport). Prevents "obvious best" cross-category combos, makes balancing easier. |
 | Three panels: Player Ant, Colony, Logistics | Three panels side by side on one page. NOT tabs. No tier locking — can skip rows and save up. Nothing is a requirement. |
 | Miner + Hauler = single unlock | One "Unlock Workers" upgrade opens both roles. Slider UI for existing unassigned workers, then Buy Miner / Buy Hauler buttons. No separate caste unlocks. |
@@ -1170,7 +1189,7 @@ Decisions made during brainstorming, preserved for reference:
 - **Brown dirt** — base, procedural noise texture. NOT flat color — subtle variation using noise.
 - **Gradient color shifts** based on distance from origin (see Distance Scaling table)
 - **Food** is always bright and visible against the dirt — strong contrast
-- **Tunnels** are black/dark void — the negative space IS the player's creation
+- **Tunnels** are very dark brown (`~Color(0.12, 0.08, 0.05)`) — the negative space IS the player's creation
 
 ### Ants
 - Geometric: ovals + lines
@@ -1201,7 +1220,6 @@ Decisions made during brainstorming, preserved for reference:
 - **Rainbow food counter** — separate, only visible once found
 - **Distance indicator** — furthest distance reached from origin
 - **Worker count** — how many active workers, by role
-- **Minimap** (when zoomed in) — shows full colony overview in corner
 - **Upgrade menu** — three-panel overlay (Player Ant, Colony, Logistics)
 
 ---
@@ -1308,7 +1326,6 @@ Inspired by Gnorp Apologue (hundreds of entities) and WorldBox (thousands):
 - New food tier discovery: dramatic reveal sound
 - Upgrade purchase: cha-ching / level-up sound
 - Hat found: special jingle
-- Critical strike dig: extra crunchy, louder
 - Achievement ant earned: fanfare
 
 ---
@@ -1371,7 +1388,7 @@ Building it right from the start, in the correct order of operations.
 
 ### Step 5: Food Pile + Deposit
 - Starting chamber with food pile
-- Red radius indicator
+- Warm glow gradient deposit zone (no harsh red circle)
 - Walk to pile to deposit
 - Food counter UI (with suffix notation)
 - Pile grows visually
@@ -1462,8 +1479,8 @@ Building it right from the start, in the correct order of operations.
 ## Open Questions
 
 1. ~~**Camera**~~ **ANSWERED:** Free pan + zoom across discovered areas. Not locked to queen.
-2. ~~**Worker cap**~~ **ANSWERED:** No hard cap. Target 1000+ ants. Performance warning system (yellow at FPS<45, red at FPS<30). Release worker system with no refund + "Colony Remembers" cost curve. Education Mode has performance-regulated auto-spawner + optional colony size slider.
-3. ~~**Tunnel background**~~ **ANSWERED:** Black for now.
+2. ~~**Worker cap**~~ **ANSWERED:** No hard cap. Target 1000+ ants. No worker deletion — engineering solves performance via auto-hibernate system (far workers get simplified AI + skip rendering when FPS dips). Performance warning system (yellow at FPS<45, red at FPS<30, toggleable in options). Education Mode has performance-regulated auto-spawner + optional colony size slider.
+3. ~~**Tunnel background**~~ **ANSWERED:** Very dark brown `~Color(0.12, 0.08, 0.05)`, NOT pure black.
 4. ~~**Save system**~~ **ANSWERED:** Multiple save slots — each colony is a save slot. Old colonies fully playable.
 5. ~~**Tutorial**~~ **ANSWERED:** No tutorial. Controls should be self-explanatory.
 6. ~~**Music**~~ **ANSWERED:** User will source later. Not a design question.

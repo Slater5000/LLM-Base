@@ -129,7 +129,7 @@ func _create_ui() -> void:
 	_box_label.text = "BOX 1"
 	_box_label.custom_minimum_size.x = 54
 	_box_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_box_label.add_theme_font_size_override("font_size", 11)
+	_box_label.add_theme_font_size_override("font_size", 16)
 	_box_label.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	box_nav.add_child(_box_label)
 
@@ -181,7 +181,7 @@ func _create_ui() -> void:
 	_status_label = Label.new()
 	_status_label.text = "Select a creature"
 	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_status_label.add_theme_font_size_override("font_size", 9)
+	_status_label.add_theme_font_size_override("font_size", 16)
 	_status_label.add_theme_color_override("font_color", Color(0.4, 0.35, 0.3))
 	main_vbox.add_child(_status_label)
 
@@ -225,7 +225,7 @@ func _create_info_panel(parent: Control) -> void:
 	_info_name = Label.new()
 	_info_name.text = ""
 	_info_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_info_name.add_theme_font_size_override("font_size", 10)
+	_info_name.add_theme_font_size_override("font_size", 16)
 	_info_name.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	_info_name.clip_text = true
 	_info_name.custom_minimum_size.x = INFO_PANEL_WIDTH - 8
@@ -235,7 +235,7 @@ func _create_info_panel(parent: Control) -> void:
 	_info_level = Label.new()
 	_info_level.text = ""
 	_info_level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_info_level.add_theme_font_size_override("font_size", 9)
+	_info_level.add_theme_font_size_override("font_size", 16)
 	_info_level.add_theme_color_override("font_color", Color(0.35, 0.3, 0.25))
 	vbox.add_child(_info_level)
 
@@ -243,7 +243,7 @@ func _create_info_panel(parent: Control) -> void:
 	_info_element = Label.new()
 	_info_element.text = ""
 	_info_element.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_info_element.add_theme_font_size_override("font_size", 9)
+	_info_element.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(_info_element)
 
 
@@ -300,14 +300,14 @@ func _create_party_overlay() -> void:
 	var party_title := Label.new()
 	party_title.text = "PARTY"
 	party_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	party_title.add_theme_font_size_override("font_size", 10)
+	party_title.add_theme_font_size_override("font_size", 16)
 	party_title.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	party_header.add_child(party_title)
 
 	var party_close := Button.new()
 	party_close.text = "X"
 	party_close.custom_minimum_size = Vector2(20, 18)
-	party_close.add_theme_font_size_override("font_size", 9)
+	party_close.add_theme_font_size_override("font_size", 16)
 	party_close.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	party_close.pressed.connect(_toggle_party)
 	party_header.add_child(party_close)
@@ -329,7 +329,7 @@ func _create_nav_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(22, 18)
-	btn.add_theme_font_size_override("font_size", 11)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn
 
@@ -338,7 +338,7 @@ func _create_styled_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(50, 18)
-	btn.add_theme_font_size_override("font_size", 9)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn
@@ -387,7 +387,7 @@ func _create_party_slot(index: int) -> Control:
 	level_label.name = "LevelLabel"
 	level_label.text = ""
 	level_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	level_label.add_theme_font_size_override("font_size", 9)
+	level_label.add_theme_font_size_override("font_size", 16)
 	level_label.add_theme_color_override("font_color", Color(0.3, 0.25, 0.2))
 	level_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(level_label)

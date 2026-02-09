@@ -237,15 +237,19 @@ func _spawn_surge(surge: Dictionary) -> void:
 	var surge_type: EnemyType = surge.type as EnemyType
 	var hp_scale := _get_fodder_hp_scale()
 	var spd_scale := _get_speed_scale()
-	var cam_center := player.position if player else Vector2.ZERO
+	# Center on camera so surge enemies spawn off-screen at borders
+	var cam_center := Vector2.ZERO
+	if game_main:
+		cam_center = game_main.get_camera_rect().get_center()
+	elif player:
+		cam_center = player.position
 
 	for i in count:
 		var angle := TAU * float(i) / float(count)
-		var spawn_dist := 340.0 + randf() * 60.0
+		var spawn_dist := 500.0 + randf() * 60.0
 		var pos := cam_center + Vector2(
 			cos(angle), sin(angle)
 		) * spawn_dist
-		pos = _clamp_to_world(pos)
 
 		var enemy := enemy_scene.instantiate() as Area2D
 		enemy.configure(
@@ -285,7 +289,7 @@ func _do_spawn_tick() -> void:
 				var offset := Vector2(
 					randf_range(-15, 15), randf_range(-15, 15)
 				)
-				var pos := _clamp_to_world(pack_center + offset)
+				var pos := pack_center + offset
 				_spawn_enemy(type, pos, hp_scale, spd_scale)
 		else:
 			var pos := _get_spawn_position()
@@ -355,22 +359,24 @@ func _get_spawn_position() -> Vector2:
 		else Rect2(
 			player.position - Vector2(320, 180), Vector2(640, 360)
 		)
+	# Spawn well outside viewport so enemies walk in visibly.
+	# Center on CAMERA (not player) so enemies are always off-screen
+	# even when the player is offset near a clamped world border.
 	var viewport_half_diag := cam_rect.size.length() / 2.0
-	var spawn_dist := viewport_half_diag + 40.0
+	var spawn_dist := viewport_half_diag + 120.0
+	var cam_center := cam_rect.get_center()
 
 	var angle := randf() * TAU
-	var spawn_pos := player.position + Vector2(
+	var spawn_pos := cam_center + Vector2(
 		cos(angle), sin(angle)
 	) * spawn_dist
 
-	return spawn_pos.clamp(
-		world_rect.position + Vector2(10, 10),
-		world_rect.end - Vector2(10, 10)
-	)
+	return spawn_pos
 
 
 func _clamp_to_world(pos: Vector2) -> Vector2:
-	var margin := 10.0
+	# Generous margin — allow spawning 200px outside border
+	var margin := -200.0
 	return Vector2(
 		clampf(
 			pos.x,

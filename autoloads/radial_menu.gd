@@ -102,7 +102,7 @@ func _create_ui() -> void:
 	_tooltip = Label.new()
 	_tooltip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tooltip.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_tooltip.add_theme_font_size_override("font_size", 12)
+	_tooltip.add_theme_font_size_override("font_size", 16)
 	_tooltip.add_theme_color_override("font_color", Color.BLACK)
 	_tooltip.add_theme_color_override("font_outline_color", Color.WHITE)
 	_tooltip.add_theme_constant_override("outline_size", 5)
@@ -112,7 +112,7 @@ func _create_ui() -> void:
 	_save_feedback = Label.new()
 	_save_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_save_feedback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_save_feedback.add_theme_font_size_override("font_size", 14)
+	_save_feedback.add_theme_font_size_override("font_size", 16)
 	_save_feedback.add_theme_color_override("font_color", Color.BLACK)
 	_save_feedback.add_theme_color_override("font_outline_color", Color.WHITE)
 	_save_feedback.add_theme_constant_override("outline_size", 5)

@@ -74,14 +74,14 @@ func _create_ui() -> void:
 	# Always-visible: FPS + enemy count (top-left)
 	_always_label = Label.new()
 	_always_label.position = Vector2(5, 2)
-	_always_label.add_theme_font_size_override("font_size", 6)
+	_always_label.add_theme_font_size_override("font_size", 8)
 	_always_label.z_index = 200
 	add_child(_always_label)
 
-	# F3 basic overlay (below always label)
+	# F3 basic overlay (below score label)
 	_basic_label = Label.new()
-	_basic_label.position = Vector2(5, 22)
-	_basic_label.add_theme_font_size_override("font_size", 5)
+	_basic_label.position = Vector2(5, 30)
+	_basic_label.add_theme_font_size_override("font_size", 8)
 	_basic_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 0.9))
 	_basic_label.z_index = 200
 	add_child(_basic_label)
@@ -89,7 +89,7 @@ func _create_ui() -> void:
 	# F4 extended overlay (right side)
 	_extended_label = Label.new()
 	_extended_label.position = Vector2(430, 50)
-	_extended_label.add_theme_font_size_override("font_size", 5)
+	_extended_label.add_theme_font_size_override("font_size", 8)
 	_extended_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 0.85))
 	_extended_label.z_index = 200
 	add_child(_extended_label)

@@ -88,11 +88,13 @@ static func get_all_upgrades() -> Dictionary:
 			"category": Category.PASSIVE_WEAPON,
 			"icon_shape": IconShape.DIAMOND,
 			"color": Color(0.3, 0.9, 0.2),
-			"max_level": 3,
+			"max_level": 5,
 			"descriptions": [
 				"Toxic zone follows you (1 DPS)",
 				"Larger zone (2 DPS)",
-				"Huge zone (3 DPS)",
+				"Wider zone (3 DPS)",
+				"Huge zone (4 DPS)",
+				"Max zone (5 DPS)",
 			],
 		},
 		"runetracer": {
@@ -133,11 +135,11 @@ static func get_all_upgrades() -> Dictionary:
 			"color": Color(0.5, 0.8, 1.0),
 			"max_level": 5,
 			"descriptions": [
-				"Lightning bolt every 3s",
+				"Heavy bolt every 3s",
 				"Faster (2.5s)",
-				"Faster (2s)",
-				"2 strikes per cast (1.5s)",
-				"2 strikes, fastest (1s)",
+				"2 strikes per cast (2s)",
+				"Faster (1.5s)",
+				"3 strikes, fastest (1s)",
 			],
 		},
 		"holy_water": {
@@ -221,11 +223,13 @@ static func get_all_upgrades() -> Dictionary:
 			"category": Category.PASSIVE_WEAPON,
 			"icon_shape": IconShape.DIAMOND,
 			"color": Color(0.8, 0.3, 0.9),
-			"max_level": 3,
+			"max_level": 5,
 			"descriptions": [
 				"15% kill explosion chance",
 				"25% chance, wider blast",
-				"40% chance, huge blast",
+				"35% chance, stronger",
+				"50% chance, huge blast",
+				"65% chance, devastating",
 			],
 		},
 		"thorn_aura": {
@@ -236,11 +240,11 @@ static func get_all_upgrades() -> Dictionary:
 			"color": Color(0.6, 0.9, 0.2),
 			"max_level": 5,
 			"descriptions": [
-				"Damage ring around you (1 DPS)",
-				"Wider ring (2 DPS)",
+				"Damage ring around you (2 DPS)",
 				"Wider ring (3 DPS)",
-				"Huge ring (4 DPS)",
-				"Max ring (6 DPS)",
+				"Wider ring (4 DPS)",
+				"Huge ring (6 DPS)",
+				"Max ring (8 DPS)",
 			],
 		},
 
@@ -296,11 +300,13 @@ static func get_all_upgrades() -> Dictionary:
 			"category": Category.BULLET_MOD,
 			"icon_shape": IconShape.CIRCLE,
 			"color": Color(0.9, 0.5, 0.3),
-			"max_level": 3,
+			"max_level": 5,
 			"descriptions": [
 				"Bullets pierce 1 enemy",
 				"Bullets pierce 2 enemies",
 				"Bullets pierce 3 enemies",
+				"Bullets pierce 5 enemies",
+				"Bullets pierce 8 enemies",
 			],
 		},
 		"laser": {
@@ -410,6 +416,19 @@ static func get_all_upgrades() -> Dictionary:
 				"+1 bomb",
 				"+1 bomb",
 				"+1 bomb",
+			],
+		},
+		"extra_banish": {
+			"id": "extra_banish",
+			"name": "EXTRA BANISH",
+			"category": Category.STAT,
+			"icon_shape": IconShape.ARROW_UP,
+			"color": Color(0.9, 0.3, 0.5),
+			"max_level": 3,
+			"descriptions": [
+				"+1 banish charge",
+				"+1 banish charge",
+				"+1 banish charge",
 			],
 		},
 	}

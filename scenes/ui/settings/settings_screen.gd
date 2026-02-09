@@ -104,7 +104,7 @@ func _create_ui() -> void:
 	var title := Label.new()
 	title.text = "SETTINGS"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 14)
+	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", Color.BLACK)
 	vbox.add_child(title)
 
@@ -118,7 +118,7 @@ func _create_ui() -> void:
 		var tab_btn := Button.new()
 		tab_btn.text = TAB_NAMES[i]
 		tab_btn.custom_minimum_size = Vector2(52, 20)
-		tab_btn.add_theme_font_size_override("font_size", 8)
+		tab_btn.add_theme_font_size_override("font_size", 16)
 		tab_btn.add_theme_color_override("font_color", Color.BLACK)
 		tab_btn.pressed.connect(_on_tab_pressed.bind(i))
 		tab_bar.add_child(tab_btn)
@@ -165,7 +165,7 @@ func _create_styled_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(64, 24)
-	btn.add_theme_font_size_override("font_size", 10)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color.BLACK)
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn
@@ -202,7 +202,7 @@ func _create_slider_row(parent: Control, label_text: String, setting_name: Strin
 	var label := Label.new()
 	label.text = label_text
 	label.custom_minimum_size = Vector2(60, 0)
-	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(label)
 
@@ -222,7 +222,7 @@ func _create_slider_row(parent: Control, label_text: String, setting_name: Strin
 	value_label.text = "%d%%" % int(initial_value * 100)
 	value_label.custom_minimum_size = Vector2(36, 0)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	value_label.add_theme_font_size_override("font_size", 10)
+	value_label.add_theme_font_size_override("font_size", 16)
 	value_label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(value_label)
 
@@ -253,14 +253,14 @@ func _create_option_row(parent: Control, label_text: String, setting_name: Strin
 	var label := Label.new()
 	label.text = label_text
 	label.custom_minimum_size = Vector2(80, 0)
-	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(label)
 
 	var left_btn := Button.new()
 	left_btn.text = "<"
 	left_btn.custom_minimum_size = Vector2(20, 20)
-	left_btn.add_theme_font_size_override("font_size", 10)
+	left_btn.add_theme_font_size_override("font_size", 16)
 	left_btn.pressed.connect(_on_option_left.bind(setting_name))
 	row.add_child(left_btn)
 
@@ -268,14 +268,14 @@ func _create_option_row(parent: Control, label_text: String, setting_name: Strin
 	value_label.text = options[initial_index] if initial_index < options.size() else options[0]
 	value_label.custom_minimum_size = Vector2(40, 0)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	value_label.add_theme_font_size_override("font_size", 10)
+	value_label.add_theme_font_size_override("font_size", 16)
 	value_label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(value_label)
 
 	var right_btn := Button.new()
 	right_btn.text = ">"
 	right_btn.custom_minimum_size = Vector2(20, 20)
-	right_btn.add_theme_font_size_override("font_size", 10)
+	right_btn.add_theme_font_size_override("font_size", 16)
 	right_btn.pressed.connect(_on_option_right.bind(setting_name))
 	row.add_child(right_btn)
 
@@ -294,13 +294,13 @@ func _create_checkbox_row(parent: Control, label_text: String, setting_name: Str
 	var label := Label.new()
 	label.text = label_text
 	label.custom_minimum_size = Vector2(80, 0)
-	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(label)
 
 	var checkbox := CheckBox.new()
 	checkbox.button_pressed = initial_value
-	checkbox.add_theme_font_size_override("font_size", 10)
+	checkbox.add_theme_font_size_override("font_size", 16)
 	checkbox.toggled.connect(_on_checkbox_toggled.bind(setting_name))
 	row.add_child(checkbox)
 	_checkboxes[setting_name] = checkbox
@@ -385,14 +385,14 @@ func _create_rebind_row(parent: Control, action: String, display_name: String) -
 	var label := Label.new()
 	label.text = display_name
 	label.custom_minimum_size = Vector2(80, 0)  # Wider to fit "Interact"
-	label.add_theme_font_size_override("font_size", 9)
+	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color.BLACK)
 	row.add_child(label)
 
 	var key_btn := Button.new()
 	key_btn.text = _get_input_name(GameState.get_binding_for_action(action))
 	key_btn.custom_minimum_size = Vector2(80, 20)
-	key_btn.add_theme_font_size_override("font_size", 9)
+	key_btn.add_theme_font_size_override("font_size", 16)
 	key_btn.add_theme_color_override("font_color", Color.BLACK)
 	key_btn.pressed.connect(_on_rebind_pressed.bind(action))
 	row.add_child(key_btn)
@@ -400,7 +400,7 @@ func _create_rebind_row(parent: Control, action: String, display_name: String) -
 	# Conflict warning label (hidden by default)
 	var conflict_label := Label.new()
 	conflict_label.text = "CONFLICT"
-	conflict_label.add_theme_font_size_override("font_size", 8)
+	conflict_label.add_theme_font_size_override("font_size", 16)
 	conflict_label.add_theme_color_override("font_color", Color.RED)
 	conflict_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	conflict_label.add_theme_constant_override("outline_size", 3)

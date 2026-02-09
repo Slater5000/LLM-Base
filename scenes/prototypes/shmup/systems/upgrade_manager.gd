@@ -6,6 +6,21 @@ signal evolution_unlocked(id: String)
 
 const UpgradeData := preload("res://scenes/prototypes/shmup/systems/upgrade_data.gd")
 
+# Upgrades to hide when a given upgrade/evolution is owned
+const CONFLICTS: Dictionary = {
+	"laser": ["piercing"],
+	"piercing": ["laser"],
+	"bullet_storm": ["fire_rate", "spread_shot", "laser"],
+	"railgun": ["spread_shot", "fire_rate", "piercing", "laser"],
+}
+
+# Evolutions to hide when a given upgrade/evolution is owned
+const EVOLUTION_CONFLICTS: Dictionary = {
+	"laser": ["bullet_storm", "railgun"],
+	"bullet_storm": ["railgun"],
+	"railgun": ["bullet_storm"],
+}
+
 # Current upgrade levels — keys are upgrade IDs, values are current level (0 = not owned)
 var current_levels: Dictionary = {}
 # Acquired evolutions
@@ -14,6 +29,9 @@ var acquired_evolutions: Dictionary = {}
 var player: Area2D
 var xp_level_system: Node
 var game_main: Node2D  # shmup_main — for lives/bombs
+var locked_id: String = ""
+var banished_upgrades: Dictionary = {}
+var banish_charges := 3
 
 # Cached data
 var _upgrades: Dictionary = {}
@@ -28,6 +46,9 @@ func _ready() -> void:
 func reset() -> void:
 	current_levels.clear()
 	acquired_evolutions.clear()
+	locked_id = ""
+	banished_upgrades.clear()
+	banish_charges = 3
 
 
 func get_level(id: String) -> int:
@@ -40,37 +61,85 @@ func is_maxed(id: String) -> bool:
 	return get_level(id) >= _upgrades[id]["max_level"]
 
 
-## Returns 3 random upgrade choices. If an evolution is available, it's guaranteed as one choice.
+## Returns random upgrade choices. Locked upgrade guaranteed first.
+## If an evolution is available, it gets a guaranteed slot.
 func get_random_choices(count: int = 3) -> Array:
 	var choices: Array = []
 
-	# Check for available evolutions first — guaranteed slot
+	# Locked upgrade guaranteed first
+	if locked_id != "" and _is_still_available(locked_id):
+		if _evolutions.has(locked_id):
+			choices.append(_make_evolution_choice(locked_id))
+		else:
+			choices.append(_make_upgrade_choice(locked_id))
+	elif locked_id != "":
+		locked_id = ""  # Auto-break: no longer available
+
+	# Check for available evolutions — guaranteed slot
 	var available_evos := _get_available_evolutions()
 	if available_evos.size() > 0:
-		var evo_id: String = available_evos[randi() % available_evos.size()]
-		choices.append(_make_evolution_choice(evo_id))
+		var evo_id_pick: String = available_evos[
+			randi() % available_evos.size()
+		]
+		if not _choices_has_id(choices, evo_id_pick):
+			choices.append(_make_evolution_choice(evo_id_pick))
 
 	# Fill remaining slots with non-maxed upgrades
 	var pool := _get_available_upgrades()
-
-	# Shuffle pool
 	pool.shuffle()
 
 	for upgrade_id in pool:
 		if choices.size() >= count:
 			break
-		# Don't duplicate
-		var already_picked := false
-		for c in choices:
-			if c["id"] == upgrade_id:
-				already_picked = true
-				break
-		if already_picked:
+		if _choices_has_id(choices, upgrade_id):
 			continue
 		choices.append(_make_upgrade_choice(upgrade_id))
 
-	# If we couldn't fill all slots (very late game, most maxed), that's fine
 	return choices
+
+
+func _choices_has_id(choices_arr: Array, id: String) -> bool:
+	for c in choices_arr:
+		if c["id"] == id:
+			return true
+	return false
+
+
+## Check if an upgrade/evolution is still available in the pool.
+func _is_still_available(id: String) -> bool:
+	if banished_upgrades.has(id):
+		return false
+	if _evolutions.has(id):
+		return _is_evo_available(id)
+	if _upgrades.has(id):
+		var excluded := _get_excluded_upgrades()
+		return not is_maxed(id) and id not in excluded
+	return false
+
+
+func _is_evo_available(id: String) -> bool:
+	if acquired_evolutions.has(id):
+		return false
+	if id in _get_excluded_evolutions():
+		return false
+	var evo: Dictionary = _evolutions[id]
+	var requires: Array = evo["requires"]
+	for req_id in requires:
+		if not is_maxed(req_id):
+			return false
+	return true
+
+
+## Permanently remove an upgrade from the pool. Uses a charge.
+func banish_upgrade(id: String) -> void:
+	banished_upgrades[id] = true
+	banish_charges -= 1
+	if locked_id == id:
+		locked_id = ""
+	print(
+		"[UPGRADE] Banished: %s (%d charges left)"
+		% [id, banish_charges],
+	)
 
 
 ## Apply a chosen upgrade and return the new level.
@@ -109,17 +178,25 @@ func get_upgrade_summary() -> String:
 # --- Internal ---
 
 func _get_available_upgrades() -> Array:
+	var excluded := _get_excluded_upgrades()
 	var pool: Array = []
 	for id in _upgrades:
-		if not is_maxed(id):
+		if banished_upgrades.has(id):
+			continue
+		if not is_maxed(id) and id not in excluded:
 			pool.append(id)
 	return pool
 
 
 func _get_available_evolutions() -> Array:
+	var excluded := _get_excluded_evolutions()
 	var available: Array = []
 	for evo_id in _evolutions:
 		if acquired_evolutions.has(evo_id):
+			continue
+		if evo_id in excluded:
+			continue
+		if banished_upgrades.has(evo_id):
 			continue
 		var evo: Dictionary = _evolutions[evo_id]
 		var requires: Array = evo["requires"]
@@ -131,6 +208,33 @@ func _get_available_evolutions() -> Array:
 		if all_maxed:
 			available.append(evo_id)
 	return available
+
+
+func _get_excluded_upgrades() -> Array:
+	var excluded: Array = []
+	for owned_id in current_levels:
+		if int(current_levels[owned_id]) > 0 and CONFLICTS.has(owned_id):
+			var blocked: Array = CONFLICTS[owned_id]
+			excluded.append_array(blocked)
+	for evo_id in acquired_evolutions:
+		if CONFLICTS.has(evo_id):
+			var blocked: Array = CONFLICTS[evo_id]
+			excluded.append_array(blocked)
+	return excluded
+
+
+func _get_excluded_evolutions() -> Array:
+	var excluded: Array = []
+	for owned_id in current_levels:
+		if int(current_levels[owned_id]) > 0:
+			if EVOLUTION_CONFLICTS.has(owned_id):
+				var blocked: Array = EVOLUTION_CONFLICTS[owned_id]
+				excluded.append_array(blocked)
+	for evo_id in acquired_evolutions:
+		if EVOLUTION_CONFLICTS.has(evo_id):
+			var blocked: Array = EVOLUTION_CONFLICTS[evo_id]
+			excluded.append_array(blocked)
+	return excluded
 
 
 func _make_upgrade_choice(id: String) -> Dictionary:
@@ -190,8 +294,12 @@ func _apply_stat_effect(id: String, level: int) -> void:
 				game_main._update_ui()
 		"extra_bomb":
 			if game_main:
-				game_main.bombs += 1
+				game_main.bombs = mini(
+					game_main.bombs + 1, game_main.BOMB_CAP,
+				)
 				game_main._update_ui()
+		"extra_banish":
+			banish_charges += 1
 
 		# --- Bullet mods (applied to player, read by shmup_main when firing) ---
 		"fire_rate":
@@ -205,7 +313,8 @@ func _apply_stat_effect(id: String, level: int) -> void:
 				player.spread_count = level + 1  # lv1=2, lv2=3, lv3=4, lv4=5, lv5=6
 		"piercing":
 			if player:
-				player.pierce_count = level  # lv1=1, lv2=2, lv3=3
+				var pierce_values := [1, 2, 3, 5, 8]
+				player.pierce_count = pierce_values[clampi(level - 1, 0, 4)]
 		"laser":
 			pass  # Handled by shmup_main in Phase D
 

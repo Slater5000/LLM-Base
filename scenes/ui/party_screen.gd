@@ -100,7 +100,7 @@ func _create_ui() -> void:
 	_title = Label.new()
 	_title.text = "PARTY"
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_title.add_theme_font_size_override("font_size", 12)
+	_title.add_theme_font_size_override("font_size", 16)
 	_title.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	title_row.add_child(_title)
 
@@ -140,7 +140,7 @@ func _create_styled_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.custom_minimum_size = Vector2(64, 22)
-	btn.add_theme_font_size_override("font_size", 10)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return btn
@@ -195,7 +195,7 @@ func _create_party_slot(index: int) -> Control:
 	sprite_label.size = Vector2(SPRITE_SIZE, SPRITE_SIZE)
 	sprite_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sprite_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	sprite_label.add_theme_font_size_override("font_size", 22)
+	sprite_label.add_theme_font_size_override("font_size", 24)
 	sprite_label.add_theme_color_override("font_color", Color(0.4, 0.35, 0.3))
 	sprite_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	left_section.add_child(sprite_label)
@@ -215,7 +215,7 @@ func _create_party_slot(index: int) -> Control:
 	name_label.size = Vector2(105, 20)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 9)
+	name_label.add_theme_font_size_override("font_size", 16)
 	name_label.add_theme_color_override("font_color", Color.BLACK)
 	name_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	name_label.add_theme_constant_override("outline_size", 4)
@@ -231,7 +231,7 @@ func _create_party_slot(index: int) -> Control:
 	level_label.size = Vector2(105, 16)
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	level_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	level_label.add_theme_font_size_override("font_size", 8)
+	level_label.add_theme_font_size_override("font_size", 16)
 	level_label.add_theme_color_override("font_color", Color.BLACK)
 	level_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	level_label.add_theme_constant_override("outline_size", 3)
@@ -252,7 +252,7 @@ func _create_party_slot(index: int) -> Control:
 	hp_label.text = "HP"
 	hp_label.position = Vector2(0, 0)
 	hp_label.size = Vector2(14, HP_BAR_HEIGHT)
-	hp_label.add_theme_font_size_override("font_size", 6)
+	hp_label.add_theme_font_size_override("font_size", 16)
 	hp_label.add_theme_color_override("font_color", Color.BLACK)
 	hp_label.add_theme_color_override("font_outline_color", Color.WHITE)
 	hp_label.add_theme_constant_override("outline_size", 3)
@@ -293,7 +293,7 @@ func _create_party_slot(index: int) -> Control:
 	hp_numbers.text = ""
 	hp_numbers.position = Vector2(14, HP_BAR_HEIGHT + 2)
 	hp_numbers.size = Vector2(HP_BAR_WIDTH, 10)
-	hp_numbers.add_theme_font_size_override("font_size", 7)
+	hp_numbers.add_theme_font_size_override("font_size", 16)
 	hp_numbers.add_theme_color_override("font_color", Color.BLACK)
 	hp_numbers.add_theme_color_override("font_outline_color", Color.WHITE)
 	hp_numbers.add_theme_constant_override("outline_size", 3)
