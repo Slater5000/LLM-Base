@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" path="res://scenes/prototypes/ant_colony/ui/shared/ant_colony_theme.tres" id="0_theme"]
 [ext_resource type="Script" path="res://scenes/prototypes/ant_colony/ui/pause_menu/pause_menu_test.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0018.png" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://b40k1ecwnlcbt" path="res://assets/sprites/ui/kenney/large/tile_0030.png" id="2_panel"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0043.png" id="3_banner_l"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0044.png" id="4_banner_m"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0045.png" id="5_banner_r"]
@@ -49,10 +49,10 @@ offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_panel")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 14
 
 [node name="Content" type="VBoxContainer" parent="Panel"]
 layout_mode = 1
@@ -74,59 +74,83 @@ custom_minimum_size = Vector2(0, 4)
 [node name="ResumeButton" type="Button" parent="Panel/Content"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 26)
-text = "Resume"
+text = "RESUME"
 theme_override_font_sizes/font_size = 16
 
 [node name="SettingsButton" type="Button" parent="Panel/Content"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 26)
-text = "Settings"
+text = "SETTINGS"
 theme_override_font_sizes/font_size = 16
 
 [node name="MainMenuButton" type="Button" parent="Panel/Content"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 26)
-text = "Main Menu"
+text = "MAIN MENU"
 theme_override_font_sizes/font_size = 16
 
 [node name="BannerLeft" type="TextureRect" parent="Panel"]
-layout_mode = 1
-offset_left = -2.0
-offset_top = -16.0
-offset_right = 30.0
-offset_bottom = 16.0
+layout_mode = 0
+offset_left = 22.0
+offset_top = -1.0
+offset_right = 54.0
+offset_bottom = 31.0
 texture = ExtResource("3_banner_l")
 stretch_mode = 4
 
-[node name="BannerMid" type="TextureRect" parent="Panel"]
+[node name="BannerRight" type="TextureRect" parent="Panel/BannerLeft"]
 layout_mode = 1
-offset_left = 30.0
-offset_top = -16.0
-offset_right = 170.0
-offset_bottom = 16.0
-texture = ExtResource("4_banner_m")
-stretch_mode = 4
-
-[node name="BannerRight" type="TextureRect" parent="Panel"]
-layout_mode = 1
-offset_left = 170.0
-offset_top = -16.0
-offset_right = 202.0
-offset_bottom = 16.0
+offset_left = 125.44
+offset_top = -0.07
+offset_right = 157.44
+offset_bottom = 31.93
 texture = ExtResource("5_banner_r")
 stretch_mode = 4
 
-[node name="BannerTitle" type="Label" parent="Panel"]
+[node name="BannerMid3" type="TextureRect" parent="Panel/BannerLeft"]
 layout_mode = 1
-offset_left = 0.0
-offset_top = -12.0
-offset_right = 200.0
-offset_bottom = 12.0
+offset_left = 94.3
+offset_top = -1.0
+offset_right = 190.3
+offset_bottom = 31.0
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid2" type="TextureRect" parent="Panel/BannerLeft"]
+layout_mode = 1
+offset_left = 62.22
+offset_top = -1.3
+offset_right = 158.22
+offset_bottom = 30.7
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="Panel/BannerLeft"]
+layout_mode = 1
+offset_left = 30.85
+offset_top = -1.15
+offset_right = 126.85
+offset_bottom = 30.85
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="Panel/BannerLeft/BannerMid"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -30.672
+offset_top = 3.363
+offset_right = 33.328
+offset_bottom = 3.363
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
 text = "PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1

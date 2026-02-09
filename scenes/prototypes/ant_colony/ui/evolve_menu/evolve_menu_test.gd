@@ -3,9 +3,10 @@ extends Control
 ## menu pattern: centered panel, tabs, scrollable content.
 
 const PANEL_W := 460
-const PANEL_H := 300
-const CIRCLE_SZ := 68.0
-const CIRCLE_GAP := 12
+const PANEL_H := 330
+const TILE_W := 92.0
+const TILE_H := 40.0
+const TILE_GAP := 12
 const ROW_GAP := 8
 
 const TAB_LABELS := ["PLAYER", "LOGISTICS", "COLONY"]
@@ -18,24 +19,86 @@ const TAB_COLS := [
 var _tab_buttons: Array[Button] = []
 var _tab_contents: Array[Control] = []
 var _current_tab := 0
-var _circle_ring: Texture2D
-var _circle_filled: Texture2D
+var _panel_tex: Texture2D
 var _tooltip: PanelContainer
 var _tt_name: Label
 var _tt_desc: Label
-var _tt_cost: Label
+var _rainbow_lbl: Label
+var _rainbow_time := 0.0
+var _rainbow_labels: Array[Label] = []
 
 
 func _ready() -> void:
 	$BackButton.pressed.connect(_go_back)
-	_circle_ring = load(AntColonyUI.CIRCLE_RING)
-	_circle_filled = load(AntColonyUI.CIRCLE_FILLED)
+	_panel_tex = load(AntColonyUI.PANEL_ROUNDED)
 	_create_ui()
 	_switch_tab(0)
 
 
+func _process(delta: float) -> void:
+	_rainbow_time += delta * 2.0
+	var hue := fmod(_rainbow_time, 1.0)
+	var col := Color.from_hsv(hue, 0.9, 1.0)
+	_rainbow_lbl.add_theme_color_override(
+		"font_color", col,
+	)
+	for lbl: Label in _rainbow_labels:
+		lbl.add_theme_color_override(
+			"font_color", col,
+		)
+
+
 func _go_back() -> void:
 	get_tree().change_scene_to_file(AntColonyUI.LAUNCHER)
+
+
+func _create_banner(
+	title_text: String, panel_w: float,
+) -> Control:
+	var holder := Control.new()
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bx: float = (panel_w - 157.0) / 2.0
+	var bl := TextureRect.new()
+	bl.texture = load(AntColonyUI.BANNER_LEFT)
+	bl.stretch_mode = TextureRect.STRETCH_SCALE
+	bl.position = Vector2(bx, -1.0)
+	bl.size = Vector2(32, 32)
+	bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(bl)
+	var mid := TextureRect.new()
+	mid.texture = load(AntColonyUI.BANNER_MID)
+	mid.stretch_mode = TextureRect.STRETCH_TILE
+	mid.position = Vector2(bx + 30.0, -1.0)
+	mid.size = Vector2(97, 32)
+	mid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(mid)
+	var br := TextureRect.new()
+	br.texture = load(AntColonyUI.BANNER_RIGHT)
+	br.stretch_mode = TextureRect.STRETCH_SCALE
+	br.position = Vector2(bx + 125.44, -1.07)
+	br.size = Vector2(32, 32)
+	br.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(br)
+	var lbl := Label.new()
+	lbl.text = title_text
+	lbl.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+	lbl.vertical_alignment = (
+		VERTICAL_ALIGNMENT_CENTER
+	)
+	lbl.position = Vector2(bx, 1.0)
+	lbl.size = Vector2(157.0, 32.0)
+	lbl.add_theme_font_size_override("font_size", 16)
+	lbl.add_theme_color_override(
+		"font_color", Color.BLACK,
+	)
+	lbl.add_theme_color_override(
+		"font_outline_color", Color.WHITE,
+	)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(lbl)
+	return holder
 
 
 # =============================================================
@@ -54,18 +117,18 @@ func _create_ui() -> void:
 	center.add_child(panel_c)
 
 	var panel := NinePatchRect.new()
-	panel.texture = load(AntColonyUI.PANEL_MASTER)
-	panel.patch_margin_left = 8
-	panel.patch_margin_top = 8
-	panel.patch_margin_right = 8
-	panel.patch_margin_bottom = 8
+	panel.texture = load(AntColonyUI.PANEL_ROUNDED)
+	panel.patch_margin_left = 14
+	panel.patch_margin_top = 14
+	panel.patch_margin_right = 14
+	panel.patch_margin_bottom = 14
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel_c.add_child(panel)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_top", 40)
 	margin.add_theme_constant_override("margin_right", 12)
 	margin.add_theme_constant_override("margin_bottom", 8)
 	panel_c.add_child(margin)
@@ -74,15 +137,30 @@ func _create_ui() -> void:
 	vbox.add_theme_constant_override("separation", 4)
 	margin.add_child(vbox)
 
-	# Title
-	var title := Label.new()
-	title.text = "EVOLVE"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 16)
-	title.add_theme_color_override(
-		"font_color", Color.BLACK,
+	# Banner title
+	var banner := _create_banner("EVOLVE", PANEL_W)
+	panel_c.add_child(banner)
+
+	# Rainbow count (top-right)
+	_rainbow_lbl = Label.new()
+	_rainbow_lbl.text = "0"
+	_rainbow_lbl.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_RIGHT
 	)
-	vbox.add_child(title)
+	_rainbow_lbl.position = Vector2(
+		PANEL_W - 40.0, 4.0,
+	)
+	_rainbow_lbl.size = Vector2(32.0, 20.0)
+	_rainbow_lbl.add_theme_font_size_override(
+		"font_size", 16,
+	)
+	_rainbow_lbl.add_theme_color_override(
+		"font_outline_color", Color.BLACK,
+	)
+	_rainbow_lbl.add_theme_constant_override(
+		"outline_size", 4,
+	)
+	panel_c.add_child(_rainbow_lbl)
 
 	# Tab bar
 	var tab_bar := HBoxContainer.new()
@@ -148,7 +226,16 @@ func _create_tree_tab(
 	)
 	scroll.add_child(vbox)
 
+	var first_tier := true
 	for tier: Array in tiers:
+		if not first_tier:
+			var sep := HSeparator.new()
+			sep.add_theme_constant_override(
+				"separation", 4,
+			)
+			vbox.add_child(sep)
+		first_tier = false
+		_add_pick_label(vbox, tier)
 		var row := CenterContainer.new()
 		row.size_flags_horizontal = (
 			Control.SIZE_EXPAND_FILL
@@ -157,41 +244,69 @@ func _create_tree_tab(
 
 		var hbox := HBoxContainer.new()
 		hbox.add_theme_constant_override(
-			"separation", CIRCLE_GAP,
+			"separation", TILE_GAP,
 		)
 		row.add_child(hbox)
 
 		for skill: Dictionary in tier:
 			hbox.add_child(
-				_create_circle(skill, col),
+				_create_tile(skill, col),
 			)
 
 	_tab_contents.append(scroll)
 
 
-func _create_circle(
+func _add_pick_label(
+	parent: Control, tier: Array,
+) -> void:
+	if tier.size() <= 1:
+		return
+	var pick: String = tier[0].get("pick", "")
+	if pick == "":
+		return
+	var lbl := Label.new()
+	lbl.text = pick
+	lbl.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+	lbl.add_theme_font_size_override(
+		"font_size", 16,
+	)
+	lbl.add_theme_color_override(
+		"font_color", Color.RED,
+	)
+	parent.add_child(lbl)
+
+
+func _create_tile(
 	skill: Dictionary, col: Color,
 ) -> Control:
+	var has_prog: bool = skill.has("prog")
+	var cell_h := TILE_H + 16.0
+	if has_prog:
+		cell_h = TILE_H + 30.0
 	var c := Control.new()
 	c.custom_minimum_size = Vector2(
-		CIRCLE_SZ, CIRCLE_SZ,
+		TILE_W, cell_h,
 	)
 	c.mouse_filter = Control.MOUSE_FILTER_STOP
 	c.mouse_default_cursor_shape = (
 		Control.CURSOR_POINTING_HAND
 	)
 
-	var ring := TextureRect.new()
-	ring.name = "Ring"
-	ring.texture = _circle_ring
-	ring.stretch_mode = TextureRect.STRETCH_SCALE
-	ring.position = Vector2.ZERO
-	ring.size = Vector2(CIRCLE_SZ, CIRCLE_SZ)
-	ring.modulate = Color(0.5, 0.45, 0.38, 0.7)
-	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	c.add_child(ring)
+	var tile := NinePatchRect.new()
+	tile.name = "Tile"
+	tile.texture = _panel_tex
+	tile.patch_margin_left = 14
+	tile.patch_margin_top = 14
+	tile.patch_margin_right = 14
+	tile.patch_margin_bottom = 14
+	tile.position = Vector2.ZERO
+	tile.size = Vector2(TILE_W, TILE_H)
+	tile.modulate = Color(0.5, 0.45, 0.38, 0.7)
+	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.add_child(tile)
 
-	var pad := 8.0
 	var lbl := Label.new()
 	lbl.text = skill.name
 	lbl.horizontal_alignment = (
@@ -200,27 +315,82 @@ func _create_circle(
 	lbl.vertical_alignment = (
 		VERTICAL_ALIGNMENT_CENTER
 	)
-	lbl.position = Vector2(pad, pad)
+	lbl.position = Vector2(4.0, 2.0)
 	lbl.size = Vector2(
-		CIRCLE_SZ - pad * 2.0,
-		CIRCLE_SZ - pad * 2.0,
+		TILE_W - 8.0, TILE_H - 4.0,
 	)
-	lbl.add_theme_font_size_override("font_size", 8)
-	lbl.add_theme_color_override(
-		"font_color", AntColonyUI.TEXT_CREAM,
+	lbl.add_theme_font_size_override(
+		"font_size", 16,
 	)
+	var is_rainbow: bool = skill.get("rainbow", false)
+	if is_rainbow:
+		lbl.add_theme_color_override(
+			"font_outline_color", Color.BLACK,
+		)
+		lbl.add_theme_constant_override(
+			"outline_size", 4,
+		)
+		_rainbow_labels.append(lbl)
+	else:
+		lbl.add_theme_color_override(
+			"font_color", Color.BLACK,
+		)
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(lbl)
 
+	if has_prog:
+		var prog_lbl := Label.new()
+		prog_lbl.text = skill.prog
+		prog_lbl.horizontal_alignment = (
+			HORIZONTAL_ALIGNMENT_CENTER
+		)
+		prog_lbl.position = Vector2(
+			0.0, TILE_H + 1.0,
+		)
+		prog_lbl.size = Vector2(TILE_W, 14.0)
+		prog_lbl.add_theme_font_size_override(
+			"font_size", 16,
+		)
+		prog_lbl.add_theme_color_override(
+			"font_color", Color.BLACK,
+		)
+		prog_lbl.mouse_filter = (
+			Control.MOUSE_FILTER_IGNORE
+		)
+		c.add_child(prog_lbl)
+
+	var cost_y := TILE_H + 1.0
+	if has_prog:
+		cost_y = TILE_H + 15.0
+	var cost_lbl := Label.new()
+	cost_lbl.text = skill.cost
+	cost_lbl.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+	cost_lbl.position = Vector2(0.0, cost_y)
+	cost_lbl.size = Vector2(TILE_W, 14.0)
+	cost_lbl.add_theme_font_size_override(
+		"font_size", 16,
+	)
+	cost_lbl.add_theme_color_override(
+		"font_color", Color.BLACK,
+	)
+	cost_lbl.mouse_filter = (
+		Control.MOUSE_FILTER_IGNORE
+	)
+	c.add_child(cost_lbl)
+
 	c.mouse_entered.connect(
-		_on_circle_entered.bind(c, skill, col, ring),
+		_on_tile_entered.bind(
+			c, skill, col, tile,
+		),
 	)
 	c.mouse_exited.connect(
-		_on_circle_exited.bind(ring),
+		_on_tile_exited.bind(tile),
 	)
 	c.gui_input.connect(
-		_on_circle_input.bind(skill, ring, col),
+		_on_tile_input.bind(skill, tile, col),
 	)
 	return c
 
@@ -234,11 +404,11 @@ func _create_tooltip() -> void:
 	)
 
 	var style := StyleBoxTexture.new()
-	style.texture = load(AntColonyUI.PANEL_DARK)
-	style.texture_margin_left = 8.0
-	style.texture_margin_top = 8.0
-	style.texture_margin_right = 8.0
-	style.texture_margin_bottom = 8.0
+	style.texture = load(AntColonyUI.PANEL_ROUNDED)
+	style.texture_margin_left = 14.0
+	style.texture_margin_top = 14.0
+	style.texture_margin_right = 14.0
+	style.texture_margin_bottom = 14.0
 	style.content_margin_left = 6.0
 	style.content_margin_top = 4.0
 	style.content_margin_right = 6.0
@@ -249,30 +419,26 @@ func _create_tooltip() -> void:
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_tooltip.add_child(vbox)
 
 	_tt_name = Label.new()
-	_tt_name.add_theme_font_size_override("font_size", 10)
+	_tt_name.add_theme_font_size_override("font_size", 16)
 	_tt_name.add_theme_color_override(
-		"font_color", AntColonyUI.TEXT_CREAM,
+		"font_color", Color.BLACK,
 	)
+	_tt_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_tt_name)
 
 	_tt_desc = Label.new()
-	_tt_desc.add_theme_font_size_override("font_size", 8)
+	_tt_desc.add_theme_font_size_override("font_size", 16)
 	_tt_desc.add_theme_color_override(
-		"font_color", Color(0.7, 0.65, 0.55, 0.9),
+		"font_color", Color.BLACK,
 	)
 	_tt_desc.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_tt_desc.custom_minimum_size = Vector2(120, 0)
+	_tt_desc.custom_minimum_size = Vector2(160, 0)
+	_tt_desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_tt_desc)
-
-	_tt_cost = Label.new()
-	_tt_cost.add_theme_font_size_override("font_size", 8)
-	_tt_cost.add_theme_color_override(
-		"font_color", AntColonyUI.ACCENT_ORANGE,
-	)
-	vbox.add_child(_tt_cost)
 
 	add_child(_tooltip)
 
@@ -307,36 +473,40 @@ func _on_tab_pressed(idx: int) -> void:
 # =============================================================
 
 
-func _on_circle_entered(
-	circle: Control, skill: Dictionary,
-	col: Color, ring: TextureRect,
+func _on_tile_entered(
+	tile_c: Control, skill: Dictionary,
+	col: Color, tile: NinePatchRect,
 ) -> void:
-	ring.modulate = col
+	tile.modulate = col
 	var clean: String = skill.name.replace("\n", " ")
 	_tt_name.text = clean
 	_tt_desc.text = skill.desc
-	_tt_cost.text = "Cost: " + skill.cost
 	_tooltip.visible = true
 
-	var gp: Vector2 = circle.global_position
-	var tx: float = clampf(
-		gp.x, 4.0,
-		AntColonyUI.VIEWPORT_W - 150.0,
+	var gp: Vector2 = tile_c.global_position
+	var tx: float = gp.x + TILE_W + 4.0
+	var ty: float = gp.y
+	# Flip to left side if it would go off-screen
+	if tx + 170.0 > AntColonyUI.VIEWPORT_W:
+		tx = gp.x - 170.0 - 4.0
+	tx = clampf(tx, 4.0, AntColonyUI.VIEWPORT_W - 170.0)
+	ty = clampf(
+		ty, 4.0,
+		AntColonyUI.VIEWPORT_H - 80.0,
 	)
-	var ty: float = gp.y - 52.0
-	if ty < 4.0:
-		ty = gp.y + CIRCLE_SZ + 4.0
 	_tooltip.position = Vector2(tx, ty)
 
 
-func _on_circle_exited(ring: TextureRect) -> void:
-	ring.modulate = Color(0.5, 0.45, 0.38, 0.7)
+func _on_tile_exited(
+	tile: NinePatchRect,
+) -> void:
+	tile.modulate = Color(0.5, 0.45, 0.38, 0.7)
 	_tooltip.visible = false
 
 
-func _on_circle_input(
+func _on_tile_input(
 	event: InputEvent, skill: Dictionary,
-	ring: TextureRect, col: Color,
+	tile: NinePatchRect, col: Color,
 ) -> void:
 	if not event is InputEventMouseButton:
 		return
@@ -351,14 +521,11 @@ func _on_circle_input(
 	skill["state"] = state
 	match state:
 		0:
-			ring.texture = _circle_ring
-			ring.modulate = col
+			tile.modulate = col
 		1:
-			ring.texture = _circle_filled
-			ring.modulate = col
+			tile.modulate = col
 		2:
-			ring.texture = _circle_filled
-			ring.modulate = AntColonyUI.NODE_LOCKED
+			tile.modulate = AntColonyUI.NODE_LOCKED
 
 
 # =============================================================
@@ -368,138 +535,171 @@ func _on_circle_input(
 
 func _sk(
 	n: String, d: String, c: String,
+	p: String = "", pk: String = "",
+	rb: bool = false,
 ) -> Dictionary:
-	return {
+	var data := {
 		"name": n, "desc": d,
 		"cost": c, "state": 0,
 	}
+	if p != "":
+		data["prog"] = p
+	if pk != "":
+		data["pick"] = pk
+	if rb:
+		data["rainbow"] = true
+	return data
 
 
 func _player_tiers() -> Array:
 	return [
 		[_sk(
-			"Auto\nMining",
-			"Dig blocks by walking into them",
-			"50 Food",
+			"AUTO\nMINING",
+			"DIG BLOCKS BY WALKING INTO THEM",
+			"50",
 		)],
 		[_sk(
-			"Dig\nStrength",
-			"Increase dig damage per hit",
-			"Scaling 0/50",
+			"DIG\nSTRENGTH",
+			"INCREASE DIG DAMAGE PER HIT",
+			"25", "0/50",
 		)],
 		[
-			_sk("Food\nMagnet",
-				"Attract nearby food drops",
-				"25 Food ea"),
-			_sk("Player\nSpeed",
-				"Increase movement speed",
-				"25 Food ea"),
-			_sk("Carry\nCap",
-				"Carry more food at once",
-				"25 Food ea"),
+			_sk("FOOD\nMAGNET",
+				"ATTRACT NEARBY FOOD DROPS",
+				"25"),
+			_sk("PLAYER\nSPEED",
+				"INCREASE MOVEMENT SPEED",
+				"25"),
+			_sk("CARRY\nCAP",
+				"CARRY MORE FOOD AT ONCE",
+				"25"),
 		],
 		[
-			_sk("Dig\nRange",
-				"Mine blocks further away",
-				"Pick 2 of 3"),
-			_sk("Dig\nSpeed",
-				"Mine blocks faster",
-				"Pick 2 of 3"),
-			_sk("Dig\nRadius",
-				"Mine a larger area",
-				"Pick 2 of 3"),
+			_sk("DIG\nRANGE",
+				"MINE BLOCKS FURTHER AWAY",
+				"100", "",
+				"PICK 2 OF 3"),
+			_sk("DIG\nSPEED",
+				"MINE BLOCKS FASTER",
+				"100", "",
+				"PICK 2 OF 3"),
+			_sk("DIG\nRADIUS",
+				"MINE A LARGER AREA",
+				"100", "",
+				"PICK 2 OF 3"),
 		],
 		[
-			_sk("Auto\nWorker",
-				"Workers dig without orders",
-				"200 Food"),
-			_sk("Architect\nAnt",
-				"Unlock building mode",
-				"300 Food"),
-			_sk("Auto\nEvolve",
-				"Auto-pick cheapest upgrade",
-				"500 Food"),
+			_sk("AUTO\nWORKER",
+				"WORKERS DIG WITHOUT ORDERS",
+				"200"),
+			_sk("ARCHITECT\nANT",
+				"UNLOCK BUILDING MODE",
+				"300"),
+			_sk("AUTO\nEVOLVE",
+				"AUTO-PICK CHEAPEST UPGRADE",
+				"500"),
 		],
 		[
-			_sk("Gun",
-				"Shoot blocks from distance",
-				"Pick 1 of 4"),
-			_sk("Laser",
-				"Continuous beam mining",
-				"Pick 1 of 4"),
-			_sk("Acid",
-				"Dissolve blocks over time",
-				"Pick 1 of 4"),
-			_sk("Explode",
-				"Blast large areas",
-				"Pick 1 of 4"),
+			_sk("GUN",
+				"SHOOT BLOCKS FROM DISTANCE",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("LASER",
+				"CONTINUOUS BEAM MINING",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("ACID",
+				"DISSOLVE BLOCKS OVER TIME",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("EXPLODE",
+				"BLAST LARGE AREAS",
+				"400", "",
+				"PICK 1 OF 4"),
 		],
+		[_sk(
+			"OVER THE\nRAINBOW",
+			"UNLOCK THE RAINBOW FOOD CHEAT MENU",
+			"1,000,000,000", "", "", true,
+		)],
 	]
 
 
 func _logistics_tiers() -> Array:
 	return [
 		[_sk(
-			"Place\nDirt",
-			"Place mined dirt blocks",
-			"50 Food",
+			"PLACE\nDIRT",
+			"PLACE MINED DIRT BLOCKS",
+			"50",
 		)],
 		[_sk(
-			"Transport\nCap",
-			"More items per transport trip",
-			"Scaling 0/10",
+			"TRANSPORT\nCAP",
+			"MORE ITEMS PER TRANSPORT TRIP",
+			"20", "0/10",
 		)],
 		[
-			_sk("Elevator",
-				"Vertical shaft transport",
-				"Pick 1 of 4"),
-			_sk("Minecart",
-				"Rail-based hauling",
-				"Pick 1 of 4"),
-			_sk("Platform",
-				"Moving platforms",
-				"Pick 1 of 4"),
-			_sk("Zipline",
-				"Zipline transport",
-				"Pick 1 of 4"),
+			_sk("LIFT",
+				"VERTICAL SHAFT TRANSPORT",
+				"150", "",
+				"PICK 1 OF 4"),
+			_sk("MINECART",
+				"RAIL-BASED HAULING",
+				"150", "",
+				"PICK 1 OF 4"),
+			_sk("PLATFORM",
+				"MOVING PLATFORMS",
+				"150", "",
+				"PICK 1 OF 4"),
+			_sk("ZIPLINE",
+				"ZIPLINE TRANSPORT",
+				"150", "",
+				"PICK 1 OF 4"),
 		],
 		[
-			_sk("Pheromone\nHwy",
-				"Workers follow pheromones",
-				"150 Food"),
-			_sk("Auto\nConveyor",
-				"Auto-route conveyor belts",
-				"200 Food"),
+			_sk("PHEROMONE\nHWY",
+				"WORKERS FOLLOW PHEROMONES",
+				"150"),
+			_sk("AUTO\nCONVEYOR",
+				"AUTO-ROUTE CONVEYOR BELTS",
+				"200"),
 		],
 		[
-			_sk("Tramway",
-				"Aerial cable car transport",
-				"Pick 1 of 2"),
-			_sk("Conveyor\nBelt",
-				"Automated belt system",
-				"Pick 1 of 2"),
+			_sk("TRAMWAY",
+				"AERIAL CABLE CAR TRANSPORT",
+				"250", "",
+				"PICK 1 OF 2"),
+			_sk("CONVEYOR\nBELT",
+				"AUTOMATED BELT SYSTEM",
+				"250", "",
+				"PICK 1 OF 2"),
 		],
 		[
-			_sk("Legs",
-				"Extra legs for climbing",
-				"Pick 1 of 4"),
-			_sk("Grapple",
-				"Grappling hook movement",
-				"Pick 1 of 4"),
-			_sk("Jetpack",
-				"Fly short distances",
-				"Pick 1 of 4"),
-			_sk("Jump",
-				"Super jump ability",
-				"Pick 1 of 4"),
+			_sk("LEGS",
+				"EXTRA LEGS FOR CLIMBING",
+				"300", "",
+				"PICK 1 OF 4"),
+			_sk("GRAPPLE",
+				"GRAPPLING HOOK MOVEMENT",
+				"300", "",
+				"PICK 1 OF 4"),
+			_sk("JETPACK",
+				"FLY SHORT DISTANCES",
+				"300", "",
+				"PICK 1 OF 4"),
+			_sk("JUMP",
+				"SUPER JUMP ABILITY",
+				"300", "",
+				"PICK 1 OF 4"),
 		],
 		[
-			_sk("Teleport",
-				"Instant teleportation",
-				"Pick 1 of 2"),
-			_sk("Tubes",
-				"Pneumatic tube network",
-				"Pick 1 of 2"),
+			_sk("TELEPORT",
+				"INSTANT TELEPORTATION",
+				"500", "",
+				"PICK 1 OF 2"),
+			_sk("TUBES",
+				"PNEUMATIC TUBE NETWORK",
+				"500", "",
+				"PICK 1 OF 2"),
 		],
 	]
 
@@ -507,57 +707,67 @@ func _logistics_tiers() -> Array:
 func _colony_tiers() -> Array:
 	return [
 		[_sk(
-			"Unlock\nWorkers",
-			"Hire your first workers",
-			"100 Food",
+			"UNLOCK\nWORKERS",
+			"HIRE YOUR FIRST WORKERS",
+			"100",
 		)],
 		[_sk(
-			"Miner\nStrength",
-			"Workers dig harder",
-			"Scaling 0/50",
+			"MINER\nSTRENGTH",
+			"WORKERS DIG HARDER",
+			"25", "0/50",
 		)],
 		[
-			_sk("Ant\nSpeed",
-				"Workers move faster",
-				"25 Food ea"),
-			_sk("Haul\nCap",
-				"Workers carry more food",
-				"25 Food ea"),
+			_sk("ANT\nSPEED",
+				"WORKERS MOVE FASTER",
+				"25"),
+			_sk("HAUL\nCAP",
+				"WORKERS CARRY MORE FOOD",
+				"25"),
 		],
 		[
-			_sk("Cannon",
-				"Launch food via cannon",
-				"Pick 1 of 3"),
-			_sk("Singularity",
-				"Gravity well collection",
-				"Pick 1 of 3"),
-			_sk("Relay",
-				"Worker relay chain",
-				"Pick 1 of 3"),
+			_sk("CANNON",
+				"LAUNCH FOOD VIA CANNON",
+				"200", "",
+				"PICK 1 OF 3"),
+			_sk("SINGULARITY",
+				"GRAVITY WELL COLLECTION",
+				"200", "",
+				"PICK 1 OF 3"),
+			_sk("RELAY",
+				"WORKER RELAY CHAIN",
+				"200", "",
+				"PICK 1 OF 3"),
 		],
 		[
-			_sk("Dig\nRange",
-				"Miners reach further",
-				"Pick 2 of 3"),
-			_sk("Dig\nSpeed",
-				"Miners dig faster",
-				"Pick 2 of 3"),
-			_sk("Dig\nRadius",
-				"Miners dig wider",
-				"Pick 2 of 3"),
+			_sk("DIG\nRANGE",
+				"MINERS REACH FURTHER",
+				"150", "",
+				"PICK 2 OF 3"),
+			_sk("DIG\nSPEED",
+				"MINERS DIG FASTER",
+				"150", "",
+				"PICK 2 OF 3"),
+			_sk("DIG\nRADIUS",
+				"MINERS DIG WIDER",
+				"150", "",
+				"PICK 2 OF 3"),
 		],
 		[
-			_sk("Gun",
-				"Armed miner ants",
-				"Pick 1 of 4"),
-			_sk("Laser",
-				"Laser mining ants",
-				"Pick 1 of 4"),
-			_sk("Acid",
-				"Acid spraying ants",
-				"Pick 1 of 4"),
-			_sk("Explode",
-				"Demolition ants",
-				"Pick 1 of 4"),
+			_sk("GUN",
+				"ARMED MINER ANTS",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("LASER",
+				"LASER MINING ANTS",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("ACID",
+				"ACID SPRAYING ANTS",
+				"400", "",
+				"PICK 1 OF 4"),
+			_sk("EXPLODE",
+				"DEMOLITION ANTS",
+				"400", "",
+				"PICK 1 OF 4"),
 		],
 	]

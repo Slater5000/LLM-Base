@@ -5,34 +5,34 @@ extends Control
 
 const TRANSPORT := [
 	{
-		"id": "elevator",
-		"label": "Elevator",
-		"desc": "Vertical lift — fast up/down for deep mining",
+		"id": "lift",
+		"label": "LIFT",
+		"desc": "VERTICAL LIFT — FAST UP/DOWN FOR DEEP MINING",
 	},
 	{
 		"id": "tramway",
-		"label": "Tramway",
-		"desc": "Aerial cable between pylons — crosses gaps",
+		"label": "TRAMWAY",
+		"desc": "AERIAL CABLE BETWEEN PYLONS — CROSSES GAPS",
 	},
 	{
 		"id": "minecart",
-		"label": "Minecart",
-		"desc": "Horizontal rail — fast left/right hauling",
+		"label": "MINECART",
+		"desc": "HORIZONTAL RAIL — FAST LEFT/RIGHT HAULING",
 	},
 	{
 		"id": "conveyor",
-		"label": "Conveyor",
-		"desc": "Surface belt — follows floor, wall, ceiling",
+		"label": "CONVEYOR",
+		"desc": "SURFACE BELT — FOLLOWS FLOOR, WALL, CEILING",
 	},
 	{
 		"id": "zipline",
-		"label": "Zip Line",
-		"desc": "Diagonal shortcut — fast down, slow up",
+		"label": "ZIP LINE",
+		"desc": "DIAGONAL SHORTCUT — FAST DOWN, SLOW UP",
 	},
 	{
 		"id": "teleport",
-		"label": "Teleport",
-		"desc": "Instant warp between two pads — 1 pair only",
+		"label": "TELEPORT",
+		"desc": "INSTANT WARP BETWEEN TWO PADS — 1 PAIR ONLY",
 	},
 ]
 
@@ -70,14 +70,14 @@ func _build_ui() -> void:
 
 	# World placeholder
 	var world_lbl := Label.new()
-	world_lbl.text = "[ Game World Here ]"
+	world_lbl.text = "[ GAME WORLD HERE ]"
 	world_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	world_lbl.set_anchors_preset(Control.PRESET_CENTER)
 	world_lbl.position = Vector2(-60, -10)
 	world_lbl.size = Vector2(120, 20)
 	world_lbl.add_theme_font_size_override("font_size", 16)
 	world_lbl.add_theme_color_override(
-		"font_color", Color(0.4, 0.35, 0.25, 0.4)
+		"font_color", Color.BLACK
 	)
 	add_child(world_lbl)
 
@@ -95,13 +95,13 @@ func _build_ui() -> void:
 	_tooltip.size = Vector2(440, 20)
 	_tooltip.add_theme_font_size_override("font_size", 16)
 	_tooltip.add_theme_color_override(
-		"font_color", AntColonyUI.TEXT_CREAM
+		"font_color", Color.BLACK
 	)
 	add_child(_tooltip)
 
 	# Placement hint (shown when item selected)
 	_place_hint = Label.new()
-	_place_hint.text = "Click start, then end position. ESC to cancel."
+	_place_hint.text = "CLICK START, THEN END POSITION. ESC TO CANCEL."
 	_place_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place_hint.position = Vector2(
 		140, CENTER.y + RING_RADIUS + 48
@@ -109,34 +109,39 @@ func _build_ui() -> void:
 	_place_hint.size = Vector2(360, 16)
 	_place_hint.add_theme_font_size_override("font_size", 16)
 	_place_hint.add_theme_color_override(
-		"font_color", Color(0.95, 0.9, 0.8, 0.6)
+		"font_color", Color.BLACK
 	)
 	_place_hint.visible = false
 	add_child(_place_hint)
 
 	# Unlock count display
 	_count_label = Label.new()
-	_count_label.text = "Unlocked: 6 / 6"
+	_count_label.text = "UNLOCKED: 6 / 6"
 	_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_count_label.position = Vector2(230, 320)
 	_count_label.size = Vector2(180, 16)
 	_count_label.add_theme_font_size_override("font_size", 16)
 	_count_label.add_theme_color_override(
-		"font_color", AntColonyUI.TEXT_CREAM
+		"font_color", Color.BLACK
 	)
 	add_child(_count_label)
 
 	# Instructions
 	var inst := Label.new()
-	inst.text = "Press 1-6 to unlock transport types"
+	inst.text = "PRESS 1-6 TO UNLOCK TRANSPORT TYPES"
 	inst.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	inst.position = Vector2(160, 340)
 	inst.size = Vector2(320, 16)
 	inst.add_theme_font_size_override("font_size", 16)
 	inst.add_theme_color_override(
-		"font_color", Color(0.6, 0.55, 0.45, 0.6)
+		"font_color", Color.BLACK
 	)
 	add_child(inst)
+
+	# Banner title
+	var banner := _create_banner("BUILD", 640.0)
+	banner.position = Vector2(0, 29)
+	add_child(banner)
 
 	$BackButton.move_to_front()
 	_update_layout()
@@ -158,11 +163,11 @@ func _create_build_button(index: int) -> Control:
 	# Panel background using Kenney brown tile
 	var bg := NinePatchRect.new()
 	bg.name = "BG"
-	bg.texture = load(AntColonyUI.PANEL_BROWN)
-	bg.patch_margin_left = 6
-	bg.patch_margin_top = 6
-	bg.patch_margin_right = 6
-	bg.patch_margin_bottom = 6
+	bg.texture = load(AntColonyUI.PANEL_ROUNDED)
+	bg.patch_margin_left = 14
+	bg.patch_margin_top = 14
+	bg.patch_margin_right = 14
+	bg.patch_margin_bottom = 14
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	container.add_child(bg)
@@ -198,7 +203,7 @@ func _update_layout() -> void:
 	_overlay.visible = _unlocked_count > 0
 
 	if _unlocked_count == 0:
-		_tooltip.text = "No transport unlocked yet"
+		_tooltip.text = "NO TRANSPORT UNLOCKED YET"
 		_place_hint.visible = false
 		return
 
@@ -213,7 +218,7 @@ func _update_layout() -> void:
 	if _selected >= _unlocked_count:
 		_deselect()
 
-	_count_label.text = "Unlocked: %d / 6" % _unlocked_count
+	_count_label.text = "UNLOCKED: %d / 6" % _unlocked_count
 
 
 func _get_ring_pos(index: int, total: int) -> Vector2:
@@ -310,6 +315,55 @@ func _make_blur_shader() -> String:
 		"}",
 	])
 	return "\n".join(lines)
+
+
+func _create_banner(
+	title_text: String, panel_w: float,
+) -> Control:
+	var holder := Control.new()
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bx: float = (panel_w - 157.0) / 2.0
+	var bl := TextureRect.new()
+	bl.texture = load(AntColonyUI.BANNER_LEFT)
+	bl.stretch_mode = TextureRect.STRETCH_SCALE
+	bl.position = Vector2(bx, -1.0)
+	bl.size = Vector2(32, 32)
+	bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(bl)
+	var mid := TextureRect.new()
+	mid.texture = load(AntColonyUI.BANNER_MID)
+	mid.stretch_mode = TextureRect.STRETCH_TILE
+	mid.position = Vector2(bx + 30.0, -1.0)
+	mid.size = Vector2(97, 32)
+	mid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(mid)
+	var br := TextureRect.new()
+	br.texture = load(AntColonyUI.BANNER_RIGHT)
+	br.stretch_mode = TextureRect.STRETCH_SCALE
+	br.position = Vector2(bx + 125.44, -1.07)
+	br.size = Vector2(32, 32)
+	br.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(br)
+	var lbl := Label.new()
+	lbl.text = title_text
+	lbl.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_CENTER
+	)
+	lbl.vertical_alignment = (
+		VERTICAL_ALIGNMENT_CENTER
+	)
+	lbl.position = Vector2(bx, 1.0)
+	lbl.size = Vector2(157.0, 32.0)
+	lbl.add_theme_font_size_override("font_size", 16)
+	lbl.add_theme_color_override(
+		"font_color", Color.BLACK,
+	)
+	lbl.add_theme_color_override(
+		"font_outline_color", Color.WHITE,
+	)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(lbl)
+	return holder
 
 
 func _go_back() -> void:

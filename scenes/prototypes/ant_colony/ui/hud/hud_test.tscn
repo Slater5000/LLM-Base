@@ -36,18 +36,18 @@ offset_bottom = 22.0
 alignment = 2
 theme_override_constants/separation = 4
 
+[node name="FoodCount" type="Label" parent="TopRight"]
+layout_mode = 2
+text = "12,450"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
 [node name="FoodIcon" type="TextureRect" parent="TopRight"]
 layout_mode = 2
 custom_minimum_size = Vector2(16, 16)
 texture = ExtResource("2_circle")
 modulate = Color(1, 0.65, 0.15, 1)
 stretch_mode = 5
-
-[node name="FoodCount" type="Label" parent="TopRight"]
-layout_mode = 2
-text = "12,450"
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 
 [node name="TopLeft" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -59,15 +59,15 @@ theme_override_constants/separation = 2
 
 [node name="Distance" type="Label" parent="TopLeft"]
 layout_mode = 2
-text = "Dist: 1,247"
+text = "DIST: 1,247"
 theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="Workers" type="Label" parent="TopLeft"]
 layout_mode = 2
 text = "M:5  H:3"
 theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="BottomLeft" type="Label" parent="."]
 layout_mode = 1
@@ -77,11 +77,11 @@ anchor_bottom = 1.0
 grow_vertical = 0
 offset_left = 8.0
 offset_top = -22.0
-offset_right = 120.0
+offset_right = 200.0
 offset_bottom = -8.0
-text = "Tool: Dig"
+text = "TOOL: DIG  R:1"
 theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1
@@ -91,3 +91,21 @@ offset_right = 58.0
 offset_bottom = 76.0
 text = "< Back"
 theme_override_font_sizes/font_size = 6
+
+[node name="Instructions" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+offset_left = -160.0
+offset_top = -22.0
+offset_right = 160.0
+offset_bottom = -8.0
+text = "TAB = CYCLE TOOL  |  [ ] = RADIUS SIZE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0, 0, 0, 1)

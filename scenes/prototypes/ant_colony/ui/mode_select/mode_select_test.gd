@@ -1,5 +1,5 @@
 extends Control
-## Mode select test: Normal / Education panels with save management.
+## Mode select test: Normal / Vanilla panels with save management.
 ## Load Colony and Legacy Colonies open Stardew-style overlay menus.
 ## Toggle button switches between first-time and has-save states.
 
@@ -14,20 +14,26 @@ func _ready() -> void:
 	var normal_content: VBoxContainer = (
 		$PanelContainer/NormalPanel/Content
 	)
-	var delete_x: TextureButton = (
+	var n_delete_x: TextureButton = (
 		normal_content.get_node("PlayContainer/DeleteX")
 	)
-	delete_x.pressed.connect(_show_confirm)
+	n_delete_x.pressed.connect(_show_confirm)
 	var legacy_btn: Button = (
 		normal_content.get_node("LegacyButton")
 	)
 	legacy_btn.pressed.connect(_show_legacy)
 
-	# Education mode
-	var edu_content: VBoxContainer = (
-		$PanelContainer/EducationPanel/Content
+	# Vanilla mode
+	var vanilla_content: VBoxContainer = (
+		$PanelContainer/VanillaPanel/Content
 	)
-	var load_btn: Button = edu_content.get_node("LoadButton")
+	var v_delete_x: TextureButton = (
+		vanilla_content.get_node("PlayContainer/DeleteX")
+	)
+	v_delete_x.pressed.connect(_show_confirm)
+	var load_btn: Button = (
+		vanilla_content.get_node("LoadButton")
+	)
 	load_btn.pressed.connect(_show_load)
 
 	# Load overlay
@@ -48,7 +54,7 @@ func _ready() -> void:
 	)
 	no_btn.pressed.connect(_hide_confirm)
 
-	_update_normal_panel()
+	_update_panels()
 
 
 func _wire_overlay(overlay: ColorRect) -> void:
@@ -72,27 +78,28 @@ func _wire_overlay(overlay: ColorRect) -> void:
 func _toggle_state() -> void:
 	_has_save = not _has_save
 	if _has_save:
-		$ToggleStateBtn.text = "Toggle: Has Save"
+		$ToggleStateBtn.text = "TOGGLE: HAS SAVE"
 	else:
-		$ToggleStateBtn.text = "Toggle: No Save"
-	_update_normal_panel()
+		$ToggleStateBtn.text = "TOGGLE: NO SAVE"
+	_update_panels()
 
 
-func _update_normal_panel() -> void:
-	var content: VBoxContainer = (
-		$PanelContainer/NormalPanel/Content
+func _update_panels() -> void:
+	_update_panel($PanelContainer/NormalPanel/Content)
+	_update_panel(
+		$PanelContainer/VanillaPanel/Content,
 	)
-	var colony_info: Label = content.get_node("ColonyInfo")
+
+
+func _update_panel(content: VBoxContainer) -> void:
+	var colony_info: Label = (
+		content.get_node("ColonyInfo")
+	)
 	var delete_x: TextureButton = (
 		content.get_node("PlayContainer/DeleteX")
 	)
-	var legacy_btn: Button = (
-		content.get_node("LegacyButton")
-	)
-
 	colony_info.visible = _has_save
 	delete_x.visible = _has_save
-	legacy_btn.visible = _has_save
 
 
 func _show_load() -> void:

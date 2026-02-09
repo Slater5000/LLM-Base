@@ -45,7 +45,7 @@ A 4th emergent bottleneck is **tunnel network quality** — a player skill bottl
 3. **Late game (hours):** Minecarts, trains, tubes. You're directing an operation, not doing grunt work.
 4. **Endgame (tens of hours+):** Rainbow food currency, endgame upgrades, full automation. The colony runs itself. You optimize.
 
-### Education Mode (Separate Game Mode)
+### Vanilla Mode (Separate Game Mode)
 
 Selectable from the main menu as an alternative to the normal game. A **pure ant farm screensaver** for people who want to watch ants on their second monitor without any progression systems, menus, or decisions.
 
@@ -54,17 +54,22 @@ Selectable from the main menu as an alternative to the normal game. A **pure ant
 - **No dirt difficulty scaling.** All dirt is base strength (same number of bites everywhere). Dirt still changes color with distance (visual gradient intact) but hardness doesn't increase.
 - **Starts with 2 workers:** 1 miner, 1 hauler. They start working immediately.
 - **Player CAN dig** with base bite strength. No dig methods, no stat upgrades. Just basic bite at base power. Optional — you never have to touch the mouse.
+- **Player CAN place dirt** (right-click). Baked in from the start — no upgrade needed. Build ramps, bridges, walls to help your ants.
+- **Auto-click baked in.** Queen passively begins with auto click so they can hold click to dig. No upgrade needed — it's just how Vanilla Mode works.
 - **Player CAN zoom/pan** to watch the colony. Free camera.
 - **No food counter visible.** Food is tracked internally for auto-spawning but the player never sees a number or a menu. Pure visual experience.
-- **Player CAN name ants.** Click any ant to name it. This is Education Mode's main interaction — watch Greg haul food, watch Steve dig tunnels.
-- **Cosmetics from normal mode available.** Any hats, trails, or cosmetics unlocked in normal mode can be used in Education Mode. Education Mode is a **viewer, not an unlocker** — you can't earn new cosmetics here.
-- **Multiple save slots.** Education Mode has no endgame barrier, so you can create as many colonies as you want — works like a normal save system. Start new colonies freely, return to old ones anytime.
+- **Player CAN name ants.** Click any ant to name it. This is Vanilla Mode's main interaction — watch Greg haul food, watch Steve dig tunnels.
+- **Pheromone Highways baked in (cosmetic only).** Ants leave visible pheromone trails that glow on well-traveled routes. **No speed boost** — purely visual. Toggleable in Gameplay settings. Gives the colony that living, breathing look without affecting gameplay balance.
+- **Cosmetics from normal mode available.** Any hats, trails, or cosmetics unlocked in normal mode can be used in Vanilla Mode. Vanilla Mode is a **viewer, not an unlocker** — you can't earn new cosmetics here.
+- **Multiple save slots.** Vanilla Mode has no endgame barrier, so you can create as many colonies as you want — works like a normal save system. Start new colonies freely, return to old ones anytime.
 - **Infinite, gentle scaling.** Colony grows slowly over time, expanding outward. No endgame, no goals. Just watch it go.
 - **Also powers the main menu background.** See Main Menu section.
 
 **Auto-Spawner System (Hidden):**
 
-The colony grows itself. All of this is invisible to the player — no numbers, no menus, no decisions.
+The colony grows itself. All of this is invisible to the player — no numbers, no menus, no decisions. **No manual worker buying.** The algorithm decides what to spawn and when. The only thing the player can do is bring in more food (dig, help haul) to accelerate the process.
+
+**Auto-spawn toggle:** Players can **pause** auto-spawning via Gameplay settings (toggle off). This lets you freeze your colony size if you want. But you cannot manually choose to buy or assign workers — when the toggle is on, the algorithm handles everything.
 
 **Spawning cost formula:** `cost_for_ant_N = floor(8 + N * 4)` where N = total ants spawned so far (not including the 2 starting workers). Deliberately slow — you should have time to notice, name, and appreciate each new ant before the next one arrives.
 
@@ -93,33 +98,33 @@ The colony grows itself. All of this is invisible to the player — no numbers, 
 
 **The appeal:** Put it on your second monitor. Minimize everything else. Watch ants dig tunnels and haul food. Name them. Give Greg a cowboy hat. That's it. That's the game.
 
-**This replaces the "vanilla 5th option" approach** — instead of cluttering the upgrade tree with boring stat-buff alternatives, players who want the simple ant farm experience get their own dedicated mode. The normal game's forks stay interesting and meaningful without a "do nothing" choice competing with fun options.
+**This replaces the "vanilla 5th option" approach** — instead of cluttering the upgrade tree with boring stat-buff alternatives, players who want the simple ant farm experience get their own dedicated mode. The normal game's forks stay interesting and meaningful without a "do nothing" choice competing with fun options. The name "Vanilla Mode" leans into this — it IS the vanilla experience, and that's a feature, not a limitation.
 
 ---
 
 ## Main Menu & Navigation
 
 ### Main Menu
-- **Background:** A running Education Mode-style ant colony. Couple hundred ants, healthy colony, purely cosmetic. **Freshly generated each app launch** — not saved, not persistent. Low ant count for performance.
+- **Background:** A running Vanilla Mode-style ant colony. Couple hundred ants, healthy colony, purely cosmetic. **Freshly generated each app launch** — not saved, not persistent. Low ant count for performance.
 - **Buttons overlaid on top** of the background colony.
 
 **Main Menu Flow:**
 ```
 MAIN MENU (anthill background)
-├── Start Game → [Normal Mode | Education Mode | Back]
+├── Start Game → [Normal Mode | Vanilla Mode | Back]
 │   ├── Normal Mode → Colony Screen
 │   │   ├── Current Colony (active save)
 │   │   ├── Delete Colony button (with "Are you sure?" confirmation)
 │   │   └── Legacy Colonies button (only visible after beating first colony)
 │   │       └── Scrollable list of retired colonies (name + click to resume)
-│   └── Education Mode → Single save slot (play or reset)
+│   └── Vanilla Mode → Single save slot (play or reset)
 ├── Options → Settings Menu
 └── Quit
 ```
 
 ### Save System
 
-**One active colony per mode.** Normal Mode has one active colony. Education Mode has one active colony. That's it.
+**One active colony per mode.** Normal Mode has one active colony. Vanilla Mode has one active colony. That's it.
 
 **Normal Mode progression:**
 - **First time playing:** One save slot. No Legacy menu visible.
@@ -140,30 +145,16 @@ MAIN MENU (anthill background)
 
 Settings save **separately from game saves** — persist across all colonies and modes.
 
-**Phase 1 (ship with):**
+**6 tabs:** AUDIO, DISPLAY, GAMEPLAY, PERFORMANCE, ACCESSIBILITY, CONTROLS
 
-| Category | Settings |
-|----------|----------|
-| **Audio** | Master volume, Music volume, SFX volume |
-| **Display** | Window Mode (borderless default), Resolution, Max FPS (30/60/120/144/Unlimited), UI Scale, Screen Shake (slider) |
-| **Gameplay** | Game Speed (0.25x / 0.5x / 1x — no faster than realtime), Auto-Save (toggle), Auto-Save Interval checkboxes (1m / 5m / 10m), Number Format (Standard 1500 / Short 1.5K / Scientific 1.5e3), Colony Size (Small / Medium / Large / Unlimited — default Unlimited) |
-| **Performance** | Quality Preset (Low/Medium/High), Max Visible Ants (slider, ants beyond cap still simulated but not drawn), Show FPS Counter |
-| **Controls** | Key Rebinding |
-
-**Phase 2 (as systems come online):**
-
-| Category | Settings |
-|----------|----------|
-| **Visuals** | Pheromone Trail Visibility (slider) + Quality (Simple/Normal/Detailed), Ant Detail Level (dots/normal/full), Show Ant Names |
-| **Accessibility** | Colorblind Mode (Deuteranopia/Protanopia/Tritanopia) |
-| **Gameplay** | Zoom Speed, Edge Scrolling |
-
-**Phase 3 (polish):**
-
-| Category | Settings |
-|----------|----------|
-| **Accessibility** | High Contrast Mode, Font Size, Large Cursor |
-| **Controls** | Controller Support (future), Controller Deadzone |
+| Tab | Settings |
+|-----|----------|
+| **Audio** | Master volume, Music volume, SFX volume, Ambient volume |
+| **Display** | Window Mode (borderless default), Resolution, Max FPS (30/60/120/144/Unlimited), UI Scale, Screen Shake (slider), Pheromone Trail Visibility (slider), Trail Quality (Simple/Normal/Detailed), Ant Detail Level (Dots/Normal/Full), Show Ant Names (toggle) |
+| **Gameplay** | Game Speed (0.25x / 0.5x / 1x — no faster than realtime), Zoom Speed, Edge Scrolling (toggle), Auto-Save (toggle), Auto-Save Interval (left/right selector: 1m / 5m / 10m), Number Format (Standard 1500 / Short 1.5K / Scientific 1.5e3), Colony Size (Small / Medium / Large / Unlimited — default Unlimited) |
+| **Performance** | Quality Preset (Low/Medium/High), Max Visible Ants (slider, ants beyond cap still simulated but not drawn), Show FPS Counter, FPS Warning (toggle — see Performance Warning System) |
+| **Accessibility** | Colorblind Mode (Off/Deuteranopia/Protanopia/Tritanopia), High Contrast Mode, Font Size (Small/Normal/Large), Large Cursor |
+| **Controls** | Key Rebinding (Move, Dig, Place, Zoom, Evolve, Build, Pause). Future: Controller Support, Controller Deadzone |
 
 **Architecture notes:**
 - Settings persist across save slots (separate save file)
@@ -293,13 +284,18 @@ All regular food is **orange** regardless of distance. Value = band number (line
 - **Right Click** — Place dirt at mouse position (fixed range, doesn't scale with any upgrade). When hovering over transport/logistics, right-click opens context menu instead.
 - **Hold duration** — Controls bite size (tap = small, short hold = medium, long hold = large)
 - **Scroll Wheel** — Zoom in/out
-- **Tab / E** — Open Evolve (upgrade) menu
+- **Tab** — Cycle active tool (e.g., swap between basic dig and unlocked dig method like Gun/Laser/Acid/Explosion)
+- **[ / ]** — Adjust dig radius size. Only appears once Dig Radius upgrades are purchased. R:1 at level 1-4, R:2 at level 5-9, R:3 at level 10. Displayed next to tool indicator on HUD.
+- **E** — Open Evolve (upgrade) menu
 - **B** — Open Build menu (transport placement)
-- **Click on any ant** — Name/rename dialog
+- **Escape** — Pause menu
+- **Click on any ant** — Customize screen (name, color, hat)
 
 ### Build Menu & Transport Placement
 
-**B key** opens the Build Menu — a bottom-anchored panel showing available transport types. Each type is an icon button with name and cost.
+**B key** opens the Build Menu — a centered radial hex ring showing available transport types. Each type is a button arranged in a circular layout around the center of the screen, with a description tooltip below on hover. Background blurs when the menu is open. Transport types progressively unlock as upgrades are purchased from the Evolve tree.
+
+> **Test UI note:** The "PRESS 1-6 TO UNLOCK TRANSPORT TYPES" text and number-key unlock controls in the build menu test scene are for testing purposes only — not part of the final game UI. In the real game, transport types unlock through the Evolve tree.
 
 **Two-click placement system:**
 1. Select a transport type from the Build Menu
@@ -311,10 +307,22 @@ All regular food is **orange** regardless of distance. Value = band number (line
 **Per-type placement behavior:**
 - **Conveyor Belt:** Click start tile, click end tile. Belt auto-routes between them along surfaces.
 - **Pylon / Aerial Tramway:** Must connect back to the base transport network (no isolated pylons). If two pylons have line-of-sight, wire is drawn automatically. Wires can't go through walls.
-- **Elevator:** Vertical only. Click top position, then bottom position.
+- **Lift:** Vertical only. Click top position, then bottom position.
 - **Zip Line:** Two-click like conveyor. Needs a surface attachment point at both ends.
 - **Teleporters:** Place entrance pad, then exit pad. 1 pair only. Repositionable.
 - **Pneumatic Tubes:** Place entrance, aim exit at any angle (360 degrees). Straight line through solid terrain.
+
+### In-Game HUD
+
+Minimal, non-intrusive overlay showing essential information at the viewport corners:
+
+- **Top-right:** Food count with orange food icon
+- **Top-left:** Distance from base, Worker count (M:x H:x for miners/haulers)
+- **Bottom-left:** Active tool indicator with radius (e.g., "Tool: DIG R:1"). Radius only shown if Dig Radius upgrades have been purchased.
+
+The HUD is always visible during gameplay (except in Vanilla Mode where the food counter is hidden — see Vanilla Mode section).
+
+> **Test UI note:** The "TAB = CYCLE TOOL | [ ] = RADIUS SIZE" instruction text at the bottom of the HUD test scene is for testing purposes only — not part of the final game HUD.
 
 ### Movement Rules
 - **Wall climbing** — Ants stick to any surface (floor, walls, ceiling)
@@ -338,7 +346,7 @@ All regular food is **orange** regardless of distance. Value = band number (line
 - When all dirt around a food piece is removed, the food pops out and can be collected
 - **Food has light physics** — if dirt beneath/around food is destroyed (e.g., by explosion dig method), food falls to the nearest floor rather than floating in mid-air
 - **Dig Methods** replace basic bite animation — see Upgrade System → PLAYER ANT for Gun, Laser, Butt Acid, Explosion (pick 1 of 4)
-- **Endgame (rainbow food):** Super Mandibles (one-bite anything), Mega Bite (massive AOE)
+- **Endgame (rainbow food):** Super Mandibles (one-bite anything), Auto Attack (auto-dig wherever facing)
 
 ### Place Dirt (Right-Click)
 - **Requires Place Dirt upgrade** from LOGISTICS panel
@@ -420,7 +428,7 @@ Real ant eggs are **white/cream/translucent**. So:
 ## Upgrade System
 
 ### Structure: "Evolve" Menu — Three Panels
-Open with **Tab/E** at any time (pauses or overlays). The upgrade menu is called **"Evolve"** — thematically, every upgrade is your colony evolving. Three panels displayed **side by side on one page** — Player Ant, Colony, Logistics. NOT tabs — all three visible simultaneously. Spend **food currency** to unlock nodes.
+Open with **E** at any time (pauses or overlays). The upgrade menu is called **"Evolve"** — thematically, every upgrade is your colony evolving. **Three tabs** — Player, Logistics, Colony — in a centered panel with scrollable content per tab. Tab bar at top, scrollable upgrade tree below. Animated rainbow food count displayed in the top-right corner of the panel. Spend **food currency** to unlock nodes.
 
 **No tier locking.** Upgrades are laid out top-to-bottom as intended progression, but nothing is gated behind prerequisites. You can skip entire rows and save up for something further down. It wouldn't be efficient (lower upgrades are cheaper and useful), but you can. Nothing is a requirement — every purchase is your choice.
 
@@ -431,6 +439,8 @@ Open with **Tab/E** at any time (pauses or overlays). The upgrade menu is called
 **All tiered upgrades are 0/10** (ten purchases each) unless otherwise noted. 0/10 means: you have 10 upgrades to buy. Each one gives the same increment. Start at 0, buy up to 10. Simple.
 
 **Upgrade Toggleability:** All upgrades with active effects (Auto Conveyor, Ant Cannon, Food Singularity, Relay Chains, Boogie Bomb, etc.) can be **toggled on/off** at any time. Purchases are permanent — you can't un-buy or switch forks — but activation is optional. This lets players experiment without regret.
+
+**Cost Display:** Once an upgrade is fully purchased, its **cost disappears** from the UI. Only unpurchased upgrades show their cost. This keeps the tree clean and makes it visually obvious what you still need to buy.
 
 ### Build Choice Forks
 
@@ -568,7 +578,7 @@ Transport infrastructure, colony logistics, and player traversal. All transport 
 |---------|------|--------|
 | Place Dirt | Standard | Place dirt blocks to build ramps/bridges/walls. **First unlock in Logistics.** |
 | Transport Capacity | Standard (0/10) | More cars/units per transport route. Each tier adds capacity to your chosen transport system. |
-| Elevator / Minecart / Platform / Zip Line | **Pick 1 of 4** | Transport Tier 1: how ants + food move through your colony. See below. |
+| Lift / Minecart / Platform / Zip Line | **Pick 1 of 4** | Transport Tier 1: how ants + food move through your colony. See below. |
 | Pheromone Highways | Standard | All ants + player leave pheromone trails. Well-traveled routes give speed boost. See below. |
 | Auto Conveyor | Standard (Toggleable) | Auto-extends a slow conveyor belt from your food pile toward the furthest active mine. One direction, auto-placed. First taste of "things happen without me building them." |
 | Aerial Tramway / Conveyor Belt | **Pick 1 of 2** | Transport Tier 2: food-only transport optimization. See below. |
@@ -601,7 +611,7 @@ Unlocks pheromone trails for **all ants AND the player.** Every ant that walks a
 
 | Option | Directions | Speed | Best For |
 |--------|-----------|-------|----------|
-| **Elevator (Lift)** | Vertical (up/down) | Fast | Deep vertical mining colonies |
+| **Lift** | Vertical (up/down) | Fast | Deep vertical mining colonies |
 | **Minecart** | Horizontal (left/right) | Fast | Wide horizontal tunnel networks |
 | **Platform** | 4-directional (NSEW) | Slowish | Flexible general-purpose |
 | **Zip Line** | Diagonal | Fast down, slow up | Diagonal shortcuts, uses gravity |
@@ -649,7 +659,7 @@ Not gameplay upgrades — purely visual. Could be a dedicated tab or page separa
 
 | Upgrade | Effect |
 |---------|--------|
-| Dirt + Background Customization | Change the look of all dirt (overrides distance gradients) and/or background (black void → space, crystal, underwater, ice, lava) |
+| Dirt Customization | Change the look of all dirt (overrides distance gradients). Cosmetic personalization. |
 | Ant Customization | Change ant colors/patterns. Two modes: apply to ALL ants, or click individual ant to customize in their own menu |
 
 Some cosmetics also purchasable with Rainbow Food (see Rainbow Food section).
@@ -666,60 +676,48 @@ Some cosmetics also purchasable with Rainbow Food (see Rainbow Food section).
 
 Found extremely rarely at distances 16000+. Rainbow food **always exists** at 16000+ — rare spawns, mysterious shimmer. Players encounter them before understanding what they are. Need 10-30 rainbow food per unlock depending on power level. This is a wall of absurd power fantasy rewards — like unlocking a cheat menu for playing the game for hundreds of hours. Queen must physically collect rainbow food herself.
 
-**How to access:** A **rainbow button** appears at the top or bottom of the Evolve menu after buying "Over the Rainbow." Clicking it **replaces the 3 panels** with one big rainbow menu. Click again (or a back button) to return to the normal 3-panel view.
+**How to access:** A **rainbow button** appears on the Evolve menu after buying "Over the Rainbow." Clicking it switches from the 3-tab evolve view to a dedicated rainbow menu. Click back to return to the normal evolve view.
 
-**Layout:** One big flat grid of circles. No tree structure, no branches, no progression order. Just all the unlocks laid out in rows — buy whatever you want in any order. Same circle style as the upgrade trees but arranged as a simple grid.
+**Layout:** Centered panel with "OVER THE RAINBOW" banner (rainbow-cycling text in the count display). Three category sections arranged vertically with scrollable content. Each upgrade is a rectangular tile in a horizontal row per category. Tiles show rainbow-hued text with black outline, and cost below. Click tiles to toggle on/off. Hover for tooltip descriptions. No tree structure, no progression order — buy whatever you want in any order.
 
 **All rainbow food unlocks are TOGGLEABLE.** Turn them on/off at will from the cheat menu. Sometimes you want Giant Queen off to see your colony normally. Sometimes you turn off Hive Mind to go back to miner/hauler specialization. The cheat menu is a menu, not permanent changes.
 
 **"Over the Rainbow" — Endgame Gate:**
-Very expensive standard purchase at the bottom of the upgrade tree (regular food cost). This is the endgame milestone — buying it **unlocks the rainbow food menu button.** Before this purchase, rainbow food currency accumulates silently but the button isn't visible and the menu isn't accessible. This is the "you beat the game" moment.
+Very expensive standard purchase at the **bottom of the Player tab** in the Evolve menu (regular food cost, displayed in rainbow-cycling text). This is the endgame milestone — buying it **unlocks the rainbow food menu button.** Before this purchase, rainbow food currency accumulates silently but the button isn't visible and the menu isn't accessible. This is the "you beat the game" moment.
 
 **Rainbow Food Persistence Between Colonies:**
 - **Rainbow food currency:** Persists between colonies (never lost)
 - **Cosmetic purchases** (Big Head Mode, trails, hats, Boogie Bomb): Available **immediately** in every colony, no gate. Once bought, always active.
 - **Gameplay purchases** (Hive Mind, Void Storage, etc.): Persist (don't need to re-buy), but only **activate** after buying "Over the Rainbow" in each new colony. This means each colony has a progression arc before the cheat menu kicks in.
 
-**POWER FANTASY**
+**LOGISTICS** (3 tiles)
 
-| Unlock | Effect |
-|--------|--------|
-| Quantum Tunneling | Indestructible rocks act as empty space for the queen. Seamlessly pass through them like air. |
-| Laser Eyes | Auto-dig toggle — queen passively digs wherever she's facing, always-on beam. |
-| Auto-Pilot | Auto-move toggle — queen automatically moves forward. Combined with Laser Eyes = idle drill. |
-| Mega Bite | Massive AOE dig per click (20+ tile radius). Absurd screen-clearing power. |
-| Giant Queen | Queen becomes 5x bigger. Digs proportionally bigger. Visual power flex. |
-| Void Storage | Queen's food instantly stored on pickup, no carrying. No more hauling for the player. |
+| Unlock | Cost | Effect |
+|--------|------|--------|
+| Hive Mind | 30 | All ants can mine AND haul (closest task priority). No specialization needed. |
+| Speed of Light | 25 | All transport infrastructure runs 2-5x faster. |
+| Global Conveyor | 20 | Auto-generated optimal transport route through your entire tunnel network. Food dropped anywhere on the highway gets swept home. |
 
-**AUTOMATION**
+**POWER FANTASY** (5 tiles)
 
-| Unlock | Effect |
-|--------|--------|
-| Hive Mind | All ants can mine AND haul (closest task priority). No specialization needed. |
-| Speed of Light | All transport infrastructure runs 2-5x faster. |
+| Unlock | Cost | Effect |
+|--------|------|--------|
+| Quantum | 30 | Indestructible rocks act as empty space for the queen. Seamlessly pass through them like air. |
+| Auto Attack | 25 | Auto-dig toggle — queen passively digs wherever she's facing. |
+| Auto-Pilot | 20 | Auto-move toggle — queen automatically moves forward. Combined with Auto Attack = idle drill. |
+| Giant Queen | 25 | Queen becomes 5x bigger. Digs proportionally bigger. Visual power flex. |
+| Void Storage | 20 | Queen's food instantly stored on pickup, no carrying. No more hauling for the player. |
 
-**TRANSPORT**
+**COSMETIC** (6 tiles)
 
-| Unlock | Effect |
-|--------|--------|
-| Global Conveyor | Auto-generated optimal transport route through your entire tunnel network. Food dropped anywhere on the highway gets swept home. Updates as colony grows. |
-
-**ECONOMY**
-
-| Unlock | Effect |
-|--------|--------|
-| Midas Touch | Food the queen walks over doubles in value. |
-
-**COSMETIC / FUN**
-
-| Unlock | Effect |
-|--------|--------|
-| Big Head Mode | All ants have comically oversized heads. |
-| Big Ant Mode | All ants grow ~1.5x larger. Combine with Big Head Mode for maximum absurdity. |
-| Rainbow Trail | Queen leaves a rainbow trail as she moves. |
-| Fire Trail | Queen leaves a fire trail as she moves. |
-| Boogie Bomb | Toggle that makes all ants stop and dance, then resume work. Toggle on/off at will — not timed. YOU pressed the button on purpose, so it's fun, not frustrating. |
-| Additional hats | Extra hats purchasable with rainbow food. |
+| Unlock | Cost | Effect |
+|--------|------|--------|
+| Big Head | 10 | All ants have comically oversized heads. |
+| Big Ant | 10 | All ants grow ~2x larger. Combine with Big Head for maximum absurdity. |
+| Rainbow Trail | 15 | Queen leaves a rainbow trail as she moves. **Mutually exclusive with Fire Trail — pick one.** |
+| Fire Trail | 15 | Queen leaves a fire trail as she moves. **Mutually exclusive with Rainbow Trail — pick one.** |
+| Boogie Bomb | 10 | Toggle button — all ants stop and dance when active, resume work when toggled off. On/off at will, not timed. |
+| Ant Colors | 10 | Unlock ant color customization palette. Rainbow food cosmetic unlock. |
 
 ### Build Combinations Summary
 
@@ -867,7 +865,7 @@ This is the idle game heart. The player goes from doing everything manually to b
 
 ### Stage 4: Transport Tier 1 (1-2 hours)
 - Place transport infrastructure in your main tunnels (free after unlock)
-- Elevator / Minecart / Platform / Zip Line (pick 1 of 4) automatically ferry food
+- Lift / Minecart / Platform / Zip Line (pick 1 of 4) automatically ferry food
 - Workers dump food at loading stations instead of walking all the way back
 - **VISUAL PAYOFF** — watching little trains zip through your tunnels
 
@@ -897,20 +895,29 @@ This is the idle game heart. The player goes from doing everything manually to b
 
 ## Named Ants System
 
-### Manual Naming (Free from Start)
-- **No upgrade needed.** The moment you hatch your first ant, you can name it.
-- Click on any ant → rename dialog → type a name → save
+### Customize Screen (Click Any Ant)
+- **No upgrade needed.** The moment you hatch your first ant, you can customize it.
+- **Single left-click on any ant** opens the Customize screen.
+- Same screen for workers and queen, with one difference (see below).
+
+**Customize screen layout (top to bottom):**
+1. **Banner:** "CUSTOMIZE"
+2. **Name input:** LineEdit with rainbow-cycling "GREG" placeholder. Type a name or clear to remove. Greg is canonically the first named ant. Always.
+3. **Ant preview:** Dark inset panel showing the ant being customized (3 ovals + legs + antennae). Queen version shows 1.3x scale with gold crown.
+4. **"ANT COLOR" label + color palette:** 3×8 grid of colored swatches (pastels, mediums, darks). Clicking a swatch recolors the ant preview in real-time. **LOCKED by default** — requires the endgame Rainbow Food "Ant Customization" upgrade to unlock. Rainbow Greg is the endgame dream.
+5. **"GIVE HAT?" button (worker ants only):** Gives the queen's currently equipped hat to this ant. Replaces the old double-click interaction.
+6. **"HAT COLLECTION" grid (queen only):** 5-column grid of collected hats, styled like the color palette but with hat-themed colors. Click to equip. Only visible when customizing the queen.
+7. **SAVE / CANCEL buttons**
+
 - Remove a name by clearing the text field and saving (blank = no name)
 - Name as many ants as you want. Remove names whenever you want.
 - Named ants get a **subtle glow** + name tag above their head
-- **Can give a named ant your hat** (double-click → "Give this ant your hat?" yes/no)
 - Named ants wearing hats have the hat visually on their head
 - **No stat buffs.** Pure attachment and cosmetics.
-- Greg is canonically the first named ant. Always.
 
-### Future: Ant Color Customization (Endgame)
-- Unlock ability to change an individual ant's color
-- Rainbow Greg is the endgame dream
+**Test UI reference:** `scenes/prototypes/ant_colony/ui/ant_naming/ant_naming_test.tscn` has toggle buttons showing all screen states:
+- **QUEEN / WORKER toggle** — switches between worker view (color palette + GIVE HAT?) and queen view (color palette + hat collection grid)
+- **UNLOCK / LOCK toggle** — switches between locked palette (grayed-out swatches + "LOCKED" label) and unlocked palette (interactive swatches)
 
 ### Achievement Ants (Special Reward Units)
 Achievements unlock **unique special ants** that spawn into your colony. These are BONUS ants (don't replace existing ones). Each has a pre-set name and unique visual.
@@ -943,11 +950,11 @@ These are one-time rewards. Can't be repeated. Each achievement ant is unique. T
 - Unlocked hats go into a **hat collection** on the cosmetics page
 
 ### Equipping
-- Queen ant can wear one hat at a time
+- Queen ant can wear one hat at a time (select from HAT COLLECTION grid in queen's Customize screen)
 - Hat appears on the ant's head, visible at close zoom
-- **Can give your hat to a named ant** (they wear it instead)
+- **Can give your hat to a named ant** via the "GIVE HAT?" button in that ant's Customize screen
 - Purely cosmetic — no stat effects
-- Hat menu accessible from pause/upgrade screen
+- Hat management lives in the Customize screen (click any ant or the queen)
 
 ### Example Hats
 | Hat | How to Find | Visual |
@@ -996,9 +1003,10 @@ Each time you found a new colony, you start with +1 basic worker ant (unassigned
 **How it works:**
 1. Start a new colony → bonus workers appear as basic gatherers in the starting chamber
 2. They pick up exposed food (basic gatherer behavior) immediately
-3. When you unlock workers (Unlock Workers upgrade), a **slider UI** appears: "Assign your unassigned workers"
-4. Drag the slider to split them between Miners and Haulers → confirm → they activate
-5. Assignment is permanent (same rule as all worker commitment)
+3. When you unlock workers (Unlock Workers upgrade), the **ALLOCATE overlay** appears once — centered modal on top of the Evolve screen
+4. Slider max = number of unassigned workers (e.g. Colony 3 = 2 bonus workers, slider range 0-2). Slider splits between Miners and Haulers. Labels update live as you drag.
+5. Press **OK** to confirm — no cancel, assignment is permanent (same rule as all worker commitment). Overlay appears only once per run, at the moment the upgrade is purchased.
+6. If the player has 0 unassigned workers (Colony 1), the overlay does not appear at all
 
 **Why starting workers:**
 - Thematic — it's an ant game, the reward is more ants
@@ -1009,11 +1017,9 @@ Each time you found a new colony, you start with +1 basic worker ant (unassigned
 **Balance safeguard:** Worker-count upgrades only compete with OTHER worker-count upgrades in Build Choice nodes, and are placed late in the tree. By the time you reach them, the starting worker bonus is a drop in the bucket.
 
 ### Cosmetic Prestige Rewards
-- **Colony Themes:** Background replacements (black void → space, crystal cavern, underwater, ice, lava)
 - **Ant Themes:** Visual skins on all ants (golden ants, ghost ants, robot ants, leaf-cutter style)
 - **Build Completion Achievements:** "Complete the game as a pure-miner build" → unlocks unique cosmetic
 - All cosmetics carry across colonies (permanent collection)
-- Mix and match: colony theme + ant theme, both per-colony choice
 
 ### What Does NOT Carry Over
 - No upgrade progress (except dig power scaling — see below)
@@ -1049,7 +1055,7 @@ Decisions made during brainstorming, preserved for reference:
 | Dig has cooldown (not click speed) | Prevents auto-clicker cheese. Upgrades reduce cooldown. |
 | Distance gradient, not hard layers | Smooth color/difficulty transitions. No shape problem (circles vs rectangles). Milestone discoveries at certain distances. |
 | Rainbow food = separate currency | Not "better food." Own upgrade tab. Endgame only. |
-| Naming ants is free from start | No upgrade gate on naming. Cosmetic, costs nothing, who wouldn't name their first ant? |
+| Naming ants is free from start | No upgrade gate on naming/customization. Click any ant → Customize screen. Color palette locked behind rainbow food upgrade. |
 | Foreman/Hive Mind CUT | Redundant with speed + AI upgrades. Speed makes them faster. Manager makes them smarter. Don't need "buff aura" middlemen. |
 | Miner stacking cap (5 per block) | Visual/balance solution. Multiple miners on same dirt = faster but capped. Excess miners target next block. |
 | Worker march formation | Same-direction ants = single file. Opposite direction = pass through each other. Adorable and functional. |
@@ -1072,7 +1078,7 @@ Decisions made during brainstorming, preserved for reference:
 | ~~Endgame = infinite scaling on 3 bottlenecks~~ | ~~SUPERSEDED~~ — Only dig power scaling persists between colonies now. Transport Speed ∞ and Worker Efficiency ∞ were CUT. See "Transport Speed ∞ CUT" and "Worker Efficiency ∞ CUT" decisions. |
 | Unassigned workers can be assigned | Workers hatched before caste unlock are basic gatherers. When castes unlock, slider UI lets you assign them to Miner or Hauler. Still permanent once assigned. |
 | Build completion achievements | Achievements tied to completing the game with specific builds. Encourages trying all combinations. Each achievement unlocks a cosmetic reward. |
-| Colony themes = background OR ant skins | Two cosmetic layers: background themes (replace black void) and ant themes (visual skins on all ants). Unlocked via achievements, mix and match per colony. |
+| Ant skins = cosmetic prestige | Ant themes (visual skins on all ants). Unlocked via achievements, per colony. |
 | Camera: free pan + zoom | Player can freely zoom in/out and pan across discovered areas. Not locked to queen. See your full colony from above. |
 | No worker cap | No hard limit on worker count. Performance is the natural cap. Add a limit later if performance demands it. |
 | No tutorial | Controls should be self-explanatory. No guided tutorial, no popup tips. Learn by doing. |
@@ -1082,7 +1088,7 @@ Decisions made during brainstorming, preserved for reference:
 | Time Warp CUT | Just balance better. If the game needs a speed toggle, the pacing is wrong. |
 | ~~Pick 1 of 2 (not 2 of 3)~~ | ~~SUPERSEDED~~ — Fork sizes now vary by context. See "Fork sizes vary" decision below. |
 | Build forks within same category | Each fork compares apples to apples (e.g., two mining approaches, not one mining + one transport). Prevents "obvious best" cross-category combos, makes balancing easier. |
-| Three panels: Player Ant, Colony, Logistics | Three panels side by side on one page. NOT tabs. No tier locking — can skip rows and save up. Nothing is a requirement. |
+| Three tabs: Player, Logistics, Colony | Tabbed centered panel. Tab order: Player, Logistics, Colony. No tier locking — can skip rows and save up. Nothing is a requirement. |
 | Miner + Hauler = single unlock | One "Unlock Workers" upgrade opens both roles. Slider UI for existing unassigned workers, then Buy Miner / Buy Hauler buttons. No separate caste unlocks. |
 | Haulers are very slow | Haulers move significantly slower than miners, especially when loaded (~50% speed when carrying). Creates a real miner/hauler ratio decision and makes transport upgrades feel like massive relief. |
 | Manager AI CUT | Redundant. Full automation is achieved through transport infrastructure, not an AI toggle. |
@@ -1091,7 +1097,7 @@ Decisions made during brainstorming, preserved for reference:
 | Bite Size Toggle = baked in | Not an upgrade. Automatic like Stardew Valley watering can — hold longer for bigger bite. Unlocked sizes available as soon as Wide Bite upgrades allow them. |
 | Queen naming = baked in | Always available from start, not an upgrade. Player should be able to name their queen immediately. |
 | Dirt Customization added | Essentials upgrade that changes the look of ALL dirt, overriding distance-based gradients. Cosmetic personalization. |
-| Food has light physics | Food falls to nearest floor when supporting dirt is destroyed (explosion, Mega Bite). No floating food in mid-air. |
+| Food has light physics | Food falls to nearest floor when supporting dirt is destroyed (explosion dig method). No floating food in mid-air. |
 | Infinite scalers persist between runs | ~~The 3 infinite scalers~~ → Only dig power scaling persists between runs now. Transport Speed ∞ and Worker Efficiency ∞ CUT. Must re-grind 1-50 each colony, then saved tiers 51+ activate. |
 | Dig methods replace basic bite | 4 dig methods (Gun, Laser, Butt Acid, Explosion) replace the old bite animation. Pick 1 of 4. Biggest build-defining choice for the queen. |
 | Miners get own dig method | Miners pick their own dig method independently of the queen. "Laser queen with gun miners" is a valid build. More diversity for the automation side. |
@@ -1099,7 +1105,7 @@ Decisions made during brainstorming, preserved for reference:
 | 0/10 tiers | All standard upgrades have 10 purchases. 0/10 = start at 0, buy 10. Each gives the same increment. |
 | 0/50 tiers for dig strength | Dig strength (player + miner) has 50 tiers in regular tree. Extended progression. Cross-colony persistence at tier 50+. |
 | Zip Lines added | 4th Transport Tier 1 option: diagonal, fast going down, slow going up. Fills the diagonal movement gap. |
-| Transport Tier 1: pick 1 of 4 | Elevator/Minecart/Platform/Zip Line. Pick 1 creates real sacrifice — no combo covers all directions. |
+| Transport Tier 1: pick 1 of 4 | Lift/Minecart/Platform/Zip Line. Pick 1 creates real sacrifice — no combo covers all directions. |
 | Conveyor belts on walls | Conveyors work on ANY solid surface (floor, wall, ceiling), not just flat ground. Makes conveyor vs tramway a genuine choice. |
 | Cargo Drones CUT | "How many?" problem — either too few (useless) or too many (OP). No clean balanced number. |
 | Train Upgrade CUT | Same concept as minecart, no distinct identity. |
@@ -1118,7 +1124,7 @@ Decisions made during brainstorming, preserved for reference:
 | Auto-buy system | Auto Worker (auto-hires) + Auto Evolve (auto-buys when food > threshold). Standard idle game convenience in mid-game. |
 | Noita-style pixel terrain | Granular pixel-based dirt, not chunky tiles. Individual dirt pixels destructible. NOT full Noita physics. Needs research — possible hybrid approach (pixel visuals, tile-based logic). |
 | Hats spawn randomly in new layers | Not pre-placed at milestones. Random chance per new layer, max 1 per layer, queen must collect personally. |
-| Cosmetics separate page | Dirt/background customization + ant customization (apply-all or individual). Dedicated cosmetics page, not mixed with skill tree. |
+| Cosmetics separate page | Dirt customization + ant customization (apply-all or individual). Dedicated cosmetics page, not mixed with skill tree. |
 | Big Head Mode | All ants get comically large heads. Rainbow food cosmetic unlock. |
 | Boogie Bomb | Button that makes all ants dance on command. Visual only, doesn't interrupt work. |
 | Hive Mind AI: closest task | If Hive Mind unlocked, ants do whatever's closest — nearest food = haul, nearest dirt near food = mine. Natural self-balancing. |
@@ -1157,18 +1163,18 @@ Decisions made during brainstorming, preserved for reference:
 | Explosion: Range + Radius both = size | For Explosion only, Range and Radius both increase blast size. Picking both = massive explosion, sacrifices Speed. Explosion is the "go big" method. Meaningful choice: all-in on size vs balanced with speed. |
 | Dig method toggle | Basic bite always available alongside chosen dig method. Explosion doesn't lock you out of precision tunneling. All methods toggleable, not permanent replacements. |
 | Upgrade tree = "Evolve" | The upgrade menu is called "Evolve." Thematic: every upgrade is your colony evolving. |
-| Education Mode (separate game mode) | Main menu option: pure ant farm screensaver. No upgrades, no menus, no scaling difficulty. Starts with 2 workers, auto-spawns ants via hidden formula. Player can dig/zoom/pan but never has to. Replaces the "vanilla 5th option" approach — keeps the Evolve tree clean without boring stat-buff alternatives cluttering it. |
-| Vanilla 5th fork options TABLED | Considered "Primal Jaws/Legs/Colony/Miners" as vanilla 5th options in dig method, transport, traversal, and miner forks. Trade tech for brute strength, ants get bigger. Tabled in favor of Education Mode — separate game mode is cleaner than cluttering the tree. Archived for future reference if needed. |
-| Big Ant Mode (rainbow cosmetic) | All ants grow ~1.5x larger. Combine with Big Head Mode for maximum absurdity. Rainbow food cosmetic unlock. |
+| Vanilla Mode (separate game mode) | Main menu option: pure ant farm screensaver. No upgrades, no menus, no scaling difficulty. Starts with 2 workers, auto-spawns ants via hidden formula. Player can dig/zoom/pan but never has to. Replaces the "vanilla 5th option" approach — keeps the Evolve tree clean without boring stat-buff alternatives cluttering it. |
+| Vanilla 5th fork options TABLED | Considered "Primal Jaws/Legs/Colony/Miners" as vanilla 5th options in dig method, transport, traversal, and miner forks. Trade tech for brute strength, ants get bigger. Tabled in favor of Vanilla Mode — separate game mode is cleaner than cluttering the tree. Archived for future reference if needed. |
+| Big Ant Mode (rainbow cosmetic) | All ants grow ~2x larger. Combine with Big Head Mode for maximum absurdity. Rainbow food cosmetic unlock. |
 | ~~Release Worker = no refund, curve never resets~~ | ~~SUPERSEDED~~ — see "No worker deletion" below. |
 | ~~Release Worker = no refund, counter decrements~~ | ~~SUPERSEDED~~ — see "No worker deletion" below. Even single-punishment (lost food) is exploitable when rich — becomes free ratio respec. Any delete button is gameable. |
 | No worker deletion — engineering solves performance | Workers are permanent. No delete, no release, no refund system. Eliminates all exploitation. Performance handled by auto-hibernate (far workers get simplified AI + skip rendering when FPS dips). Player never manages performance — game handles it. Target: 1000+ ants before hibernate needed. If engineering can't solve it, Phase 1 prototype reveals that immediately. |
 | Performance warning system | FPS < 45 = yellow indicator, FPS < 30 = red warning. Informational only, no hard block. Toggleable off in options menu. Player's colony, player's choice. |
-| Education Mode: auto-spawner formula | `cost_for_ant_N = floor(8 + N * 4)`. Deliberately slow — time to name and appreciate each ant. 5-second minimum gap between spawns. First 6 ants fixed pattern (M,H,M,M,H,M), then ratio AI. |
-| Education Mode: ratio AI | Simple rules: idle_haulers >= 2 → spawn miner. Exposed food >= hauler_count * 3 → spawn hauler. Otherwise maintain 2:1 miner:hauler. Self-correcting, looks smart, actually just 3 checks. |
-| Education Mode: performance soft cap | Auto-spawner monitors FPS. Below threshold → pause spawning. Recovers → resume. Colony finds natural size based on hardware. Colony Size setting in Gameplay tab (Small/Medium/Large/Unlimited). |
-| Education Mode: cosmetics = viewer not unlocker | Can name ants (free), use hats/cosmetics from normal mode. Cannot earn new cosmetics or achievements. Cosmetics are the bridge between modes. |
-| Education Mode: multiple save slots | Same save system as normal mode. Each Education Mode colony is its own save. Start new ones, return to old ones. |
+| Vanilla Mode: auto-spawner formula | `cost_for_ant_N = floor(8 + N * 4)`. Deliberately slow — time to name and appreciate each ant. 5-second minimum gap between spawns. First 6 ants fixed pattern (M,H,M,M,H,M), then ratio AI. |
+| Vanilla Mode: ratio AI | Simple rules: idle_haulers >= 2 → spawn miner. Exposed food >= hauler_count * 3 → spawn hauler. Otherwise maintain 2:1 miner:hauler. Self-correcting, looks smart, actually just 3 checks. |
+| Vanilla Mode: performance soft cap | Auto-spawner monitors FPS. Below threshold → pause spawning. Recovers → resume. Colony finds natural size based on hardware. Colony Size setting in Gameplay tab (Small/Medium/Large/Unlimited). |
+| Vanilla Mode: cosmetics = viewer not unlocker | Can name ants (free), use hats/cosmetics from normal mode. Cannot earn new cosmetics or achievements. Cosmetics are the bridge between modes. |
+| Vanilla Mode: multiple save slots | Same save system as normal mode. Each Vanilla Mode colony is its own save. Start new ones, return to old ones. |
 | 1000 ants = minimum target | If the game can't handle 1000 ants, something is wrong. This is the performance bar for the engine/architecture. Phase 1 prototype must validate this. |
 | Noita reference = visual only | NOT Noita physics (no falling sand, no cellular automata). Just the granular carve aesthetic — organic craters, sharp irregular edges, not blocky tile removal. Noita was a custom engine for pixel physics; we need shaped masks on a tile grid with pixel-visual overlay. |
 | Engine risk strategy | Godot first, with escape hatch. Phase 1 terrain prototype validates feasibility within a week. If it can't hit 60fps with terrain + 1000 ants, options: optimize, reduce granularity, or evaluate Unity/Unreal. |
@@ -1409,7 +1415,7 @@ Building it right from the start, in the correct order of operations.
 - Egg hatching (spend food → choose Miner or Hauler, permanent)
 - Miner AI (dig dirt near food, stacking cap, spread logic, frontier expansion)
 - Hauler AI (pick up exposed food, carry to pile, slow when loaded)
-- Naming system (click ant → rename, free from start)
+- Customize screen (click ant → name, color, hat — free from start)
 - Achievement ant: Greg spawns on first worker hatched
 - Ant marching formation (same direction = single file)
 
@@ -1421,7 +1427,7 @@ Building it right from the start, in the correct order of operations.
 - Ant Move Speed (0/10)
 
 ### Step 10: Transport Tier 1
-- Elevator / Minecart / Platform / Zip Line (pick 1 of 4, free to place)
+- Lift / Minecart / Platform / Zip Line (pick 1 of 4, free to place)
 - Loading stations (workers dump food here)
 - Workers interact with transport
 
@@ -1477,7 +1483,7 @@ Building it right from the start, in the correct order of operations.
 ## Open Questions
 
 1. ~~**Camera**~~ **ANSWERED:** Free pan + zoom across discovered areas. Not locked to queen.
-2. ~~**Worker cap**~~ **ANSWERED:** No hard cap. Target 1000+ ants. No worker deletion — engineering solves performance via auto-hibernate system (far workers get simplified AI + skip rendering when FPS dips). Performance warning system (yellow at FPS<45, red at FPS<30, toggleable in options). Education Mode has performance-regulated auto-spawner + optional colony size slider.
+2. ~~**Worker cap**~~ **ANSWERED:** No hard cap. Target 1000+ ants. No worker deletion — engineering solves performance via auto-hibernate system (far workers get simplified AI + skip rendering when FPS dips). Performance warning system (yellow at FPS<45, red at FPS<30, toggleable in options). Vanilla Mode has performance-regulated auto-spawner + optional colony size slider.
 3. ~~**Tunnel background**~~ **ANSWERED:** Very dark brown `~Color(0.12, 0.08, 0.05)`, NOT pure black.
 4. ~~**Save system**~~ **ANSWERED:** Multiple save slots — each colony is a save slot. Old colonies fully playable.
 5. ~~**Tutorial**~~ **ANSWERED:** No tutorial. Controls should be self-explanatory.

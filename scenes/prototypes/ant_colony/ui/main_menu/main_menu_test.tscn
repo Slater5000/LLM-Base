@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Theme" path="res://scenes/prototypes/ant_colony/ui/shared/ant_colony_theme.tres" id="0_theme"]
 [ext_resource type="Script" path="res://scenes/prototypes/ant_colony/ui/main_menu/main_menu_test.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0043.png" id="3_banner_l"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0044.png" id="4_banner_m"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/kenney/large/tile_0045.png" id="5_banner_r"]
 
 [node name="MainMenuTest" type="Control"]
 layout_mode = 3
@@ -22,20 +25,68 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.12, 0.08, 0.05, 1)
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -150.0
+[node name="BannerLeft" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 241.0
 offset_top = 60.0
-offset_right = 150.0
-offset_bottom = 90.0
+offset_right = 273.0
+offset_bottom = 92.0
+texture = ExtResource("3_banner_l")
+stretch_mode = 4
+
+[node name="BannerRight" type="TextureRect" parent="BannerLeft"]
+layout_mode = 1
+offset_left = 125.44
+offset_top = -0.07
+offset_right = 157.44
+offset_bottom = 31.93
+texture = ExtResource("5_banner_r")
+stretch_mode = 4
+
+[node name="BannerMid3" type="TextureRect" parent="BannerLeft"]
+layout_mode = 1
+offset_left = 94.3
+offset_top = -1.0
+offset_right = 190.3
+offset_bottom = 31.0
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid2" type="TextureRect" parent="BannerLeft"]
+layout_mode = 1
+offset_left = 62.22
+offset_top = -1.3
+offset_right = 158.22
+offset_bottom = 30.7
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerMid" type="TextureRect" parent="BannerLeft"]
+layout_mode = 1
+offset_left = 30.85
+offset_top = -1.15
+offset_right = 126.85
+offset_bottom = 30.85
+texture = ExtResource("4_banner_m")
+stretch_mode = 4
+
+[node name="BannerTitle" type="Label" parent="BannerLeft/BannerMid"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -30.672
+offset_top = 3.363
+offset_right = 33.328
+offset_bottom = 3.363
 grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
 text = "ANT COLONY"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+vertical_alignment = 1
 
 [node name="ButtonContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -53,19 +104,19 @@ theme_override_constants/separation = 12
 layout_mode = 2
 custom_minimum_size = Vector2(160, 32)
 theme_override_font_sizes/font_size = 16
-text = "Start Game"
+text = "START GAME"
 
 [node name="Options" type="Button" parent="ButtonContainer"]
 layout_mode = 2
 custom_minimum_size = Vector2(160, 32)
 theme_override_font_sizes/font_size = 16
-text = "Options"
+text = "OPTIONS"
 
 [node name="Quit" type="Button" parent="ButtonContainer"]
 layout_mode = 2
 custom_minimum_size = Vector2(160, 32)
 theme_override_font_sizes/font_size = 16
-text = "Quit"
+text = "QUIT"
 
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 1
@@ -78,10 +129,10 @@ offset_left = -100.0
 offset_top = -20.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "v0.1.0"
+text = "V0.1.0"
 horizontal_alignment = 2
-theme_override_font_sizes/font_size = 6
-theme_override_colors/font_color = Color(0.6, 0.55, 0.45, 0.6)
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.76, 0.6, 0.42, 1)
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1
