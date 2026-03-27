@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://creature_gen_test"]
+
+[ext_resource type="Script" path="res://scenes/prototypes/creature_gen/creature_drawer.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/prototypes/creature_gen/creature_gen_ui.gd" id="2"]
+
+[node name="CreatureGenTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(480, 320)
+zoom = Vector2(3, 3)
+
+[node name="CreatureDrawer" type="Node2D" parent="."]
+position = Vector2(480, 320)
+script = ExtResource("1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="VBoxContainer" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 200.0
+
+[node name="Title" type="Label" parent="UI/Controls"]
+text = "Creature Generator"
+
+[node name="GenerateBtn" type="Button" parent="UI/Controls"]
+text = "Generate New (Space)"
+script = ExtResource("2")
+
+[node name="SizeLabel" type="Label" parent="UI/Controls"]
+text = "Size: 32x32 (Medium)"
+
+[node name="InfoLabel" type="Label" parent="UI/Controls"]
+text = ""
+
+[node name="BG" type="ColorRect" parent="."]
+z_index = -10
+offset_left = -1000.0
+offset_top = -1000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+color = Color(0.08, 0.08, 0.1, 1)

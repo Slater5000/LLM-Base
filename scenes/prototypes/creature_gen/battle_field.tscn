@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/prototypes/creature_gen/battle_field.gd" id="1"]
+
+[node name="BattleField" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+zoom = Vector2(1, 1)
+
+[node name="Field" type="Node2D" parent="."]
+script = ExtResource("1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 13
+text = "CREATURE EVOLUTION BATTLE — Space to regenerate"
