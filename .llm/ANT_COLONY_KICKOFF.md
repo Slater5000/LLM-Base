@@ -1,23 +1,24 @@
-# Ant Colony -- New Repo Kickoff Guide
+# Ant Colony -- Kickoff Guide (v2)
 
-> **Purpose:** Everything a new Claude Code session needs to start building the
-> Ant Colony game in a fresh Godot 4.6 project. Copy the "First Message" into
-> the new window to begin.
+> **Purpose:** Everything a new Claude Code session needs to continue building the
+> Ant Colony game. The project already exists with terrain working. Copy the
+> "First Message" into the new window to begin.
 
 ---
 
 ## First Message (copy this into the new Claude Code window)
 
 ```
-I'm starting a new Godot 4.6 game -- an idle mining ant colony game. There's a
-reference project on this machine with all the design work already done.
+I'm continuing work on an idle mining ant colony game in Godot 4.6. The project
+already has terrain generation, camera, and chunk management working.
 
+THIS PROJECT: C:\Projects\Firstpass\Ant_Farm
 REFERENCE PROJECT: c:\Projects\Firstpass\LLM-Base
 
-Before doing ANYTHING else, read ALL of these docs from that project cover to
-cover. They are large -- read in chunks if needed but read EVERY line:
+Before doing ANYTHING else, read ALL of these docs from the reference project
+cover to cover. They are large -- read in chunks if needed but read EVERY line:
 
-1. KICKOFF (read this first, tells you the build strategy):
+1. KICKOFF (read this first -- has lessons learned + build strategy):
    c:\Projects\Firstpass\LLM-Base\.llm\ANT_COLONY_KICKOFF.md
 
 2. DESIGN DOC (the bible -- 1588 lines, read ALL of it):
@@ -32,21 +33,24 @@ cover. They are large -- read in chunks if needed but read EVERY line:
    c:\Projects\Firstpass\LLM-Base\.llm\PRINCIPLES.md
    c:\Projects\Firstpass\LLM-Base\.llm\GDSCRIPT_LESSONS.md
 
-Read EVERYTHING before writing any code. I want you to fully understand the
-game, the UI, the architecture, and the build plan before we start.
+Then read ALL existing code in this project:
+   C:\Projects\Firstpass\Ant_Farm\ant-farm\main.gd
+   C:\Projects\Firstpass\Ant_Farm\ant-farm\main.tscn
+   C:\Projects\Firstpass\Ant_Farm\ant-farm\project.godot
+   C:\Projects\Firstpass\Ant_Farm\ant-farm\systems\terrain\*.gd
+   C:\Projects\Firstpass\Ant_Farm\ant-farm\systems\camera\game_camera.gd
 
-ASSETS TO COPY into this project first:
-  - assets/sprites/ui/kenney/       (entire folder -- Kenney Brown Fantasy UI tiles)
-  - assets/fonts/BoldPixels.ttf     (pixel font)
-  - assets/fonts/default_theme.tres (project-wide default theme)
+Read EVERYTHING before writing any code. Understand the game, the existing code,
+the architecture, and the build plan. The terrain system already works at 60 FPS
+with 96 chunks -- build on it, don't rewrite it.
 
-BUILD STRATEGY: Vanilla Mode first. After proving terrain works (Phase 1),
-build the complete ant farm screensaver (Phase 2) before any Normal Mode
-systems. This stress-tests the hardest tech (1000 ants + pathfinding + terrain)
-before layering on upgrades, menus, and progression.
+CRITICAL RENDERER INFO: This project MUST use Forward Plus + D3D12.
+GL Compatibility and Vulkan both cap at 40 FPS on this machine due to an NVIDIA
+driver issue. Do NOT change the renderer. See the kickoff doc's "Lessons Learned"
+section for full details.
 
-Read the design doc's Build Order Steps 1-5, Vanilla Mode section (lines 48-101),
-and Technical Research sections before writing any code.
+BUILD STRATEGY: Vanilla Mode first. Terrain works (Phase 1 Step 1 done).
+Continue with Phase 1 Steps 2-5 (player ant, digging, food, deposit).
 
 DO NOT build menus yet -- they're prototyped in the reference project. We'll
 port them when gameplay needs them.
@@ -61,13 +65,109 @@ colony from nothing to thousands of autonomous workers with transport networks.
 
 ---
 
+## Lessons Learned (CRITICAL -- read before coding)
+
+### Renderer: Forward Plus + D3D12 ONLY
+
+Tested all renderer/driver combinations on this machine (NVIDIA GPU, Windows):
+
+| Renderer | Driver | FPS | Status |
+|----------|--------|-----|--------|
+| GL Compatibility | OpenGL (default) | **40** | BROKEN -- hard cap from driver |
+| Forward Plus | Vulkan | **40** | BROKEN -- same issue |
+| **Forward Plus** | **D3D12** | **60** | WORKING -- use this |
+
+The 60 FPS cap is Windows DWM compositor (normal for windowed apps). 60 is the
+target. DO NOT try to "fix" it -- other renderers break to 40.
+
+**project.godot must have:**
+```
+config/features=PackedStringArray("4.6", "Forward Plus")
+
+[rendering]
+rendering_device/driver.windows="d3d12"
+```
+
+### Terrain Rendering Performance
+
+The current terrain renderer uses fill_rect per tile (4096 calls per 512x512
+chunk) which is good. However, these operations can be further optimized:
+
+**Current bottlenecks in chunk generation:**
+1. `EraPalette.get_dirt_color()` -- per-tile noise sample + sqrt (distance) +
+   linear search through 10 eras + color lerp + boundary blend. That's a LOT
+   of math for each of 4096 tiles.
+2. `_render_chamber_glow()` -- per-PIXEL get_pixel/set_pixel from GDScript.
+   Each call crosses the GDScript→C++ boundary. Very slow.
+3. `_render_food()` -- same per-pixel issue for food glow rings.
+
+**Optimization opportunities (apply when needed):**
+- Pre-compute one era color per chunk center (all tiles same color). The user
+  said "dirt can be less visually detailed." Each chunk is only 512px -- one
+  color per chunk looks fine at gameplay zoom levels.
+- Replace chamber glow per-pixel blending with tile-level fill_rect
+  (pre-compute blended color, fill whole 8x8 tile block).
+- Replace food circles with tile-level fill_rect (color the food tile orange).
+- Skip noise sampling entirely for dirt -- just use era distance color.
+- If sub-tile visual detail is desired later, use a shader instead of GDScript
+  pixel loops.
+
+### Window Settings
+
+The project currently has exclusive fullscreen + borderless set. For development,
+you may want windowed mode instead:
+```
+window/size/mode=0          # 0=windowed, 4=exclusive fullscreen
+window/size/borderless=false
+```
+
+---
+
+## What Already Exists (Phase 1, Step 1 — DONE)
+
+The Godot project at `ant-farm/` has a working terrain prototype:
+
+| File | What | Lines |
+|------|------|-------|
+| `main.gd` + `main.tscn` | Scene root, FPS counter, camera + chunk manager setup | ~30 |
+| `systems/terrain/terrain_constants.gd` | All terrain constants (tile size 8px, chunk 64 tiles) | ~44 |
+| `systems/terrain/terrain_noise.gd` | 3 FastNoiseLite instances (dirt, rock, food) | ~43 |
+| `systems/terrain/chunk_data.gd` | Pure data: tile grid (PackedByteArray) + food positions | ~43 |
+| `systems/terrain/chunk_manager.gd` | Lifecycle: load/unload/position chunks per camera | ~104 |
+| `systems/terrain/chunk_renderer.gd` | Image→ImageTexture rendering per chunk | ~158 |
+| `systems/terrain/era_palette.gd` | 10 geological eras, distance-based color gradient | ~101 |
+| `systems/terrain/geological_era.gd` | Data class for one era (start/end distance, colors) | ~40 |
+| `systems/terrain/rock_placer.gd` | Noise-based indestructible rock blobs | ~46 |
+| `systems/terrain/food_placer.gd` | Food singles, clusters, veins | ~130 |
+| `systems/terrain/starting_chamber.gd` | Half-circle chamber at origin, initial food | ~127 |
+| `systems/camera/game_camera.gd` | Free camera: WASD pan, scroll zoom, edge scroll | ~65 |
+
+**What works:**
+- Procedural terrain with 10 geological eras (color changes with distance)
+- Rock formations that increase in density further out
+- Food clusters, veins, and scattered singles
+- Starting chamber carved at origin with initial food pile
+- Chamber glow effect
+- Free camera with smooth zoom and WASD pan
+- Chunk loading/unloading based on camera position (96 chunks at 60 FPS)
+- FPS counter overlay
+
+**What's next (Phase 1, Steps 2-5):**
+- Player ant (queen) with movement and gravity
+- Digging system (mouse-aim, hold-to-dig, pixel debris)
+- Food pickup and carry
+- Food pile deposit in starting chamber
+
+---
+
 ## Pre-Settled Architecture Decisions
 
-These are DECIDED. Do not re-debate in the new session.
+These are DECIDED. Do not re-debate.
 
 | Decision | Answer |
 |----------|--------|
 | Engine | Godot 4.6 |
+| **Renderer** | **Forward Plus + D3D12 (NOT GL Compatibility, NOT Vulkan)** |
 | Viewport | 640x360 pixel art, canvas_items stretch |
 | Terrain approach | Pixel-visual + tile logic hybrid (NOT full Noita pixel physics) |
 | Pathfinding | Flow fields per chunk, NOT individual A* per ant |
@@ -80,7 +180,7 @@ These are DECIDED. Do not re-debate in the new session.
 | Transport cost | Free to place once upgrade is unlocked |
 | Upgrade menu name | "Evolve" |
 | Evolve layout | 3 tabs: PLAYER, LOGISTICS, COLONY |
-| No tier locking | Can buy any upgrade in any order (no "unlock tier N first") |
+| No tier locking | Can buy any upgrade in any order |
 | Fork permanence | Per colony, can never switch after choosing |
 | No offline progress | Game only runs when open |
 | No enemies/combat | Pure mining/idle |
@@ -108,13 +208,7 @@ destructible terrain, you find out in Phase 2, not Phase 8.
 
 Prove the core tech works. If this fails, nothing else matters.
 
-**Step 1: Terrain + Camera**
-- Chunk-based destructible 2D terrain (pixel-visual + tile-logic hybrid)
-- Procedural noise generation with food clusters embedded in dirt
-- Distance-based color gradient (10 geological eras: warm > earthy > crystal > cosmic)
-- Free camera pan + zoom (not locked to queen)
-- Chunk load/unload + save/load to disk
-- 640x360 viewport
+**Step 1: Terrain + Camera** — DONE (already in the project)
 
 **Step 2: Player Ant + Movement**
 - Queen ant: 3 ovals (abdomen + thorax + head) + 6 line legs + 2 antennae
@@ -168,7 +262,7 @@ ants dig tunnels. This is the performance stress test.
 
 **2c: Naming + Pheromone Trails**
 - Click any ant to name it (Vanilla Mode's main interaction)
-- Pheromone Highways: visible trails that glow on well-traveled routes (cosmetic only, no speed boost)
+- Pheromone Highways: visible trails that glow on well-traveled routes (cosmetic only)
 - Achievement ant: "Greg" spawns as first worker
 
 **2d: Performance Milestone**
@@ -176,69 +270,24 @@ ants dig tunnels. This is the performance stress test.
 - Auto-hibernate: far-away ants get simplified AI + skip rendering
 - This is the make-or-break moment. If it works, proceed. If not, optimize here.
 
-### What Phase 2 Delivers
-A complete, playable Vanilla Mode. The ant farm screensaver works. You can:
-- Watch ants dig and haul autonomously
-- Optionally dig yourself (basic bite, place dirt)
-- Name ants, watch pheromone trails form
-- Colony grows itself via auto-spawner
-- Performance proven at scale
-
 ---
 
-### Phase 3: Normal Mode Foundation (Steps 6-7)
+### Phases 3-8 (Normal Mode -- layer on Vanilla engine)
 
-Now layer Normal Mode on top of the proven Vanilla engine.
+Same as before. See design doc for full details.
 
-- Dirt difficulty scaling (harder with distance -- Vanilla has none)
-- Visible food counter (HUD -- port from reference project)
-- Evolve menu (port from reference project)
-- Auto Mining upgrade (first unlock)
-- Dig Strength (0/50 scaling), Food Magnet, Carry Cap, Player Speed
-- Dig Range / Speed / Radius fork (pick 2 of 3)
-- Place Dirt as an upgrade (already works in engine from Vanilla)
-
-### Phase 4: Dig Methods + Worker Upgrades (Steps 7-9)
-- Gun / Laser / Butt Acid / Explosion fork (pick 1 of 4)
-- Manual worker hatching (spend food, choose miner or hauler -- permanent)
-- Customize screen (port from reference project -- name, color, hat)
-- Worker Overlay / Allocate (port from reference project)
-- Miner Strength (0/50), Range/Speed/Radius fork, Dig Method fork
-- Ant Haul Capacity (0/10), Ant Move Speed (0/10)
-
-### Phase 5: Transport (Steps 10-11)
-- Build menu (port from reference project)
-- Lift / Minecart / Platform / Zip Line fork (pick 1 of 4)
-- Aerial Tramway / Conveyor Belt fork (pick 1 of 2)
-- Loading stations, worker interaction with transport
-
-### Phase 6: Traversal + Automation (Steps 12-14)
-- Mega Speed / Grapple / Jetpack / Jump+Dash fork (pick 1 of 4)
-- Auto Worker, Architect Ant, Auto Evolve (mid-game automation trio)
-- Ant Cannon / Food Singularity / Relay Chains fork (pick 1 of 3)
-- Auto Conveyor
-
-### Phase 7: Endgame (Steps 15-17)
-- Teleporters / Pneumatic Tubes fork (pick 1 of 2)
-- Hats (spawn in terrain, queen collects)
-- Achievement ants + discovery notifications
-- Over the Rainbow gate + rainbow food (16000+ distance)
-- Rainbow menu (port from reference project)
-- Power fantasy unlocks + cosmetics
-
-### Phase 8: Polish + Full Menu Flow (Step 18)
-- Settings menu (port from reference project)
-- Pause menu (port from reference project)
-- Main Menu + Mode Select (port from reference project)
-- Sound design, particles, performance pass
-- Full save system (one active colony per mode, legacy colonies)
+- **Phase 3:** Normal Mode foundation (dirt scaling, HUD, Evolve menu, first upgrades)
+- **Phase 4:** Dig methods + worker upgrades (Gun/Laser/Acid/Explosion fork)
+- **Phase 5:** Transport (Lift/Minecart/Platform/ZipLine fork)
+- **Phase 6:** Traversal + automation (MegaSpeed/Grapple/Jetpack fork)
+- **Phase 7:** Endgame (teleporters, hats, rainbow food, Over the Rainbow gate)
+- **Phase 8:** Polish + full menu flow (settings, pause, main menu, sound, save)
 
 ---
 
 ## When To Port Each Menu
 
-Port menus from the reference project when gameplay needs them. Each menu's
-complete source code is in the reference project and documented in the UI Reference.
+Port menus from the reference project when gameplay needs them.
 
 | Menu | Port At | Why |
 |------|---------|-----|
@@ -253,37 +302,31 @@ complete source code is in the reference project and documented in the UI Refere
 | Main Menu | Phase 8 | Final menu flow |
 | Mode Select | Phase 8 | Save slot management |
 
-**Note:** Vanilla Mode (Phase 2) needs NO ported menus. Ant naming in Vanilla is a
-simple click-to-name popup, not the full Customize screen.
+**Note:** Vanilla Mode (Phase 2) needs NO ported menus.
 
 ---
 
-## Technical Research Areas (Read Before Coding)
+## Technical Research Areas
 
-The design doc's "Technical Research Needed" section (lines 1524-1588) covers 9 areas.
-
-**Critical for Phase 1 (terrain):**
-1. **Noita-Style Pixel Terrain (CRITICAL)** -- Pixel visuals + tile logic hybrid.
-   Image/ImageTexture manipulation per chunk, or shader-based terrain.
-2. **Procedural Terrain Generation** -- Noise for dirt, food cluster placement.
-4. **Chunk System + LOD** -- Multi-resolution for zoom levels, chunk load/unload.
-5. **Food Physics** -- Lightweight "food falls to nearest floor" on dig.
+**Critical for remaining Phase 1 (player + digging):**
+- Player physics: gravity, wall climbing, WASD movement on 2D terrain
+- Dig mask shapes: circle, hold-to-grow, pixel debris particles
+- Food "pop out" animation when dirt is removed
 
 **Critical for Phase 2 (Vanilla Mode / ant farm):**
-3. **Ant Pathfinding at Scale** -- Flow fields per chunk, staggered updates.
-   This is THE performance bottleneck. Must work before Normal Mode begins.
-9. **Performance Optimization** -- 500+ ants + terrain + food physics at 60fps.
-   Staggered AI, off-screen simulation, auto-hibernate, spatial hashing.
-
-Research areas 6-8 (transport, economy math, auto-buy) become relevant in later phases.
+- **Ant Pathfinding at Scale** -- Flow fields per chunk, staggered updates.
+  This is THE performance bottleneck.
+- **Performance Optimization** -- 500+ ants + terrain at 60fps.
+  Staggered AI, off-screen simulation, auto-hibernate, spatial hashing.
 
 ---
 
 ## Reference File Quick Map
 
-All paths relative to `c:\Projects\Firstpass\LLM-Base\`:
+All reference files live in the **reference project** at `c:\Projects\Firstpass\LLM-Base\`.
+The **game project** is at `C:\Projects\Firstpass\Ant_Farm\ant-farm\`.
 
-| File | What | Lines |
+| File (in reference project) | What | Lines |
 |------|------|-------|
 | `.llm/ANT_COLONY_DESIGN.md` | Complete game design bible | 1588 |
 | `.llm/ANT_COLONY_UI_REFERENCE.md` | UI menu specs + patterns | ~540 |
@@ -293,16 +336,19 @@ All paths relative to `c:\Projects\Firstpass\LLM-Base\`:
 | `.llm/PRINCIPLES.md` | Development guidelines | -- |
 | `.llm/GDSCRIPT_LESSONS.md` | GDScript gotchas | -- |
 | `scenes/prototypes/ant_colony/ui/` | 11 menu prototypes (24 files) | -- |
-| `scenes/prototypes/ant_colony/ui/shared/` | UI constants + theme | -- |
-| `assets/sprites/ui/kenney/` | Kenney UI tile pack (brown fantasy) | -- |
-| `assets/fonts/BoldPixels.ttf` | Pixel font | -- |
+
+**Asset sources (on desktop):**
+
+| Source | What |
+|--------|------|
+| `C:\Users\slate\OneDrive\Desktop\asset packs\kenney_ui-pack-pixel-adventure\` | Kenney UI tile pack |
+| `C:\Users\slate\OneDrive\Desktop\asset packs\BoldPixels.ttf` | Pixel font |
 
 ---
 
 ## Dev Menu (Build Early)
 
-The design doc specifies a dev menu (lines 1504-1520) for testing. Build this in
-Phase 1 alongside terrain -- you'll need it constantly:
+Build this in Phase 1 alongside terrain -- you'll need it constantly:
 
 - Give food / Give rainbow food
 - Hatch N workers (instant, free)

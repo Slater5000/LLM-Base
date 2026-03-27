@@ -1361,6 +1361,13 @@ Inspired by Gnorp Apologue (hundreds of entities) and WorldBox (thousands):
 
 Building it right from the start, in the correct order of operations.
 
+**BUILD STRATEGY: Vanilla Mode first.** After proving terrain works (Steps 1-5),
+build the complete Vanilla Mode ant farm screensaver (worker AI, auto-spawner,
+pathfinding at scale) before any Normal Mode systems. This forces the hardest
+tech problems (1000 ants at 60fps on destructible terrain) to be solved early.
+Normal Mode upgrades, menus, and progression layer on top afterward. See
+`ANT_COLONY_KICKOFF.md` for the full 8-phase breakdown.
+
 ### Step 1: Terrain + Camera
 - Noita-inspired pixel-granular destructible 2D terrain (research needed)
 - Procedural noise-based dirt generation with food embedded
